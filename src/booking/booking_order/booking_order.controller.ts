@@ -49,4 +49,34 @@ export class BookingOrderController {
         @Body('boorHotel') boorHotel: Hotels) {
         return await this.BookingOrderServices.CreateBooking(boorId, boorOrderNumber, boorOrderDate, boorArrivalDate, boorTotalRoom, boorTotalGuest, boorDiscount, boorTotalTax, boorTotalAmount, boorDownPayment, boorPayType, boorIsPaid, boorType, boorCardnumber, boorMemberType, boorStatus, bookingOrderDetail, boorHotel);
     }
+
+    @Put(':id')
+    public async Update(
+        @Param('id') id: number,
+        @Body('boorOrderDate') boorOrderDate: Date,
+        @Body('boorArrivalDate') boorArrivalDate: Date,
+        @Body('boorTotalRoom') boorTotalRoom: number,
+        @Body('boorTotalGuest') boorTotalGuest: number,
+        @Body('boorDiscount') boorDiscount: string,
+        @Body('boorTotalTax') boorTotalTax: string,
+        @Body('boorTotalAmount') boorTotalAmount: string,
+        @Body('boorDownPayment') boorDownPayment: string,
+        @Body('boorPayType') boorPayType: string,
+        @Body('boorIsPaid') boorIsPaid: string,
+        @Body('boorType') boorType: string,
+        @Body('boorCardnumber') boorCardnumber: string,
+        @Body('boorMemberType') boorMemberType: string,
+        @Body('boorStatus') boorStatus: string,
+        @Body('bookingOrderDetail') bookingOrderDetail: BookingOrderDetail,
+        @Body('boorHotel') boorHotel: Hotels
+    ) {
+        return await this.BookingOrderServices.UpdateBooking(id, boorOrderDate, boorArrivalDate, boorTotalRoom, boorTotalGuest, boorDiscount, boorTotalTax, boorTotalAmount, boorDownPayment, boorPayType, boorIsPaid, boorType, boorCardnumber, boorMemberType, boorStatus, bookingOrderDetail, boorHotel);
+    }
+
+    @Delete(':id')
+    public async Delete(
+        @Param('id') id: number
+    ) {
+        return await this.BookingOrderServices.DeleteBooking(id);
+    }
 }
