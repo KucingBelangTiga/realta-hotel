@@ -3,9 +3,9 @@
     "name": "default",
     "type": "postgres",
     "host": "localhost",
-    "port": 5432,
+    "port": 2000,
     "username": "postgres",
-    "password": "coba1234",
+    "password": "dimasaldio",
     "database": "",
     "synchronize": false,
     "entities": ["entities/*.js"]

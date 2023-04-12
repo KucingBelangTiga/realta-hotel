@@ -1,4 +1,5 @@
-import { Column, Entity, Index } from "typeorm";
+import { Column, Entity, Index, OneToMany } from "typeorm";
+import { UserMembers } from "./UserMembers";
 
 @Index("memb_name_pk", ["membName"], { unique: true })
 @Entity("members", { schema: "master" })
@@ -12,4 +13,7 @@ export class Members {
     length: 100,
   })
   membDescription: string | null;
+
+  @OneToMany(() => UserMembers, (userMembers) => userMembers.usmeMembName)
+  userMembers: UserMembers[];
 }
