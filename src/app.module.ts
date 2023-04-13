@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { BankService } from './payment/bank/bank.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ModuleModule } from './module/module.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService, BankService],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'admin',
+      database: 'realtahotel',
+      entities: ['dist/output/entities/*.js'],
+      synchronize: false,
+      autoLoadEntities: true,
+    }),
+    ModuleModule,
+  ],
+  providers: [],
+  controllers: [],
 })
 export class AppModule {}
