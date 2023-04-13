@@ -11,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'postgres',
       password: 'dimasaldio',
       database: 'hotelRealta',
-      entities: ['output/entities/*.ts'],
+      entities: ['dist/output/entities/*.js'],
       synchronize: false,
       autoLoadEntities: true,
     }),
