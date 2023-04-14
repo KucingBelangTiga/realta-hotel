@@ -20,6 +20,7 @@ import { SpecialOfferCoupons } from 'output/entities/SpecialOfferCoupons';
 import { SpecialOffers } from 'output/entities/SpecialOffers';
 import { Hotels } from 'output/entities/Hotels';
 import { Facilities } from 'output/entities/Facilities';
+import { PriceItems } from 'output/entities/PriceItems';
 
 @Module({
     imports: [TypeOrmModule.forFeature([
@@ -31,7 +32,8 @@ import { Facilities } from 'output/entities/Facilities';
         SpecialOfferCoupons,
         SpecialOffers,
         Hotels,
-        Facilities
+        Facilities,
+        PriceItems
     ]),
     ],
     providers: [BookingOrderService, BookingOrderDetailService, BookingOrderDetailExtraService, UserBreakfeastService, SpecialOfferCouponsService, SpecialOfferService],

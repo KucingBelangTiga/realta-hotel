@@ -10,7 +10,7 @@ import { BookingModule } from './module/module.module';
       port: 5432,
       username: 'postgres',
       password: 'coba1234',
-      database: 'realtahotel3',
+      database: 'realtahotel4',
       entities: ['dist/output/entities/*.js'],
       synchronize: false,
       autoLoadEntities: true,
