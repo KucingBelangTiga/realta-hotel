@@ -66,11 +66,15 @@ import { StockPhotoService } from "./stock-photo/stock-photo.service";
 import { StocksService } from "./stocks/stocks.service";
 import { VendorService } from "./vendor/vendor.service";
 import { VendorProductService } from "./vendor-product/vendor-product.service";
+import { MulterModule } from '@nestjs/platform-express';
+import { UploadMiddleware } from 'src/middleware/upload.middleware';
+
 
 @Module(
     {
         imports:[
             TypeOrmModule.forFeature([Address,Bank,BookingOrderDetail,BookingOrderDetailExtra,BookingOrders,CategoryGroup,Country,Department,Employee,EmployeeDepartmentHistory,EmployeePayHistory,Entitys,Facilities,FacilityPhoto,FacilityPriceHistory,HotelReviews,Hotels,JobRole,Members,OrderMenuDetail,OrderMenus,PaymentGateway,PaymentTransaction,Policy,PolicyCategoryGroup,PriceItems,Proviences,PurchaseOrderDetail,PurchaseOrderHeader,Regions,RestoMenuPhotos,RestoMenus,Roles,ServiceTask,Shift,SpecialOfferCoupons,SpecialOffers,StockDetail,StockPhoto,Stocks,UserAccounts,UserBonusPoints,UserBreakfeast,UserMembers,UserPassword,UserRoles,Users,Vendor,VendorProduct,WorkOrderDetail,WorkOrders]),
+            MulterModule.register(UploadMiddleware.MulterOption()),
         ],
         controllers:[PurchaseOrderDetailController,PurchaseOrderheaderController,StockDetailController,StockPhotoController,StocksController,VendorController,VendorProductController],
         providers: [PurchaseOrderDetailService, PurchaseOrderheaderService, StockDetailService, StockPhotoService, StocksService, VendorService, VendorProductService],
