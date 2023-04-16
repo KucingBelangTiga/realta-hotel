@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Proviences } from "./Proviences";
 import { Hotels } from "./Hotels";
+import { UserProfiles } from "./UserProfiles";
 
 @Index("addr_id_pk", ["addrId"], { unique: true })
 @Entity("address", { schema: "master" })
@@ -49,4 +50,7 @@ export class Address {
 
   @OneToMany(() => Hotels, (hotels) => hotels.hotelAddr)
   hotels: Hotels[];
+
+  @OneToMany(() => UserProfiles, (userProfiles) => userProfiles.usproAddr)
+  userProfiles: UserProfiles[];
 }

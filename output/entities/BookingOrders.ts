@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { BookingOrderDetail } from "./BookingOrderDetail";
 import { Hotels } from "./Hotels";
+import { Users } from "./Users";
 
 @Index("pk_boor_id", ["boorId"], { unique: true })
 @Index("booking_orders_boor_order_number_key", ["boorOrderNumber"], {
@@ -91,9 +92,6 @@ export class BookingOrders {
   })
   boorStatus: string | null;
 
-  @Column("integer", { name: "boor_user_id", nullable: true })
-  boorUserId: number | null;
-
   @OneToOne(
     () => BookingOrderDetail,
     (bookingOrderDetail) => bookingOrderDetail.borderBoor
@@ -106,4 +104,11 @@ export class BookingOrders {
   })
   @JoinColumn([{ name: "boor_hotel_id", referencedColumnName: "hotelId" }])
   boorHotel: Hotels;
+
+  @ManyToOne(() => Users, (users) => users.bookingOrders, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "boor_user_id", referencedColumnName: "userId" }])
+  boorUser: Users;
 }

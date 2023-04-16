@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Hotels } from "./Hotels";
+import { Users } from "./Users";
 
 @Index("pk_hore_id", ["horeId"], { unique: true })
 @Entity("hotel_reviews", { schema: "hotel" })
@@ -30,13 +31,17 @@ export class HotelReviews {
   })
   horeCreatedOn: Date | null;
 
-  @Column("integer", { name: "hore_user_id", nullable: true })
-  horeUserId: number | null;
-
   @ManyToOne(() => Hotels, (hotels) => hotels.hotelReviews, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "hore_hotel_id", referencedColumnName: "hotelId" }])
   horeHotel: Hotels;
+
+  @ManyToOne(() => Users, (users) => users.hotelReviews, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "hore_user_id", referencedColumnName: "userId" }])
+  horeUser: Users;
 }

@@ -1,4 +1,12 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Users } from "./Users";
 
 @Index("payment_transaction_pkey", ["patrId"], { unique: true })
 @Index("payment_transaction_patr_trx_id_key", ["patrTrxId"], { unique: true })
@@ -61,6 +69,10 @@ export class PaymentTransaction {
   })
   patrTrxNumberRef: string | null;
 
-  @Column("integer", { name: "patr_user_id", nullable: true })
-  patrUserId: number | null;
+  @ManyToOne(() => Users, (users) => users.paymentTransactions, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "patr_user_id", referencedColumnName: "userId" }])
+  patrUser: Users;
 }

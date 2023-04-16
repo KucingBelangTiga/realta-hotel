@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Column,
   Entity,
@@ -9,8 +10,10 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { JobRole } from "./JobRole";
+import { Users } from "./Users";
 import { EmployeeDepartmentHistory } from "./EmployeeDepartmentHistory";
 import { EmployeePayHistory } from "./EmployeePayHistory";
+import { PurchaseOrderHeader } from "./PurchaseOrderHeader";
 import { WorkOrderDetail } from "./WorkOrderDetail";
 
 @Index("employee_pkey", ["empId"], { unique: true })
@@ -78,8 +81,12 @@ export class Employee {
   })
   empModifiedDate: Date | null;
 
-  @Column("integer", { name: "emp_user_id", nullable: true })
-  empUserId: number | null;
+  @Column("character varying", {
+    name: "emp_name",
+    nullable: true,
+    length: 100,
+  })
+  empName: string | null;
 
   @ManyToOne(() => Employee, (employee) => employee.employees, {
     onDelete: "CASCADE",
@@ -98,6 +105,13 @@ export class Employee {
   @JoinColumn([{ name: "emp_joro_id", referencedColumnName: "joroId" }])
   empJoro: JobRole;
 
+  @ManyToOne(() => Users, (users) => users.employees, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "emp_user_id", referencedColumnName: "userId" }])
+  empUser: Users;
+
   @OneToOne(
     () => EmployeeDepartmentHistory,
     (employeeDepartmentHistory) => employeeDepartmentHistory.edhiEmp
@@ -109,6 +123,12 @@ export class Employee {
     (employeePayHistory) => employeePayHistory.ephiEmp
   )
   employeePayHistories: EmployeePayHistory[];
+
+  @OneToMany(
+    () => PurchaseOrderHeader,
+    (purchaseOrderHeader) => purchaseOrderHeader.poheEmp
+  )
+  purchaseOrderHeaders: PurchaseOrderHeader[];
 
   @OneToMany(
     () => WorkOrderDetail,
