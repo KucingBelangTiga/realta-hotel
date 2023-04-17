@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Department } from 'output/entities/Department';
 import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 
@@ -22,7 +22,7 @@ export class DepartmentService {
             // relations: {
             //     namaRelation: true,
             // },
-            filterableColumns: {
+            filterableColumns: { 
                 deptId: [FilterOperator. IN],
                 deptName: [FilterOperator. ILIKE],
                 deptModifiedDate: [FilterOperator. BTW],
@@ -32,29 +32,29 @@ export class DepartmentService {
     public async findOneDept(id: number) {
             return await this.departmentRepo.findOne({ where: { deptId: id } });
     }
-    public async findNameDept(deptName: string) {
-        try {
-          const response = await this.departmentRepo
-            .createQueryBuilder('department')
-            .select()
-            .where('LOWER(department.deptName) Like LOWER(:deptName)', {
-              deptName: `%${deptName.toLowerCase()}%`,
-            })
-            .getMany();
-          if (response.length === 0) {
-            return {
-              statusCode: 401,
-              message: 'Department not found.',
-            };
-          } else {
-            return response;
-          }
-        } catch (error) {
-          throw new Error(
-            `Error:, ${error.message}`,
-          );
-        }
-      }
+    // public async findNameDept(deptName: string) {
+    //     try {
+    //       const response = await this.departmentRepo
+    //         .createQueryBuilder('department')
+    //         .select()
+    //         .where('LOWER(department.deptName) Like LOWER(:deptName)', {
+    //           deptName: `%${deptName.toLowerCase()}%`,
+    //         })
+    //         .getMany();
+    //       if (response.length === 0) {
+    //         return {
+    //           statusCode: 401,
+    //           message: 'Department not found.',
+    //         };
+    //       } else {
+    //         return response;
+    //       }
+    //     } catch (error) {
+    //       throw new Error(
+    //         `Error:, ${error.message}`,
+    //       );
+    //     }
+    //   }
 
       public async createDept(
         deptName: string,
@@ -72,49 +72,49 @@ export class DepartmentService {
             data: response,
           };
         } catch (error) {
-          throw new Error(`Error: , ${error.message}`);
+          throw new Error(`Error adding data: ${error.message}`);
         }
         }
   
         public async updateDept(
-            deptId: number,
-            deptName: string,
-            deptModifiedDate: Date
-          ) {
-            try {
-              await this.departmentRepo.update(
-                { deptId: deptId },
-                {
-                  deptName: deptName,
-                  deptModifiedDate: deptModifiedDate
-                }
-              );
-              return {
-                statusCode: 200,
-                message: 'Data updated successfully',
-                data: {
-                  deptId: deptId,
-                  deptName: deptName,
-                  deptModifiedDate: deptModifiedDate
-                },
-              };
-            } catch (error) {
-              throw new Error(`Error: , ${error.message}`);
-            }
+          id: number,
+          deptName: string,
+          deptModifiedDate: Date
+        ) {
+          try {
+            await this.departmentRepo.update(
+              { deptId: id },
+              {
+                deptName: deptName,
+                deptModifiedDate: deptModifiedDate
+              }
+            );
+            return {
+              statusCode: 200,
+              message: 'Data updated successfully',
+              data: {
+                deptId: id,
+                deptName: deptName,
+                deptModifiedDate: deptModifiedDate
+              },
+            };
+          } catch (error) {
+            throw new Error(`Error updating data: ${error.message}`);
           }
+        }
           
-          public async deleteDept(deptId: number) {
+          public async deleteDept(id: number) {
             try {
-              await this.departmentRepo.delete(deptId);
+              await this.departmentRepo.delete(id);
               return {
                 statusCode: 200,
                 message: 'Data deleted successfully.',
                 data: {
-                    deptstockId: deptId,
+                    deptId: id,
                 },
               };
             } catch (error) {
-              throw new Error(`Error: , ${error.message}`);
+              throw new Error(`Error deleting data: ${error.message}`);
             }
           }
   }

@@ -5,6 +5,7 @@ import { Repository, getConnection } from 'typeorm'; //lebih baik cari alternati
 import { Employee } from 'output/entities/Employee';
 import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { JobRole } from 'output/entities/JobRole';
+import { Users } from 'output/entities/Users';
 import { Request } from 'express';
 import { Multer } from 'multer';
 
@@ -15,6 +16,8 @@ export class EmployeeService {
         private employeeRepo: Repository<Employee>,
         // @InjectRepository(JobRole)
         // private jobRoleRepo: Repository<JobRole>,
+        // @InjectRepository(Users)
+        // private usersRoleRepo: Repository<Users>,
       ) {}
 
       public async findAllEmp(query: PaginateQuery): Promise<Paginated<Employee>> {
@@ -44,36 +47,37 @@ export class EmployeeService {
     public async findOneEmp(id: number) { 
         return await this.employeeRepo.findOne({
           where: { empId: id },
-          relations: ['empEmp','empJoro','empUser'],
+          relations: ['empEmp','empJoro','empUser'], 
         });
       }      
     //search by name: http://localhost:3002/employee/search?empName="John Doe" . nama 1 kata tanpa ""
-    public async findNameEmp(empName: string) {
-        try {
-          const response = await this.employeeRepo
-            .createQueryBuilder('employee')
-            .select()
-            .where('LOWER(employee.empName) Like LOWER(:empName)', {
-              empName: `%${empName.toLowerCase()}%`,
-            })
-            .getMany();
-          if (response.length === 0) {
-            return {
-              statusCode: 401,
-              message: 'Employee not found.',
-            };
-          } else {
-            return response;
-          }
-        } catch (error) {
-          throw new Error(
-            `Error:, ${error.message}`,
-          );
-        }
-      }
+    // public async findNameEmp(empName: string) {
+    //     try {
+    //       const response = await this.employeeRepo
+    //         .createQueryBuilder('employee')
+    //         .select()
+    //         .where('LOWER(employee.empName) Like LOWER(:empName)', {
+    //           empName: `%${empName.toLowerCase()}%`,
+    //         })
+    //         .getMany();
+    //       if (response.length === 0) {
+    //         return {
+    //           statusCode: 401,
+    //           message: 'Employee not found.',
+    //         };
+    //       } else {
+    //         return response;
+    //       }
+    //     } catch (error) {
+    //       throw new Error(
+    //         `Error:, ${error.message}`,
+    //       );
+    //     }
+    //   }
+
       public async createEmp(
         empNationalId: string,
-        empName: string,
+        // empName: string,
         empBirthDate: string,
         empMaritalStatus: string,
         empGender: string,
@@ -94,7 +98,7 @@ export class EmployeeService {
         try {
           const response = await this.employeeRepo.save({
             empNationalId: empNationalId,
-            empName: empName,
+            // empName: empName,
             empBirthDate: empBirthDate,
             empMaritalStatus: empMaritalStatus, 
             empGender: empGender, 
@@ -118,11 +122,11 @@ export class EmployeeService {
             data: response,
           };
         } catch (error) {
-          throw new Error(`Error: , ${error.message}`);
+          throw new Error(`Error adding data: ${error.message}`);
         }
         }
 
-    //pakai transaksi db
+    //pakai transaksi db: masih ada masalah
     // public async createEmp(
     //     empNationalId: string,
     //     empName: string,
@@ -252,7 +256,7 @@ export class EmployeeService {
         public async updateEmp(
           id: number,
           empNationalId: string,
-          empName: string,
+          // empName: string,
           empBirthDate: string,
           empMaritalStatus: string,
           empGender: string,
@@ -279,7 +283,7 @@ export class EmployeeService {
               { empId: id },
               {
                 empNationalId: empNationalId,
-                empName: empName,
+                // empName: empName,
                 empBirthDate: empBirthDate,
                 empMaritalStatus: empMaritalStatus, 
                 empGender: empGender, 
@@ -301,7 +305,7 @@ export class EmployeeService {
               data: {
                 id: id,
                 empNationalId: empNationalId,
-                empName: empName,
+                // empName: empName,
                 empBirthDate: empBirthDate,
                 empMaritalStatus: empMaritalStatus, 
                 empGender: empGender, 
@@ -318,23 +322,22 @@ export class EmployeeService {
               },
             };
           } catch (error) {
-            throw new Error(`Error: , ${error.message}`);
+            throw new Error(`Error updating data: ${error.message}`);
           }
         }        
           
-          public async deleteEmp(empId: number) {
+          public async deleteEmp(id: number) {
             try {
-              await this.employeeRepo.delete(empId);
+              await this.employeeRepo.delete(id);
               return {
                 statusCode: 200,
                 message: 'Data deleted successfully.',
                 data: {
-                    empstockId: empId,
+                    empId: id,
                 },
               };
             } catch (error) {
-              throw new Error(`Error: , ${error.message}`);
+              throw new Error(`Error deleting data: ${error.message}`);
             }
           }
-
-}
+} 

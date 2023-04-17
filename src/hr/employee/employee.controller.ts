@@ -18,6 +18,7 @@ import {
   import { Employee } from 'output/entities/Employee';
   import { EmployeeService } from './employee.service';
   import { JobRole } from 'output/entities/JobRole';
+  import { Users } from 'output/entities/Users';
   import { Request } from 'express';
   import { Multer } from 'multer';
 
@@ -27,6 +28,8 @@ export class EmployeeController {
         private employeeService: EmployeeService,
         @InjectRepository(JobRole)
         private jobRoleRepo: Repository<JobRole>,
+        @InjectRepository(Users)
+        private usersRepo: Repository<Users>,
         ) {}
 
     @Get()
@@ -38,16 +41,16 @@ export class EmployeeController {
     public async findOneEmp(@Param('id') id: number) {
       return await this.employeeService.findOneEmp(id);
     }
-    @Get('/employee/search')
-    public async findNameEmp(@Query('empName') empName: string) {
-    return await this.employeeService.findNameEmp(empName);
-    }
+    // @Get('/employee/search')
+    // public async findNameEmp(@Query('empName') empName: string) {
+    // return await this.employeeService.findNameEmp(empName);
+    // } 
 
     @Post()
     @UseInterceptors(FileInterceptor('file'))
     public async createEmp(
         @Body('empNationalId') empNationalId: string,
-        @Body('empName') empName: string,
+        // @Body('empName') empName: string,
         @Body('empBirthDate') empBirthDate: string,
         @Body('empMaritalStatus') empMaritalStatus: string,
         @Body('empGender') empGender: string,
@@ -69,7 +72,7 @@ export class EmployeeController {
     // const joroId = empJoro.joroId;
     return await this.employeeService.createEmp(
         empNationalId,
-        empName,
+        // empName,
         empBirthDate,
         empMaritalStatus, 
         empGender, 
@@ -87,7 +90,7 @@ export class EmployeeController {
         joroId,
         file
     );
-    } 
+    }  
  
     //pakai fileinterceptor: photo harus upload ulang, jika tidak, maka akan dihapus di database jadi kosong
     // @Put(':id')
@@ -135,7 +138,7 @@ export class EmployeeController {
     public async updateEmp(
     @Param('id') id: number,
     @Body('empNationalId') empNationalId: string, 
-    @Body('empName') empName: string,
+    // @Body('empName') empName: string,
     @Body('empBirthDate') empBirthDate: string,
     @Body('empMaritalStatus') empMaritalStatus: string,
     @Body('empGender') empGender: string,
@@ -161,7 +164,7 @@ export class EmployeeController {
     return await this.employeeService.updateEmp(
         id,
         empNationalId,
-        empName,
+        // empName,
         empBirthDate,
         empMaritalStatus, 
         empGender, 
@@ -183,4 +186,4 @@ export class EmployeeController {
     return await this.employeeService.deleteEmp(id);
     }
 
-}
+} 

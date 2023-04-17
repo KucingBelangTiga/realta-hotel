@@ -73,7 +73,7 @@ export class Employee {
     nullable: true,
     length: 255,
   })
-  empPhoto: string | null;
+  empPhoto: string | null; 
 
   @Column("timestamp without time zone", {
     name: "emp_modified_date",
