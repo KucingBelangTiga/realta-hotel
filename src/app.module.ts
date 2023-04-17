@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PurchasingModule } from './purchasing/purchasing.module';
+import { PurchasingModule } from './module/purchasing.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
