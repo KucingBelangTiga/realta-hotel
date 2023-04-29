@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Department } from 'output/entities/Department';
@@ -12,9 +12,10 @@ export class DepartmentService {
     private departmentRepo: Repository<Department>, 
     ) {}
 
+    //next page: http://localhost:3002/department?page=2
     public async findAllDept(query: PaginateQuery): Promise<Paginated<Department>> {
         return paginate (query, this.departmentRepo, {
-            sortableColumns: ['deptId', 'deptName', 'deptModifiedDate'],
+            sortableColumns: ['deptId', 'deptName', 'deptModifiedDate'], 
             defaultSortBy: [['deptId', 'ASC']],
             searchableColumns: ['deptId', 'deptName', 'deptModifiedDate'],
             select: ['deptId', 'deptName', 'deptModifiedDate'],
@@ -30,8 +31,16 @@ export class DepartmentService {
         });
     }
     public async findOneDept(id: number) {
-            return await this.departmentRepo.findOne({ where: { deptId: id } });
+      const department = await this.departmentRepo.findOne({
+        where: { deptId: id },
+      });
+      if (!department) {
+        throw new NotFoundException('Department not found');
+      }
+      return department;
     }
+  
+    //search by name: http://localhost:3002/department/search?deptName="Marketing Sales" . nama 1 kata tanpa ""
     // public async findNameDept(deptName: string) {
     //     try {
     //       const response = await this.departmentRepo
@@ -58,18 +67,18 @@ export class DepartmentService {
 
       public async createDept(
         deptName: string,
-        deptModifiedDate: Date
+        deptModifiedDate: Date = new Date()
         ) {
         try {
-          const response = await this.departmentRepo.save({
+          const dept = await this.departmentRepo.save({
             deptName: deptName,
             deptModifiedDate: deptModifiedDate
           });
-          // return response;
+          // return dept;
           return {
             statusCode: 201,
             message: 'Data added successfully',
-            data: response,
+            data: dept,
           };
         } catch (error) {
           throw new Error(`Error adding data: ${error.message}`);
@@ -79,7 +88,7 @@ export class DepartmentService {
         public async updateDept(
           id: number,
           deptName: string,
-          deptModifiedDate: Date
+          deptModifiedDate: Date = new Date()
         ) {
           try {
             await this.departmentRepo.update(

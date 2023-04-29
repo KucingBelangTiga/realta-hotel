@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { WorkOrders } from 'output/entities/WorkOrders';
 import { Users } from 'output/entities/Users';
-import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 
 @Injectable()
 export class WorkOrdersService {
     constructor(
         @InjectRepository(WorkOrders)
         private woroRepo: Repository<WorkOrders>, 
+        @InjectRepository(Users)
+        private usersRepo: Repository<Users>,
         ) {}
     
         public async findAllWoro(query: PaginateQuery): Promise<Paginated<WorkOrders>> {
@@ -31,11 +34,15 @@ export class WorkOrdersService {
             });
         }
         public async findOneWoro(id: number) {
-                return await this.woroRepo.findOne({ 
+          const woro = await this.woroRepo.findOne({ 
                     where: { woroId: id },
                     relations: ['woroUser'],
-                });
-        }
+                  });
+                  if (!woro) {
+                      throw new NotFoundException('Work Orders not found');
+                  }
+                  return woro;
+              }  
     
           public async createWoro(
             woroStartDate: Date,
@@ -43,20 +50,29 @@ export class WorkOrdersService {
             userId: number
             ) {
             try {
-              const response = await this.woroRepo.save({
+            const user = await this.usersRepo.findOne({ where: { userId: userId } });
+            if (!user) {
+              throw new Error(`User with userId ${userId} not found`);
+            }
+              const newWoro = this.woroRepo.create({
                 woroStartDate: woroStartDate,
                 woroStatus: woroStatus,
-                woroUser: {userId: userId}
+                woroUser: user
               });
-              return {
-                statusCode: 201,
-                message: 'Data added successfully',
-                data: response,
-              };
-            } catch (error) {
-              throw new Error(`Error adding data: ${error.message}`);
-            }
-            }
+              await this.woroRepo.save(newWoro);
+            return {
+            statusCode: 201,
+            message: 'Data added successfully',
+            data: {
+                woroId: newWoro.woroId,
+                woroStatus: woroStatus,
+                woroUser: user
+            },
+          };
+          } catch (error) {
+            throw new Error(`Error adding data: ${error.message}`);
+          }
+          }
       
             public async updateWoro(
               id: number,
@@ -65,12 +81,16 @@ export class WorkOrdersService {
               userId: number
             ) {
               try {
+                const user = await this.usersRepo.findOne({ where: { userId: userId } });
+                if (!user) {
+                  throw new Error(`User with userId ${userId} not found`);
+                }
                 await this.woroRepo.update(
                   { woroId: id },
                   {
                     woroStartDate: woroStartDate,
                     woroStatus: woroStatus,
-                    woroUser: {userId: userId}
+                    woroUser: user
                   }
                 );
                 return {
@@ -78,7 +98,6 @@ export class WorkOrdersService {
                   message: 'Data updated successfully',
                   data: {
                     woroId: id,
-                    woroStartDate: woroStartDate,
                     woroStatus: woroStatus,
                     woroUser: {userId: userId}
                   },

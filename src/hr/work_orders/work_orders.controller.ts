@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
     Body,
@@ -23,7 +24,9 @@ export class WorkOrdersController {
     constructor(
         private woroService: WorkOrdersService,
         @InjectRepository(WorkOrders)
-        private woroRepo: Repository<WorkOrders>
+        private woroRepo: Repository<WorkOrders>,
+        @InjectRepository(Users)
+        private usersRepo: Repository<Users>,
         ) {}
 
     @Get()

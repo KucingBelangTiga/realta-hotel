@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Shift } from 'output/entities/Shift';
@@ -26,7 +26,13 @@ export class ShiftService {
             });
         }
         public async findOneShift(id: number) {
-                return await this.shiftRepo.findOne({ where: { shiftId: id } });
+          const shift = await this.shiftRepo.findOne({
+            where: { shiftId: id },
+          });
+          if (!shift) {
+            throw new NotFoundException('Shift not found');
+          }
+          return shift;
         }
         // public async findNameShift(shiftName: string) {
         //     try {
@@ -58,7 +64,7 @@ export class ShiftService {
             shiftEndTime: string
             ) {
             try {
-              const response = await this.shiftRepo.save({
+              const shift = await this.shiftRepo.save({
                 shiftName: shiftName,
                 shiftStartTime: shiftStartTime,
                 shiftEndTime: shiftEndTime
@@ -66,7 +72,7 @@ export class ShiftService {
               return {
                 statusCode: 201,
                 message: 'Data added successfully',
-                data: response,
+                data: shift,
               };
             } catch (error) {
               throw new Error(`Error adding data: ${error.message}`);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
     Body,
@@ -47,7 +48,8 @@ export class EmployeeDepartmentHistoryController {
         @Body('edhiEmpId') edhiEmpId: number,
         @Body('edhiStartDate') edhiStartDate: Date,
         @Body('edhiEndDate') edhiEndDate: Date,
-        @Body('edhiModifiedDate') edhiModifiedDate: Date,
+        // @Body('edhiModifiedDate') edhiModifiedDate: Date,
+        edhiModifiedDate: Date = new Date(), 
         @Body('deptId') deptId: number,
         @Body('shiftId') shiftId: number 
     ) {
@@ -67,7 +69,8 @@ export class EmployeeDepartmentHistoryController {
         @Body('edhiEmpId') edhiEmpId: number, 
         @Body('edhiStartDate') edhiStartDate: Date, 
         @Body('edhiEndDate') edhiEndDate: Date,
-        @Body('edhiModifiedDate') edhiModifiedDate: Date,
+        // @Body('edhiModifiedDate') edhiModifiedDate: Date,
+        edhiModifiedDate: Date = new Date(),
         @Body('deptId') deptId: number,
         @Body('shiftId') shiftId: number
         ) { 

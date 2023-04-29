@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
   Body,
@@ -18,7 +19,7 @@ import { DepartmentService } from './department.service';
 @Controller('department')
 export class DepartmentController {
     constructor(private departmentService: DepartmentService) {}
-
+ 
     @Get()
     public async findAllDept(@Paginate() query: PaginateQuery,
     ): Promise <Paginated<Department>> {
@@ -36,7 +37,9 @@ export class DepartmentController {
     @Post()
     public async createDept(
     @Body('deptName') deptName: string,
-    @Body('deptModifiedDate') deptModifiedDate: Date
+    // @Body('deptModifiedDate') deptModifiedDate: Date
+    deptModifiedDate: Date = new Date()
+    // deptModifiedDate: Date = new Date(), //otomatis tgl saat ini dari db, tanpa input manual pada Body
     ) { 
     return await this.departmentService.createDept(
       deptName, 
@@ -48,7 +51,8 @@ export class DepartmentController {
     public async updateDept(
     @Param('id') id: number,
     @Body('deptName') deptName: string,
-    @Body('deptModifiedDate') deptModifiedDate: Date
+    // @Body('deptModifiedDate') deptModifiedDate: Date
+    deptModifiedDate: Date = new Date(),
     ) {
     return await this.departmentService.updateDept(
       id,
@@ -59,6 +63,6 @@ export class DepartmentController {
 
     @Delete(':id')
     public async deleteDept(@Param('id') id: number) {
-    return await this.departmentService.deleteDept(id);
+    return await this.departmentService.deleteDept(id); 
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
     Body,
@@ -18,8 +19,6 @@ import {
   import { EmployeePayHistoryService } from './employee_pay_history.service';
   import { Employee } from 'output/entities/Employee';
   import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
-  import { Request } from 'express';
-  import { Multer } from 'multer'; 
 
 @Controller('employee-pay-history')
 export class EmployeePayHistoryController {
@@ -34,7 +33,10 @@ export class EmployeePayHistoryController {
     ): Promise <Paginated<EmployeePayHistory>> {
       return await this.ephService.findAllEph(query);
     }
-    //http://localhost:3002/employee-pay-history/2023-01-01
+    //setelah input manual ephiRateChangeDate terbaca string di db
+    //cari data yg input manual harus berupa string sesuai db , dan lengkap(bukan cuma date, time juga)
+    //cari data yg sdh ada di db: http://localhost:3002/employee-pay-history/2023-01-01
+    //cari data input manual: http://localhost:3002/employee-pay-history/"2023-04-29 16:51:14.745"
     @Get(':ephiRateChangeDate')
     public async findOneEph(@Param('ephiRateChangeDate') ephiRateChangeDate: Date) {
     return await this.ephService.findOneEph(ephiRateChangeDate);
@@ -42,38 +44,43 @@ export class EmployeePayHistoryController {
 
     @Post()
     public async createEph(
-        @Body('ephiRateChangeDate') ephiRateChangeDate: Date,
+        @Body('ephiEmpId') ephiEmpId: number,
+        // @Body('ephiRateChangeDate') ephiRateChangeDate: Date = new Date(),
+        ephiRateChangeDate: Date = new Date(), //otomatis tgl saat ini dari db, tanpa input manual pada Body
         @Body('ephiRateSalary') ephiRateSalary: string,
         @Body('ephiPayFrequence') ephiPayFrequence: number,
-        @Body('ephiModifiedDate') ephiModifiedDate: Date,
-        @Body('empId') empId: number,
+        // @Body('ephiModifiedDate') ephiModifiedDate: Date = new Date(),
+        ephiModifiedDate: Date = new Date(), 
     ) {
     return await this.ephService.createEph(
+        ephiEmpId,
         ephiRateChangeDate,
         ephiRateSalary, 
         ephiPayFrequence, 
         ephiModifiedDate,
-        empId
     );
     } 
- 
+
     @Put(':ephiRateChangeDate')
     public async updateEph(
-      @Param('ephiRateChangeDate') ephiRateChangeDate: Date,
+        @Param('ephiRateChangeDate') ephiRateChangeDate: Date = new Date(), //jika ingin otomatis, bisa diatur spt modifieddate
+        @Body('ephiEmpId') ephiEmpId: number,
         @Body('ephiRateSalary') ephiRateSalary: string,
         @Body('ephiPayFrequence') ephiPayFrequence: number,
-        @Body('ephiModifiedDate') ephiModifiedDate: Date,
-        @Body('empId') empId: number,
+        // @Body('ephiModifiedDate') ephiModifiedDate: Date = new Date(),
+        ephiModifiedDate: Date = new Date(), 
         ) { 
         return await this.ephService.updateEph(
         ephiRateChangeDate,
+        ephiEmpId,
         ephiRateSalary,   
         ephiPayFrequence, 
         ephiModifiedDate,
-        empId
         );
         }
 
+        //cari data yg sdh ada di db: http://localhost:3002/employee-pay-history/2023-01-01
+        //cari data input manual: http://localhost:3002/employee-pay-history/"2023-04-29 16:51:14.745"
         @Delete(':ephiRateChangeDate')
         public async deleteEph(@Param('ephiRateChangeDate') ephiRateChangeDate: Date) {
           return await this.ephService.deleteEph(ephiRateChangeDate);

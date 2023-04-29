@@ -1,19 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Employee } from 'output/entities/Employee';
 import { WorkOrders } from 'output/entities/WorkOrders';
 import { ServiceTask } from 'output/entities/ServiceTask';
 import { Facilities } from 'output/entities/Facilities';
 import { WorkOrderDetail } from 'output/entities/WorkOrderDetail';
-import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 
 @Injectable()
 export class WorkOrderDetailService {
     constructor(
         @InjectRepository(WorkOrderDetail)
-        private wodeRepo: Repository<WorkOrderDetail>, 
+        private wodeRepo: Repository<WorkOrderDetail>,
+        @InjectRepository(WorkOrders)
+        private woroRepo: Repository<WorkOrders>,
+        @InjectRepository(Employee)
+        private employeeRepo: Repository<Employee>,
+        @InjectRepository(ServiceTask)
+        private setaRepo: Repository<ServiceTask>,
+        @InjectRepository(Facilities)
+        private faciRepo: Repository<Facilities> 
         ) {}
     
         public async findAllWode(query: PaginateQuery): Promise<Paginated<WorkOrderDetail>> {
@@ -40,11 +49,15 @@ export class WorkOrderDetailService {
             });
         }
         public async findOneWode(id: number) {
-                return await this.wodeRepo.findOne({ 
+          const wode = await this.wodeRepo.findOne({ 
                     where: { wodeId: id },
                     relations: ['wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
                 });
-        }
+                if (!wode) {
+                  throw new NotFoundException('Work Order Detail not found');
+              }
+              return wode;
+          } 
     
           public async createWode(
             wodeTaskName: string,
@@ -58,21 +71,49 @@ export class WorkOrderDetailService {
             woroId: number
             ) {
             try {
-              const response = await this.wodeRepo.save({
+              const employee = await this.employeeRepo.findOne({ where: { empId: empId } });
+              if (!employee) {
+                  throw new Error(`Employee with empId ${empId} not found`);
+              }
+              const facilities = await this.faciRepo.findOne({ where: { faciId: faciId } });
+              if (!facilities) {
+                  throw new Error(`Facilities with faciId ${faciId} not found`);
+              }
+              const seta = await this.setaRepo.findOne({ where: { setaId: setaId } });
+              if (!seta) {
+                  throw new Error(`Service Task with setaId ${setaId} not found`);
+              }
+              const woro = await this.woroRepo.findOne({ where: { woroId: woroId } });
+              if (!woro) {
+                  throw new Error(`Work Orders with woroId ${woroId} not found`);
+              }
+              const newWode = this.wodeRepo.create({
                 wodeTaskName: wodeTaskName,
                 wodeStatus: wodeStatus,
                 wodeStartDate: wodeStartDate,
                 wodeEndDate: wodeEndDate,
                 wodeNotes: wodeNotes,
-                wodeEmp: {empId: empId},
-                wodeFaci: {faciId: faciId},
-                wodeSeta: {setaId: setaId},
-                wodeWoro: {woroId: woroId}
+                wodeEmp: employee,
+                wodeFaci: facilities,
+                wodeSeta: seta,
+                wodeWoro: woro
               });
+              await this.wodeRepo.save(newWode);
               return {
                 statusCode: 201,
                 message: 'Data added successfully',
-                data: response,
+                data: {
+                  wodeId: newWode.wodeId,
+                  wodeTaskName: wodeTaskName,
+                  wodeStatus: wodeStatus,
+                  wodeStartDate: wodeStartDate,
+                  wodeEndDate: wodeEndDate,
+                  wodeNotes: wodeNotes,
+                  wodeEmp: employee,
+                  wodeFaci: facilities,
+                  wodeSeta: seta,
+                  wodeWoro: woro
+              },
               };
             } catch (error) {
               throw new Error(`Error adding data: ${error.message}`);
@@ -92,6 +133,22 @@ export class WorkOrderDetailService {
             woroId: number
             ) {
               try {
+                const employee = await this.employeeRepo.findOne({ where: { empId: empId } });
+                if (!employee) {
+                    throw new Error(`Employee with empId ${empId} not found`);
+                }
+                const facilities = await this.faciRepo.findOne({ where: { faciId: faciId } });
+                if (!facilities) {
+                    throw new Error(`Facilities with faciId ${faciId} not found`);
+                }
+                const seta = await this.setaRepo.findOne({ where: { setaId: setaId } });
+                if (!seta) {
+                    throw new Error(`Service Task with setaId ${setaId} not found`);
+                }
+                const woro = await this.woroRepo.findOne({ where: { woroId: woroId } });
+                if (!woro) {
+                    throw new Error(`Work Orders with woroId ${woroId} not found`);
+                }
                 await this.wodeRepo.update(
                   { wodeId: id },
                   {
@@ -100,10 +157,10 @@ export class WorkOrderDetailService {
                     wodeStartDate: wodeStartDate,
                     wodeEndDate: wodeEndDate,
                     wodeNotes: wodeNotes,
-                    wodeEmp: {empId: empId},
-                    wodeFaci: {faciId: faciId},
-                    wodeSeta: {setaId: setaId},
-                    wodeWoro: {woroId: woroId}
+                    wodeEmp: employee,
+                    wodeFaci: facilities,
+                    wodeSeta: seta,
+                    wodeWoro: woro
                   }
                 );
                 return {
@@ -116,10 +173,10 @@ export class WorkOrderDetailService {
                     wodeStartDate: wodeStartDate,
                     wodeEndDate: wodeEndDate,
                     wodeNotes: wodeNotes,
-                    wodeEmp: {empId: empId},
-                    wodeFaci: {faciId: faciId},
-                    wodeSeta: {setaId: setaId},
-                    wodeWoro: {woroId: woroId}
+                    wodeEmp: employee,
+                    wodeFaci: facilities,
+                    wodeSeta: seta,
+                    wodeWoro: woro
                   },
                 };
               } catch (error) {

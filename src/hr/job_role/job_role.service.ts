@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { JobRole } from 'output/entities/JobRole';
@@ -26,7 +27,13 @@ export class JobRoleService {
             });
         }
         public async findOneJoro(id: number) {
-                return await this.joroRepo.findOne({ where: { joroId: id } });
+          const joro = await this.joroRepo.findOne({
+            where: { joroId: id },
+          });
+          if (!joro) {
+            throw new NotFoundException('Job Role not found');
+          }
+          return joro;
         }
         // public async findNameJoro(joroName: string) {
         //     try {
@@ -54,17 +61,17 @@ export class JobRoleService {
     
           public async createJoro(
             joroName: string,
-            joroModifiedDate: Date
+            joroModifiedDate: Date = new Date()
             ) {
             try {
-              const response = await this.joroRepo.save({
+              const joro = await this.joroRepo.save({
                 joroName: joroName,
                 joroModifiedDate: joroModifiedDate
               });
               return {
                 statusCode: 201,
                 message: 'Data added successfully',
-                data: response,
+                data: joro,
               };
             } catch (error) {
               throw new Error(`Error adding data: ${error.message}`);
@@ -74,7 +81,7 @@ export class JobRoleService {
             public async updateJoro(
               id: number,
               joroName: string,
-              joroModifiedDate: Date
+              joroModifiedDate: Date = new Date()
             ) {
               try {
                 await this.joroRepo.update(

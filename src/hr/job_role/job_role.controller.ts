@@ -36,7 +36,8 @@ export class JobRoleController {
     @Post()
     public async createJoro(
     @Body('joroName') joroName: string,
-    @Body('joroModifiedDate') joroModifiedDate: Date
+    // @Body('joroModifiedDate') joroModifiedDate: Date
+    joroModifiedDate: Date = new Date(), 
     ) { 
     return await this.joroService.createJoro(
       joroName, 
@@ -48,7 +49,8 @@ export class JobRoleController {
     public async updateJoro(
     @Param('id') id: number,
     @Body('joroName') joroName: string,
-    @Body('joroModifiedDate') joroModifiedDate: Date
+    // @Body('joroModifiedDate') joroModifiedDate: Date
+    joroModifiedDate: Date = new Date(), 
     ) {
     return await this.joroService.updateJoro(
       id,
