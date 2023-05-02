@@ -12,18 +12,21 @@ export class ShiftService {
         private shiftRepo: Repository<Shift>, 
         ) {}
     
-        public async findAllShift(query: PaginateQuery): Promise<Paginated<Shift>> {
-            return paginate (query, this.shiftRepo, {
-                sortableColumns: ['shiftId', 'shiftName', 'shiftStartTime', 'shiftEndTime'],
-                defaultSortBy: [['shiftId', 'ASC']],
-                searchableColumns: ['shiftId', 'shiftName', 'shiftStartTime', 'shiftEndTime'],
-                select: ['shiftId', 'shiftName', 'shiftStartTime', 'shiftEndTime'],
-                maxLimit: 10, defaultLimit: 5,
-                filterableColumns: { 
-                    shiftId: [FilterOperator. IN],
-                    shiftName: [FilterOperator. ILIKE],
-                },
-            });
+        // public async findAllShift(query: PaginateQuery): Promise<Paginated<Shift>> {
+        //     return paginate (query, this.shiftRepo, {
+        //         sortableColumns: ['shiftId', 'shiftName', 'shiftStartTime', 'shiftEndTime'],
+        //         defaultSortBy: [['shiftId', 'ASC']],
+        //         searchableColumns: ['shiftId', 'shiftName', 'shiftStartTime', 'shiftEndTime'],
+        //         select: ['shiftId', 'shiftName', 'shiftStartTime', 'shiftEndTime'],
+        //         maxLimit: 10, defaultLimit: 5,
+        //         filterableColumns: { 
+        //             shiftId: [FilterOperator. IN],
+        //             shiftName: [FilterOperator. ILIKE],
+        //         },
+        //     });
+        // }
+        public async findAllShift() {
+          return await this.shiftRepo.find();
         }
         public async findOneShift(id: number) {
           const shift = await this.shiftRepo.findOne({

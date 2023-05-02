@@ -22,26 +22,32 @@ export class EmployeeDepartmentHistoryService {
         private shiftRepo: Repository<Shift>,
       ) {}
 
-      public async findAllEdh(query: PaginateQuery): Promise<Paginated<EmployeeDepartmentHistory>> {
-        return paginate (query, this.edhRepo, {
-            sortableColumns: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
-            defaultSortBy: [['edhiId', 'ASC']],
-            searchableColumns: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
-            select: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
-            maxLimit: 10, defaultLimit: 5,
-            relations: {
-                edhiEmp: true,
-                edhiDept: true,
-                edhiShift: true
-            }, 
-            filterableColumns: {
-                edhiId: [FilterOperator. IN],
-                empId: [FilterOperator. IN],
-                edhiEmpId: [FilterOperator. IN],
-                'edhiDept.deptId': [FilterOperator. IN],
-                'edhiShift.shiftId': [FilterOperator. IN]
-            },
-        });
+    //   public async findAllEdh(query: PaginateQuery): Promise<Paginated<EmployeeDepartmentHistory>> {
+    //     return paginate (query, this.edhRepo, {
+    //         sortableColumns: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
+    //         defaultSortBy: [['edhiId', 'ASC']],
+    //         searchableColumns: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
+    //         select: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
+    //         maxLimit: 10, defaultLimit: 5,
+    //         relations: {
+    //             edhiEmp: true,
+    //             edhiDept: true,
+    //             edhiShift: true
+    //         }, 
+    //         filterableColumns: {
+    //             edhiId: [FilterOperator. IN],
+    //             empId: [FilterOperator. IN],
+    //             edhiEmpId: [FilterOperator. IN],
+    //             'edhiDept.deptId': [FilterOperator. IN],
+    //             'edhiShift.shiftId': [FilterOperator. IN]
+    //         },
+    //     });
+    // }
+    public async findAllEdh() {
+      return await this.edhRepo.find({
+        relations: ['edhiEmp', 'edhiDept', 'edhiShift'],
+        // select: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp', 'edhiDept', 'edhiShift'],
+      });
     }
       public async findOneEdh(id: number) { 
         const edhi = await this.edhRepo.findOne({

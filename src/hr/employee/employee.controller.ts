@@ -38,10 +38,14 @@ export class EmployeeController {
         private usersRepo: Repository<Users>,
         ) {}
 
+    // @Get()
+    // public async findAllEmp(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<Employee>> {
+    //   return await this.employeeService.findAllEmp(query);
+    // }
     @Get()
-    public async findAllEmp(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<Employee>> {
-      return await this.employeeService.findAllEmp(query);
+    public async findAllEmp() {
+      return await this.employeeService.findAllEmp();
     }
     @Get(':id')
     public async findOneEmp(@Param('id') id: number) {
@@ -105,7 +109,7 @@ export class EmployeeController {
     //     // empName,
     // );
     // }   
-    @Post()
+    @Post() //upload foto bisa masuk sini, tapi sdh terlanjur pisah
     public async createEmp(
         @Body('empNationalId') empNationalId: string,
         @Body('empBirthDate') empBirthDate: string,
@@ -147,7 +151,12 @@ export class EmployeeController {
         storage: diskStorage({
             destination: './uploads',
             filename: (req, file, callback) => {
-              const fileName = `${file.originalname}`; //bisa dimodif dgn nama User atau Id?
+              //pakai id dan name? blm di-tes
+              // const id = req.body.empId; //mengambil nilai id dari body request
+              // const name = req.body.empName; //mengambil nilai name dari body request
+              // const fileName = `(empName: ${name}-empId: ${id})-${path.extname(file.originalname)}`;
+              // const fileName = `(empName: ${req.body.empName})_(empId: ${req.body.empId})_${file.originalname}`; //atau langsung begini aja. coba satu per satu
+              const fileName = `${file.originalname}`; //masih nama asli file
               callback(null, fileName);
     },})}
     ))
@@ -161,7 +170,12 @@ export class EmployeeController {
         storage: diskStorage({
             destination: './uploads',
             filename: (req, file, callback) => {
-              const fileName = `${file.originalname}`;
+              //pakai id dan name? blm di-tes
+              // const id = req.body.empId; //mengambil nilai id dari body request
+              // const name = req.body.empName; //mengambil nilai name dari body request
+              // const fileName = `(empName: ${name}-empId: ${id})-${path.extname(file.originalname)}`;
+              // const fileName = `(empName: ${req.body.empName})_(empId: ${req.body.empId})_${file.originalname}`; //atau langsung begini aja. coba satu per satu
+              const fileName = `${file.originalname}`; //masih nama asli file
               callback(null, fileName);
     },})}
     ))
@@ -214,7 +228,7 @@ export class EmployeeController {
     //   file
     // );
     // }
-    @Put(':id')
+    @Put(':id') //update foto bisa masuk sini, tapi sdh terlanjur pisah
     public async updateEmp(
     @Param('id') id: number,
     @Body('empNationalId') empNationalId: string,

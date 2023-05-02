@@ -19,10 +19,14 @@ import {
 export class JobRoleController {
     constructor(private joroService: JobRoleService) {}
 
+    // @Get()
+    // public async findAllJoro(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<JobRole>> {
+    //   return await this.joroService.findAllJoro(query);
+    // }
     @Get()
-    public async findAllJoro(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<JobRole>> {
-      return await this.joroService.findAllJoro(query);
+    public async findAllJoro() {
+      return await this.joroService.findAllJoro();
     }
     @Get(':id')
     public async findOneJoro(@Param('id') id: number) {

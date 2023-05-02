@@ -30,24 +30,30 @@ export class EmployeeService {
         private usersRepo: Repository<Users>,
       ) {}
 
-      public async findAllEmp(query: PaginateQuery): Promise<Paginated<Employee>> {
-        return paginate (query, this.employeeRepo, {
-            sortableColumns: ['empId', 'empNationalId', 'empName', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empUser.userId', 'empEmp.empId', 'empJoro.joroId'],
-            defaultSortBy: [['empId', 'ASC']],
-            searchableColumns: ['empId', 'empNationalId', 'empName', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empUser.userId', 'empEmp.empId', 'empJoro.joroId'],
-            select: ['empId', 'empNationalId', 'empName', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empUser.userId', 'empEmp.empId', 'empJoro.joroId'],
-            maxLimit: 10, defaultLimit: 5,
-            relations: {
-                empEmp: true,
-                empJoro: true,
-                empUser: true
-            }, //bisa pakai array spt findOne di bawah
-            filterableColumns: {
-                empId: [FilterOperator. IN],
-                empName: [FilterOperator. ILIKE],
-                empNationalId: [FilterOperator. BTW],
-            },
-        });
+    //   public async findAllEmp(query: PaginateQuery): Promise<Paginated<Employee>> {
+    //     return paginate (query, this.employeeRepo, {
+    //         sortableColumns: ['empId', 'empNationalId', 'empName', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empUser.userId', 'empEmp.empId', 'empJoro.joroId'],
+    //         defaultSortBy: [['empId', 'ASC']],
+    //         searchableColumns: ['empId', 'empNationalId', 'empName', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empUser.userId', 'empEmp.empId', 'empJoro.joroId'],
+    //         select: ['empId', 'empNationalId', 'empName', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empUser.userId', 'empEmp.empId', 'empJoro.joroId'],
+    //         maxLimit: 10, defaultLimit: 5,
+    //         relations: {
+    //             empEmp: true,
+    //             empJoro: true,
+    //             empUser: true
+    //         }, //bisa pakai array spt findOne di bawah
+    //         filterableColumns: {
+    //             empId: [FilterOperator. IN],
+    //             empName: [FilterOperator. ILIKE],
+    //             empNationalId: [FilterOperator. ILIKE],
+    //         },
+    //     });
+    // }
+    public async findAllEmp() {
+      return await this.employeeRepo.find({
+        relations: ['empEmp', 'empJoro', 'empUser'],
+        // select: ['empId', 'empNationalId', 'empBirthDate', 'empMaritalStatus', 'empGender', 'empHireDate', 'empSalariedFlag', 'empVacationHours', 'empSickleaveHourse', 'empCurrentFlag', 'empPhoto', 'empModifiedDate', 'empEmp', 'empJoro', 'empUser', 'empName'],
+      });
     }
     public async findOneEmp(id: number) { 
       const employee = await this.employeeRepo.findOne({

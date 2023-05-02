@@ -33,10 +33,14 @@ export class EmployeeDepartmentHistoryController {
         private shiftRepo: Repository<Shift>,
         ) {}
 
+    // @Get()
+    // public async findAllEdh(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<EmployeeDepartmentHistory>> {
+    //   return await this.edhService.findAllEdh(query);
+    // }
     @Get()
-    public async findAllEdh(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<EmployeeDepartmentHistory>> {
-      return await this.edhService.findAllEdh(query);
+    public async findAllEdh() {
+      return await this.edhService.findAllEdh();
     }
     @Get(':id')
     public async findOneEdh(@Param('id') id: number) {

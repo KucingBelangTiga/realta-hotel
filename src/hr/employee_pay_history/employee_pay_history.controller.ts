@@ -28,10 +28,14 @@ export class EmployeePayHistoryController {
         private employeeRepo: Repository<Employee>
         ) {}
 
+    // @Get()
+    // public async findAllEph(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<EmployeePayHistory>> {
+    //   return await this.ephService.findAllEph(query);
+    // }
     @Get()
-    public async findAllEph(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<EmployeePayHistory>> {
-      return await this.ephService.findAllEph(query);
+    public async findAllEph() {
+      return await this.ephService.findAllEph();
     }
     //setelah input manual ephiRateChangeDate terbaca string di db
     //cari data yg input manual harus berupa string sesuai db , dan lengkap(bukan cuma date, time juga)

@@ -19,11 +19,16 @@ import { DepartmentService } from './department.service';
 @Controller('department')
 export class DepartmentController {
     constructor(private departmentService: DepartmentService) {}
- 
+  
+    //with pagination
+    // @Get()
+    // public async findAllDept(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<Department>> {
+    //   return await this.departmentService.findAllDept(query);
+    // }
     @Get()
-    public async findAllDept(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<Department>> {
-      return await this.departmentService.findAllDept(query);
+    public async findAllDept() {
+      return await this.departmentService.findAllDept();
     }
     @Get(':id')
     public async findOneDept(@Param('id') id: number) {

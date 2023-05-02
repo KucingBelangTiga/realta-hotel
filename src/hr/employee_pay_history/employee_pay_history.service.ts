@@ -16,21 +16,27 @@ export class EmployeePayHistoryService {
         private employeeRepo: Repository<Employee>
       ) {}
 
-      public async findAllEph(query: PaginateQuery): Promise<Paginated<EmployeePayHistory>> {
-        return paginate (query, this.ephRepo, {
-            sortableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
-            defaultSortBy: [['ephiEmp.empId', 'ASC']],
-            searchableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
-            select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
-            maxLimit: 10, defaultLimit: 5,
-            relations: {
-                ephiEmp: true
-            }, 
-            filterableColumns: {
-                'ephiEmp.empId': [FilterOperator. IN],
-                ephiRateChangeDate: [FilterOperator. BTW],
-            },
-        });
+    //   public async findAllEph(query: PaginateQuery): Promise<Paginated<EmployeePayHistory>> {
+    //     return paginate (query, this.ephRepo, {
+    //         sortableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
+    //         defaultSortBy: [['ephiEmp.empId', 'ASC']],
+    //         searchableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
+    //         select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
+    //         maxLimit: 10, defaultLimit: 5,
+    //         relations: {
+    //             ephiEmp: true
+    //         }, 
+    //         filterableColumns: {
+    //             'ephiEmp.empId': [FilterOperator. IN],
+    //             ephiRateChangeDate: [FilterOperator. BTW],
+    //         },
+    //     });
+    // }
+    public async findAllEph() {
+      return await this.ephRepo.find({
+        relations: ['ephiEmp'],
+        // select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp'],
+      });
     }
     //setelah input sendiri, ephiRateChangeDate terbaca string di db
     //findOne dan delete param-nya pake string. dan harus lengkap sesuai isi kolom ephiRateChangeDate di db, tdk bisa cuma tanggalnya(harus sama time juga)

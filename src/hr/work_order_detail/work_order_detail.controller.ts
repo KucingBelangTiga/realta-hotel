@@ -38,10 +38,14 @@ export class WorkOrderDetailController {
         private faciRepo: Repository<Facilities>
         ) {}
 
+    // @Get()
+    // public async findAllWode(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<WorkOrderDetail>> {
+    //   return await this.wodeService.findAllWode(query);
+    // }
     @Get()
-    public async findAllWode(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<WorkOrderDetail>> {
-      return await this.wodeService.findAllWode(query);
+    public async findAllWode() {
+      return await this.wodeService.findAllWode();
     }
     @Get(':id')
     public async findOneWode(@Param('id') id: number) {

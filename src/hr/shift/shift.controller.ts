@@ -20,10 +20,14 @@ import {
 export class ShiftController {
     constructor(private shiftService: ShiftService) {}
 
+    // @Get()
+    // public async findAllShift(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<Shift>> {
+    //   return await this.shiftService.findAllShift(query);
+    // }
     @Get()
-    public async findAllShift(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<Shift>> {
-      return await this.shiftService.findAllShift(query);
+    public async findAllShift() {
+      return await this.shiftService.findAllShift();
     }
     @Get(':id')
     public async findOneShift(@Param('id') id: number) {

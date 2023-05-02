@@ -29,10 +29,14 @@ export class WorkOrdersController {
         private usersRepo: Repository<Users>,
         ) {}
 
+    // @Get()
+    // public async findAllWoro(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<WorkOrders>> {
+    //   return await this.woroService.findAllWoro(query);
+    // }
     @Get()
-    public async findAllWoro(@Paginate() query: PaginateQuery,
-    ): Promise <Paginated<WorkOrders>> {
-      return await this.woroService.findAllWoro(query);
+    public async findAllWoro() {
+      return await this.woroService.findAllWoro();
     }
     @Get(':id')
     public async findOneWoro(@Param('id') id: number) {

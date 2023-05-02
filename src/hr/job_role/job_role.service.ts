@@ -13,18 +13,21 @@ export class JobRoleService {
         private joroRepo: Repository<JobRole>, 
         ) {}
     
-        public async findAllJoro(query: PaginateQuery): Promise<Paginated<JobRole>> {
-            return paginate (query, this.joroRepo, {
-                sortableColumns: ['joroId', 'joroName', 'joroModifiedDate'],
-                defaultSortBy: [['joroId', 'ASC']],
-                searchableColumns: ['joroId', 'joroName', 'joroModifiedDate'],
-                select: ['joroId', 'joroName', 'joroModifiedDate'],
-                maxLimit: 10, defaultLimit: 5,
-                filterableColumns: { 
-                    joroId: [FilterOperator. IN],
-                    joroName: [FilterOperator. ILIKE],
-                },
-            });
+        // public async findAllJoro(query: PaginateQuery): Promise<Paginated<JobRole>> {
+        //     return paginate (query, this.joroRepo, {
+        //         sortableColumns: ['joroId', 'joroName', 'joroModifiedDate'],
+        //         defaultSortBy: [['joroId', 'ASC']],
+        //         searchableColumns: ['joroId', 'joroName', 'joroModifiedDate'],
+        //         select: ['joroId', 'joroName', 'joroModifiedDate'],
+        //         maxLimit: 10, defaultLimit: 5,
+        //         filterableColumns: { 
+        //             joroId: [FilterOperator. IN],
+        //             joroName: [FilterOperator. ILIKE],
+        //         },
+        //     });
+        // }
+        public async findAllJoro() {
+          return await this.joroRepo.find();
         }
         public async findOneJoro(id: number) {
           const joro = await this.joroRepo.findOne({

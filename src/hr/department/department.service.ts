@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,23 +13,27 @@ export class DepartmentService {
     private departmentRepo: Repository<Department>, 
     ) {}
 
+    //with pagination
     //next page: http://localhost:3002/department?page=2
-    public async findAllDept(query: PaginateQuery): Promise<Paginated<Department>> {
-        return paginate (query, this.departmentRepo, {
-            sortableColumns: ['deptId', 'deptName', 'deptModifiedDate'], 
-            defaultSortBy: [['deptId', 'ASC']],
-            searchableColumns: ['deptId', 'deptName', 'deptModifiedDate'],
-            select: ['deptId', 'deptName', 'deptModifiedDate'],
-            maxLimit: 10, defaultLimit: 5,
-            // relations: {
-            //     namaRelation: true,
-            // },
-            filterableColumns: { 
-                deptId: [FilterOperator. IN],
-                deptName: [FilterOperator. ILIKE],
-                deptModifiedDate: [FilterOperator. BTW],
-            },
-        });
+    // public async findAllDept(query: PaginateQuery): Promise<Paginated<Department>> {
+    //     return paginate (query, this.departmentRepo, {
+    //         sortableColumns: ['deptId', 'deptName', 'deptModifiedDate'], 
+    //         defaultSortBy: [['deptId', 'ASC']],
+    //         searchableColumns: ['deptId', 'deptName', 'deptModifiedDate'],
+    //         select: ['deptId', 'deptName', 'deptModifiedDate'],
+    //         maxLimit: 10, defaultLimit: 5,
+    //         // relations: {
+    //         //     namaRelation: true,
+    //         // },
+    //         filterableColumns: { 
+    //             deptId: [FilterOperator. IN],
+    //             deptName: [FilterOperator. ILIKE],
+    //             deptModifiedDate: [FilterOperator. BTW],
+    //         },
+    //     });
+    // }
+    public async findAllDept() {
+      return await this.departmentRepo.find();
     }
     public async findOneDept(id: number) {
       const department = await this.departmentRepo.findOne({
