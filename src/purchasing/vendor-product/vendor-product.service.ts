@@ -15,19 +15,13 @@ export class VendorProductService {
       const response = await this.vendorProductRepo
         .createQueryBuilder('vp')
         .select(
-          'vp.veproId, s.stockName, vp.veproQtyStocked, vp.veproQtyRemaining, vp.veproPrice',
+          'v.vendorId as vendorId, vp.veproId as veproId, s.stockName as stockName, vp.veproQtyStocked as veproQtyStocked, vp.veproQtyRemaining as veproQtyRemaining, vp.veproPrice as veproPrice',
         )
         .innerJoin('vp.veproStock', 's')
-        .where('vp.veproVendor.vendorId = :vendorId', { vendorId })
+        .innerJoin('vp.veproVendor', 'v')
+        .where('v.vendorId = :vendorId', { vendorId })
         .getRawMany();
-      if (response.length === 0) {
-        return {
-          statusCode: 404,
-          message: 'vendor product tidak ditemukan',
-        };
-      } else {
-        return response;
-      }
+      return response;
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findById vendor product, ${error.message}`,

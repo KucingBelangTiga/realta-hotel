@@ -12,14 +12,7 @@ export class StocksService {
   public async listStock() {
     try {
       const response = await this.stockRepo.find();
-      if (response.length === 0) {
-        return {
-          statusCode: 401,
-          message: 'tidak ditemukan stock',
-        };
-      } else {
-        return response;
-      }
+      return response;
     } catch (error) {
       throw new Error(`terjadi kesalahan di list stock, ${error.message}`);
     }
@@ -133,6 +126,64 @@ export class StocksService {
       };
     } catch (error) {
       throw new Error(`terjadi kesalahan di edit stock, ${error.message}`);
+    }
+  }
+
+  public async galleryStockPurchase() {
+    try {
+      const response = await this.stockRepo
+        .createQueryBuilder('s')
+        .select(
+          'sp.sphoUrl, s.stockName, s.stockDescription, vp.veproQtyStocked, vp.veproQtyRemaining, vp.veproPrice, vp.veproVendor.vendorId',
+        )
+        .innerJoin('s.vendorProducts', 'vp')
+        .innerJoin('s.stockPhotos', 'sp')
+        .getRawMany();
+      return response;
+    } catch (error) {
+      throw new Error(
+        `terjadi kesalahan di list stock purchase, ${error.message}`,
+      );
+    }
+  }
+
+  public async searchGalleryStockPurchase(stockName: string) {
+    try {
+      const response = await this.stockRepo
+        .createQueryBuilder('s')
+        .select(
+          'sp.sphoUrl, s.stockName, s.stockDescription, vp.veproQtyStocked, vp.veproQtyRemaining, vp.veproPrice, vp.veproVendor.vendorId',
+        )
+        .innerJoin('s.vendorProducts', 'vp')
+        .innerJoin('s.stockPhotos', 'sp')
+        .where('LOWER(s.stockName) Like LOWER(:stockName)', {
+          stockName: `%${stockName.toLowerCase()}%`,
+        })
+        .getRawMany();
+      return response;
+    } catch (error) {
+      throw new Error(
+        `terjadi kesalahan di list stock purchase, ${error.message}`,
+      );
+    }
+  }
+
+  public async searchGalleryStockPurchaseById(stockId: number) {
+    try {
+      const response = await this.stockRepo
+        .createQueryBuilder('s')
+        .select(
+          'sp.sphoUrl, s.stockName, s.stockDescription, vp.veproQtyStocked, vp.veproQtyRemaining, vp.veproPrice, vp.veproVendor.vendorId',
+        )
+        .innerJoin('s.vendorProducts', 'vp')
+        .innerJoin('s.stockPhotos', 'sp')
+        .where('s.stockId = :stockId', { stockId })
+        .getRawMany();
+      return response;
+    } catch (error) {
+      throw new Error(
+        `terjadi kesalahan di list stock purchase, ${error.message}`,
+      );
     }
   }
 }

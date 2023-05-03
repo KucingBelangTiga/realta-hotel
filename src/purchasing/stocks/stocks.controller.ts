@@ -24,6 +24,25 @@ export class StocksController {
     return this.stockService.findStockByName(vendorName);
   }
 
+  @Get('/gallery')
+  public async galleryStockPurchase() {
+    return this.stockService.galleryStockPurchase();
+  }
+
+  @Get('/gallery/search')
+  public async searchGalleryStockPurchase(
+    @Query('stockName') stockName: string,
+  ) {
+    return this.stockService.searchGalleryStockPurchase(stockName);
+  }
+
+  @Get('/gallery/:stockId')
+  public async searchGalleryStockPurchaseById(
+    @Param('stockId') stockId: number,
+  ) {
+    return this.stockService.searchGalleryStockPurchaseById(stockId);
+  }
+
   @Post('/stock')
   public async createStock(
     @Body('stockName') stockName: string,

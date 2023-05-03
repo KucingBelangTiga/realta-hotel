@@ -15,20 +15,13 @@ export class StockDetailService {
       const response = await this.stockDetailRepo
         .createQueryBuilder('sd')
         .select(
-          'sd.stodId, sd.stodBarcodeNumber, sd.stodStatus, sd.stodNotes, po.poheNumber, f.faciName',
+          'sd.stodId as stodId, sd.stodBarcodeNumber as stodBarcodeNumber, sd.stodStatus as stodStatus, sd.stodNotes as stodNotes, po.poheNumber as poheNumber, f.faciName as faciName, f.faciId as faciId',
         )
         .innerJoin('sd.stodPohe', 'po')
         .innerJoin('sd.stodFaci', 'f')
         .where('sd.stodStock.stockId=:stockId', { stockId })
         .getRawMany();
-      if (response.length === 0) {
-        return {
-          statusCode: 404,
-          message: 'vendor product tidak ditemukan',
-        };
-      } else {
-        return response;
-      }
+      return response;
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findById stock detail, ${error.message}`,
