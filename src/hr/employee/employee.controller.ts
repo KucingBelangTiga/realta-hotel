@@ -47,7 +47,7 @@ export class EmployeeController {
     public async findAllEmp() {
       return await this.employeeService.findAllEmp();
     }
-    @Get(':id')
+    @Get(':id') 
     public async findOneEmp(@Param('id') id: number) {
       return await this.employeeService.findOneEmp(id);
     }
@@ -109,60 +109,95 @@ export class EmployeeController {
     //     // empName,
     // );
     // }   
-    @Post() //upload foto bisa masuk sini, tapi sdh terlanjur pisah
+
+    // @Post() //upload foto bisa masuk sini, tapi sdh terlanjur pisah
+    // public async createEmp(
+    //     @Body('empNationalId') empNationalId: string,
+    //     @Body('empBirthDate') empBirthDate: string,
+    //     @Body('empMaritalStatus') empMaritalStatus: string,
+    //     @Body('empGender') empGender: string,
+    //     @Body('empHireDate') empHireDate: Date, 
+    //     @Body('empSalariedFlag') empSalariedFlag: string,
+    //     @Body('empVacationHours') empVacationHours: number,
+    //     @Body('empSickleaveHourse') empSickleaveHourse: number,
+    //     @Body('empCurrentFlag') empCurrentFlag: number, 
+    //     // @Body('empModifiedDate') empModifiedDate: Date,
+    //     empModifiedDate: Date = new Date(), 
+    //     @Body('empId') empId: number,
+    //     @Body('joroId') joroId: number,
+    //     @Body('userId') userId: number,
+    //     @Body('empName') empName: string,
+    // ) {
+    // return await this.employeeService.createEmp(
+    //     empNationalId,
+    //     empBirthDate,
+    //     empMaritalStatus, 
+    //     empGender, 
+    //     empHireDate,
+    //     empSalariedFlag,
+    //     empVacationHours,
+    //     empSickleaveHourse,
+    //     empCurrentFlag,
+    //     empModifiedDate,
+    //     empId,
+    //     joroId,
+    //     userId,
+    //     empName
+    // );
+    // }  
+    @Post() 
+    @UseInterceptors(FileInterceptor('file', 
+    {
+        storage: diskStorage({ 
+            destination: './uploads',
+            filename: (req, file, callback) => {
+              const fileName = `${file.originalname}`; 
+              callback(null, fileName);
+    },})}))
     public async createEmp(
-        @Body('empNationalId') empNationalId: string,
-        @Body('empBirthDate') empBirthDate: string,
-        @Body('empMaritalStatus') empMaritalStatus: string,
-        @Body('empGender') empGender: string,
-        @Body('empHireDate') empHireDate: Date, 
-        @Body('empSalariedFlag') empSalariedFlag: string,
-        @Body('empVacationHours') empVacationHours: number,
-        @Body('empSickleaveHourse') empSickleaveHourse: number,
-        @Body('empCurrentFlag') empCurrentFlag: number, 
-        // @Body('empModifiedDate') empModifiedDate: Date,
-        empModifiedDate: Date = new Date(), 
-        @Body('empId') empId: number,
-        @Body('joroId') joroId: number,
-        @Body('userId') userId: number,
-        @Body('empName') empName: string,
-    ) {
+        @UploadedFile() file,
+        @Body() createEmployee: {
+          empNationalId: string,
+          empBirthDate: string,
+          empMaritalStatus: string,
+          empGender: string,
+          empHireDate: Date,
+          empSalariedFlag: string,
+          empVacationHours: number,
+          empSickleaveHourse: number,
+          empCurrentFlag: number, 
+          empModifiedDate: Date, 
+          empId: number,
+          joroId: number,
+          userId: number,
+          empName: string,
+        }
+    ) { createEmployee.empModifiedDate = new Date();
     return await this.employeeService.createEmp(
-        empNationalId,
-        empBirthDate,
-        empMaritalStatus, 
-        empGender, 
-        empHireDate,
-        empSalariedFlag,
-        empVacationHours,
-        empSickleaveHourse,
-        empCurrentFlag,
-        empModifiedDate,
-        empId,
-        joroId,
-        userId,
-        empName
+        file, 
+        createEmployee
     );
     }  
 
-    @Post('/upload') //photo only
-    @UseInterceptors(FileInterceptor('file', 
-    {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, callback) => {
-              //pakai id dan name? blm di-tes
-              // const id = req.body.empId; //mengambil nilai id dari body request
-              // const name = req.body.empName; //mengambil nilai name dari body request
-              // const fileName = `(empName: ${name}-empId: ${id})-${path.extname(file.originalname)}`;
-              // const fileName = `(empName: ${req.body.empName})_(empId: ${req.body.empId})_${file.originalname}`; //atau langsung begini aja. coba satu per satu
-              const fileName = `${file.originalname}`; //masih nama asli file
-              callback(null, fileName);
-    },})}
-    ))
-    public async upload(@UploadedFile() file) {
-      return await this.employeeService.Upload(file);
-    }
+    //gajadi pake, gabung ke create aja
+    // @Post('/upload') //photo only
+    // @UseInterceptors(FileInterceptor('file', 
+    // {
+    //     storage: diskStorage({ 
+    //         destination: './uploads',
+    //         filename: (req, file, callback) => {
+    //           //pakai id dan name? blm di-tes
+    //           // const id = req.body.empId; //mengambil nilai id dari body request
+    //           // const name = req.body.empName; //mengambil nilai name dari body request
+    //           // const fileName = `(empName: ${name}-empId: ${id})-${path.extname(file.originalname)}`;
+    //           // const fileName = `(empName: ${req.body.empName})_(empId: ${req.body.empId})_${file.originalname}`; //atau langsung begini aja. coba satu per satu
+    //           const fileName = `${file.originalname}`; //masih nama asli file
+    //           callback(null, fileName);
+    // },})}
+    // ))
+    // public async upload(@UploadedFile() file) {
+    //   return await this.employeeService.Upload(file);
+    // }
 
     @Patch('/:id/photo') 
     @UseInterceptors(FileInterceptor('file', 
@@ -186,13 +221,10 @@ export class EmployeeController {
     return await this.employeeService.updatePhoto(id, file);
     }
 
-    //pakai fileinterceptor: photo harus upload ulang, jika tidak, maka akan dihapus di database jadi kosong
-    // @Put(':id')
-    // @UseInterceptors(FileInterceptor('file'))
-    // public async updateEmp(
-    // @Param('id') id: number,
-    // @Body('empNationalId') empNationalId: string, 
-    // @Body('empName') empName: string,
+//     @Put(':id') //update foto bisa masuk sini, tapi sdh terlanjur pisah
+//     public async updateEmp(
+//     @Param('id') id: number,
+    // @Body('empNationalId') empNationalId: string,
     // @Body('empBirthDate') empBirthDate: string,
     // @Body('empMaritalStatus') empMaritalStatus: string,
     // @Body('empGender') empGender: string,
@@ -200,55 +232,63 @@ export class EmployeeController {
     // @Body('empSalariedFlag') empSalariedFlag: string,
     // @Body('empVacationHours') empVacationHours: number,
     // @Body('empSickleaveHourse') empSickleaveHourse: number,
-    // @Body('empCurrentFlag') empCurrentFlag: number,
-    // // @Body('empPhoto') empPhoto: string,
-    // @Body('empModifiedDate') empModifiedDate: Date,
-    // @Body('userId') userId: number,
+    // @Body('empCurrentFlag') empCurrentFlag: number, 
+    // // @Body('empModifiedDate') empModifiedDate: Date,
+    // empModifiedDate: Date = new Date(),
     // @Body('empId') empId: number,
     // @Body('joroId') joroId: number,
-    // @UploadedFile() file: any
-    // ) {
-    // return await this.employeeService.updateEmp(
-    //   id,
-    //   empNationalId,
-    //   empName,
-    //   empBirthDate,
-    //   empMaritalStatus, 
-    //   empGender, 
-    //   empHireDate,
-    //   empSalariedFlag,
-    //   empVacationHours,
-    //   empSickleaveHourse,
-    //   empCurrentFlag,
-    //   // empPhoto,
-    //   empModifiedDate,
-    //   userId,
-    //   empId, 
-    //   joroId,
-    //   file
-    // );
-    // }
-    @Put(':id') //update foto bisa masuk sini, tapi sdh terlanjur pisah
+    // @Body('userId') userId: number,
+    // @Body('empName') empName: string,
+// ) {
+//     return await this.employeeService.updateEmp(
+//         id,
+        // empNationalId,
+        // empBirthDate,
+        // empMaritalStatus, 
+        // empGender, 
+        // empHireDate,
+        // empSalariedFlag,
+        // empVacationHours,
+        // empSickleaveHourse,
+        // empCurrentFlag,
+        // empModifiedDate,
+        // empId,
+        // joroId,
+        // userId,
+        // empName
+//     );
+//     }
+    @Put(':id') 
+    @UseInterceptors(FileInterceptor('file', 
+    {
+        storage: diskStorage({ 
+            destination: './uploads',
+            filename: (req, file, callback) => {
+              const fileName = `${file.originalname}`; 
+              callback(null, fileName);
+    },})}))
     public async updateEmp(
-    @Param('id') id: number,
-    @Body('empNationalId') empNationalId: string,
-    @Body('empBirthDate') empBirthDate: string,
-    @Body('empMaritalStatus') empMaritalStatus: string,
-    @Body('empGender') empGender: string,
-    @Body('empHireDate') empHireDate: Date,
-    @Body('empSalariedFlag') empSalariedFlag: string,
-    @Body('empVacationHours') empVacationHours: number,
-    @Body('empSickleaveHourse') empSickleaveHourse: number,
-    @Body('empCurrentFlag') empCurrentFlag: number, 
-    // @Body('empModifiedDate') empModifiedDate: Date,
-    empModifiedDate: Date = new Date(),
-    @Body('empId') empId: number,
-    @Body('joroId') joroId: number,
-    @Body('userId') userId: number,
-    @Body('empName') empName: string,
-) {
+        @Param('id') id: number,
+        @UploadedFile() file,
+        @Body('empNationalId') empNationalId: string,
+        @Body('empBirthDate') empBirthDate: string,
+        @Body('empMaritalStatus') empMaritalStatus: string,
+        @Body('empGender') empGender: string,
+        @Body('empHireDate') empHireDate: Date,
+        @Body('empSalariedFlag') empSalariedFlag: string,
+        @Body('empVacationHours') empVacationHours: number,
+        @Body('empSickleaveHourse') empSickleaveHourse: number,
+        @Body('empCurrentFlag') empCurrentFlag: number, 
+        // @Body('empModifiedDate') empModifiedDate: Date,
+        empModifiedDate: Date = new Date(),
+        @Body('empId') empId: number,
+        @Body('joroId') joroId: number,
+        @Body('userId') userId: number,
+        @Body('empName') empName: string,
+    ) { 
     return await this.employeeService.updateEmp(
         id,
+        file, 
         empNationalId,
         empBirthDate,
         empMaritalStatus, 
@@ -264,7 +304,7 @@ export class EmployeeController {
         userId,
         empName
     );
-    }
+    }  
 
     @Delete(':id')
     public async deleteEmp(@Param('id') id: number) {

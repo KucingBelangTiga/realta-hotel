@@ -137,6 +137,8 @@ export class EmployeeService {
       //   }
       //   }
       public async createEmp(
+        file: any,
+        createEmployee: {
         empNationalId: string,
         empBirthDate: string,
         empMaritalStatus: string, 
@@ -146,40 +148,41 @@ export class EmployeeService {
         empVacationHours: number,
         empSickleaveHourse: number,
         empCurrentFlag: number,
-        empModifiedDate: Date = new Date(),
+        empModifiedDate: Date,
         empId: number,
         joroId: number,
         userId: number,
-        empName: string,
-        ) {
+        empName: string, }
+        ) { createEmployee.empModifiedDate = new Date();
           try {
-            const employee = await this.employeeRepo.findOne({ where: { empId: empId } });
+            const employee = await this.employeeRepo.findOne({ where: { empId: createEmployee.empId } });
             if (!employee) {
-                throw new Error(`Employee with empId ${empId} not found`);
+                throw new Error(`Employee with empId ${createEmployee.empId} not found`);
             }
-          const jobRole = await this.jobRoleRepo.findOne({ where: { joroId: joroId } });
+          const jobRole = await this.jobRoleRepo.findOne({ where: { joroId: createEmployee.joroId } });
           if (!jobRole) {
-            throw new Error(`Job role with joroId ${joroId} not found`);
+            throw new Error(`Job role with joroId ${createEmployee.joroId} not found`);
           }
-          const user = await this.usersRepo.findOne({ where: { userId: userId } });
+          const user = await this.usersRepo.findOne({ where: { userId: createEmployee.userId } });
           if (!user) {
-            throw new Error(`User with userId ${userId} not found`);
+            throw new Error(`User with userId ${createEmployee.userId} not found`);
           }
-            const newEmp = this.employeeRepo.create({
-            empNationalId: empNationalId,
-            empBirthDate: empBirthDate,
-            empMaritalStatus: empMaritalStatus, 
-            empGender: empGender, 
-            empHireDate: empHireDate,
-            empSalariedFlag: empSalariedFlag,
-            empVacationHours: empVacationHours,
-            empSickleaveHourse: empSickleaveHourse,
-            empCurrentFlag: empCurrentFlag,
-            empModifiedDate: empModifiedDate,
+            const newEmp = this.employeeRepo.create({ 
+            empPhoto: file.originalname,
+            empNationalId: createEmployee.empNationalId,
+            empBirthDate: createEmployee.empBirthDate,
+            empMaritalStatus: createEmployee.empMaritalStatus, 
+            empGender: createEmployee.empGender, 
+            empHireDate: createEmployee.empHireDate,
+            empSalariedFlag: createEmployee.empSalariedFlag,
+            empVacationHours: createEmployee.empVacationHours,
+            empSickleaveHourse: createEmployee.empSickleaveHourse,
+            empCurrentFlag: createEmployee.empCurrentFlag,
+            empModifiedDate: createEmployee.empModifiedDate,
             empEmp: employee,
             empJoro: jobRole,
             empUser: user,
-            empName: empName,
+            empName: createEmployee.empName,
           });
         await this.employeeRepo.save(newEmp);
         return {
@@ -188,7 +191,7 @@ export class EmployeeService {
             data: {
                 empId: newEmp.empId,
                 // empName: empName,
-                empNationalId: empNationalId,
+                empNationalId: createEmployee.empNationalId,
                 empEmp: employee,
                 empUser: user,
                 empJoro: jobRole,
@@ -199,20 +202,21 @@ export class EmployeeService {
         }
         }
 
-        public async Upload(file){
-          try{
-            const uplEmp = await this.employeeRepo.save({
-              empPhoto: file.originalname
-            });
-            return{
-              statusCode: 201,
-              message: 'Photo added successfully',
-              data: uplEmp,
-            };
-        } catch (error) {
-          throw new Error(`Error uploading photo: ${error.message}`);
-        }
-        }
+        //gajadi pake, gabung ke create aja
+        // public async Upload(file){
+        //   try{
+        //     const uplEmp = await this.employeeRepo.save({
+        //       empPhoto: file.originalname
+        //     });
+        //     return{
+        //       statusCode: 201,
+        //       message: 'Photo added successfully',
+        //       data: uplEmp,
+        //     };
+        // } catch (error) {
+        //   throw new Error(`Error uploading photo: ${error.message}`);
+        // }
+        // }
 
         public async updatePhoto(id: number, file): Promise<Employee> {
           try {
@@ -230,77 +234,9 @@ export class EmployeeService {
           }
         }        
   
-        //pakai fileinterceptor di controller: photo harus upload ulang, jika tidak, maka akan dihapus di database jadi kosong
-        // public async updateEmp(
-        // id: number,
-        // empNationalId: string,
-        // empName: string,
-        // empBirthDate: string,
-        // empMaritalStatus: string,
-        // empGender: string,
-        // empHireDate: Date,
-        // empSalariedFlag: string,
-        // empVacationHours: number,
-        // empSickleaveHourse: number,
-        // empCurrentFlag: number,
-        // // empPhoto: string,
-        // empModifiedDate: Date,
-        // userId: number,
-        // empId: number,
-        // joroId: number,
-        // file: any
-        //   ) {
-        //     try {
-        //       await this.employeeRepo.update(
-        //         { empId: id },
-        //         {
-        //           empNationalId: empNationalId,
-        //           empName: empName,
-        //           empBirthDate: empBirthDate,
-        //           empMaritalStatus: empMaritalStatus, 
-        //           empGender: empGender, 
-        //           empHireDate: empHireDate,
-        //           empSalariedFlag: empSalariedFlag,
-        //           empVacationHours: empVacationHours,
-        //           empSickleaveHourse: empSickleaveHourse,
-        //           empCurrentFlag: empCurrentFlag,
-        //           // empPhoto: empPhoto,
-        //           empModifiedDate: empModifiedDate,
-        //           empUser: { userId: userId },
-        //           empEmp: { empId: empId },
-        //           empJoro: { joroId: joroId },
-        //           empPhoto: file.originalname
-        //         } 
-        //       );
-        //       return {
-        //         statusCode: 200,
-        //         message: 'Data updated successfully',
-        //         data: {
-        //           id: id,
-        //           empNationalId: empNationalId,
-        //           empName: empName,
-        //           empBirthDate: empBirthDate,
-        //           empMaritalStatus: empMaritalStatus, 
-        //           empGender: empGender, 
-        //           empHireDate: empHireDate,
-        //           empSalariedFlag: empSalariedFlag,
-        //           empVacationHours: empVacationHours,
-        //           empSickleaveHourse: empSickleaveHourse,
-        //           empCurrentFlag: empCurrentFlag,
-        //           // empPhoto: empPhoto,
-        //           empModifiedDate: empModifiedDate,
-        //           empUser: { userId: userId },
-        //           empEmp: { empId: empId },
-        //           empJoro: { joroId: joroId },
-        //           empPhoto: file.originalname
-        //         },
-        //       };
-        //     } catch (error) {
-        //       throw new Error(`Error: , ${error.message}`);
-        //     }
-        //   }
         public async updateEmp(
           id: number,
+          file: any,
           empNationalId: string,
           empBirthDate: string,
           empMaritalStatus: string, 
@@ -314,9 +250,9 @@ export class EmployeeService {
           empId: number,
           joroId: number,
           userId: number,
-          empName: string,
+          empName: string, 
         ) {
-          try {
+          try { 
             const employee = await this.employeeRepo.findOne({ where: { empId: empId } });
             if (!employee) {
                 throw new Error(`Employee with empId ${empId} not found`);
@@ -332,6 +268,7 @@ export class EmployeeService {
             await this.employeeRepo.update(
               { empId: id },
               {
+                empPhoto: file.originalname,
                 empNationalId: empNationalId,
                 empBirthDate: empBirthDate,
                 empMaritalStatus: empMaritalStatus, 
