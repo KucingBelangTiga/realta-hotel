@@ -21,6 +21,9 @@ import { SpecialOffers } from 'output/entities/SpecialOffers';
 import { Hotels } from 'output/entities/Hotels';
 import { Facilities } from 'output/entities/Facilities';
 import { PriceItems } from 'output/entities/PriceItems';
+import { HotelService } from 'src/booking/hotel_dev/hotel/hotel.service';
+import { HotelController } from 'src/booking/hotel_dev/hotel/hotel.controller';
+import { HotelReviews } from 'output/entities/HotelReviews';
 
 @Module({
     imports: [TypeOrmModule.forFeature([
@@ -33,11 +36,12 @@ import { PriceItems } from 'output/entities/PriceItems';
         SpecialOffers,
         Hotels,
         Facilities,
-        PriceItems
+        PriceItems,
+        HotelReviews
     ]),
     ],
-    providers: [BookingOrderService, BookingOrderDetailService, BookingOrderDetailExtraService, UserBreakfeastService, SpecialOfferCouponsService, SpecialOfferService],
-    controllers: [SpecialOfferController, SpecialOfferCouponsController, UserBreakfeastController, BookingOrderDetailExtraController, BookingOrderDetailController, BookingOrderController],
+    providers: [BookingOrderService, BookingOrderDetailService, BookingOrderDetailExtraService, UserBreakfeastService, SpecialOfferCouponsService, SpecialOfferService, HotelService],
+    controllers: [SpecialOfferController, SpecialOfferCouponsController, UserBreakfeastController, BookingOrderDetailExtraController, BookingOrderDetailController, BookingOrderController, HotelController],
     exports: [],
 })
 
