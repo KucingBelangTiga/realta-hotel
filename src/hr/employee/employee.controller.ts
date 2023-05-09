@@ -145,6 +145,7 @@ export class EmployeeController {
     //     empName
     // );
     // }  
+    
     @Post() 
     @UseInterceptors(FileInterceptor('file', 
     {
@@ -167,17 +168,37 @@ export class EmployeeController {
           empSickleaveHourse: number,
           empCurrentFlag: number, 
           empModifiedDate: Date, 
-          empId: number,
-          joroId: number,
-          userId: number,
+          empId?: number,
+          joroId?: number,
+          userId?: number,
           empName: string,
         }
-    ) { createEmployee.empModifiedDate = new Date();
+    ) { 
+    //     createEmployee.empModifiedDate = new Date();
+    // return await this.employeeService.createEmp(
+    //     file, 
+    //     createEmployee
+    // );
+    // } 
+    createEmployee.empModifiedDate = new Date();
+    //jika tak masuk request = null
+    if (!file) {
+        file = null; 
+    }
+    if (!createEmployee.userId) {
+        createEmployee.userId = null;
+    }
+    if (!createEmployee.empId) {
+        createEmployee.empId = null;
+    }
+    if (!createEmployee.joroId) {
+        createEmployee.joroId = null;
+    }
     return await this.employeeService.createEmp(
         file, 
         createEmployee
     );
-    }  
+}
 
     //gajadi pake, gabung ke create aja
     // @Post('/upload') //photo only
@@ -199,27 +220,28 @@ export class EmployeeController {
     //   return await this.employeeService.Upload(file);
     // }
 
-    @Patch('/:id/photo') 
-    @UseInterceptors(FileInterceptor('file', 
-    {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, callback) => {
-              //pakai id dan name? blm di-tes
-              // const id = req.body.empId; //mengambil nilai id dari body request
-              // const name = req.body.empName; //mengambil nilai name dari body request
-              // const fileName = `(empName: ${name}-empId: ${id})-${path.extname(file.originalname)}`;
-              // const fileName = `(empName: ${req.body.empName})_(empId: ${req.body.empId})_${file.originalname}`; //atau langsung begini aja. coba satu per satu
-              const fileName = `${file.originalname}`; //masih nama asli file
-              callback(null, fileName);
-    },})}
-    ))
-    public async updatePhoto(
-    @Param('id') id: number,
-    @UploadedFile() file,
-    ): Promise<Employee> {
-    return await this.employeeService.updatePhoto(id, file);
-    }
+    //gabung ke edit
+    // @Patch('/:id/photo') 
+    // @UseInterceptors(FileInterceptor('file', 
+    // {
+    //     storage: diskStorage({
+    //         destination: './uploads',
+    //         filename: (req, file, callback) => {
+    //           //pakai id dan name? blm di-tes
+    //           // const id = req.body.empId; //mengambil nilai id dari body request
+    //           // const name = req.body.empName; //mengambil nilai name dari body request
+    //           // const fileName = `(empName: ${name}-empId: ${id})-${path.extname(file.originalname)}`;
+    //           // const fileName = `(empName: ${req.body.empName})_(empId: ${req.body.empId})_${file.originalname}`; //atau langsung begini aja. coba satu per satu
+    //           const fileName = `${file.originalname}`; //masih nama asli file
+    //           callback(null, fileName);
+    // },})}
+    // ))
+    // public async updatePhoto(
+    // @Param('id') id: number,
+    // @UploadedFile() file,
+    // ): Promise<Employee> {
+    // return await this.employeeService.updatePhoto(id, file);
+    // }
 
 //     @Put(':id') //update foto bisa masuk sini, tapi sdh terlanjur pisah
 //     public async updateEmp(
@@ -258,6 +280,7 @@ export class EmployeeController {
         // empName
 //     );
 //     }
+
     @Put(':id') 
     @UseInterceptors(FileInterceptor('file', 
     {
@@ -281,11 +304,23 @@ export class EmployeeController {
         @Body('empCurrentFlag') empCurrentFlag: number, 
         // @Body('empModifiedDate') empModifiedDate: Date,
         empModifiedDate: Date = new Date(),
-        @Body('empId') empId: number,
-        @Body('joroId') joroId: number,
-        @Body('userId') userId: number,
         @Body('empName') empName: string,
+        @Body('empId') empId?: number,
+        @Body('joroId') joroId?: number,
+        @Body('userId') userId?: number,
     ) { 
+        if (!file) {
+            file = null; 
+        }
+        if (!userId) {
+           userId = null;
+        }
+        if (!empId) {
+            empId = null;
+        }
+        if (!joroId) {
+            joroId = null;
+        }
     return await this.employeeService.updateEmp(
         id,
         file, 
@@ -299,10 +334,10 @@ export class EmployeeController {
         empSickleaveHourse,
         empCurrentFlag,
         empModifiedDate,
+        empName,
         empId,
         joroId,
         userId,
-        empName
     );
     }  
 

@@ -136,6 +136,7 @@ export class EmployeeService {
       //     throw new Error(`Error adding data: ${error.message}`);
       //   }
       //   }
+
       public async createEmp(
         file: any,
         createEmployee: {
@@ -149,26 +150,40 @@ export class EmployeeService {
         empSickleaveHourse: number,
         empCurrentFlag: number,
         empModifiedDate: Date,
-        empId: number,
-        joroId: number,
-        userId: number,
+        empId?: number,
+        joroId?: number,
+        userId?: number,
         empName: string, }
         ) { createEmployee.empModifiedDate = new Date();
           try {
-            const employee = await this.employeeRepo.findOne({ where: { empId: createEmployee.empId } });
-            if (!employee) {
-                throw new Error(`Employee with empId ${createEmployee.empId} not found`);
+            // const employee = await this.employeeRepo.findOne({ where: { empId: createEmployee.empId } });
+            // if (!employee) {
+            //   throw new Error(`Employee with empId ${createEmployee.empId} not found`);
+            // }
+            // const jobRole = await this.jobRoleRepo.findOne({ where: { joroId: createEmployee.joroId } });
+            // if (!jobRole) {
+            //   throw new Error(`Job role with joroId ${createEmployee.joroId} not found`);
+            // }
+            // const user = await this.usersRepo.findOne({ where: { userId: createEmployee.userId } });
+            // if (!user) {
+            //   throw new Error(`User with userId ${createEmployee.userId} not found`);
+            // }
+            const employee = createEmployee.empId ? await this.employeeRepo.findOne({ where: { empId: createEmployee.empId } }) : null;
+            if (createEmployee.empId && !employee) {
+              throw new Error(`Employee with empId ${createEmployee.empId} not found`);
             }
-          const jobRole = await this.jobRoleRepo.findOne({ where: { joroId: createEmployee.joroId } });
-          if (!jobRole) {
-            throw new Error(`Job role with joroId ${createEmployee.joroId} not found`);
-          }
-          const user = await this.usersRepo.findOne({ where: { userId: createEmployee.userId } });
-          if (!user) {
-            throw new Error(`User with userId ${createEmployee.userId} not found`);
-          }
+
+            const jobRole = createEmployee.joroId ? await this.jobRoleRepo.findOne({ where: { joroId: createEmployee.joroId } }) : null;
+            if (createEmployee.joroId && !jobRole) {
+              throw new Error(`Job role with joroId ${createEmployee.joroId} not found`);
+            }
+
+            const user = createEmployee.userId ? await this.usersRepo.findOne({ where: { userId: createEmployee.userId } }) : null;
+            if (createEmployee.userId && !user) {
+              throw new Error(`User with userId ${createEmployee.userId} not found`);
+            }
             const newEmp = this.employeeRepo.create({ 
-            empPhoto: file.originalname,
+            empPhoto: file ? file.originalname : null, //jika file tak masuk request = null
             empNationalId: createEmployee.empNationalId,
             empBirthDate: createEmployee.empBirthDate,
             empMaritalStatus: createEmployee.empMaritalStatus, 
@@ -190,7 +205,6 @@ export class EmployeeService {
             message: 'Data added successfully',
             data: {
                 empId: newEmp.empId,
-                // empName: empName,
                 empNationalId: createEmployee.empNationalId,
                 empEmp: employee,
                 empUser: user,
@@ -218,22 +232,24 @@ export class EmployeeService {
         // }
         // }
 
-        public async updatePhoto(id: number, file): Promise<Employee> {
-          try {
-            const emp = await this.employeeRepo.findOne({ where: { empId: id } });
-            if (!emp) {
-              throw new Error('Employee not found');
-            }
-            emp.empPhoto = file.originalname;
-            // return await this.employeeRepo.save(emp);
-            const updatedEmp = await this.employeeRepo.save(emp);
-            console.log('Photo updated successfully');
-            return updatedEmp;
-          } catch (error) {
-            throw new Error(`Error updating photo: ${error.message}`);
-          }
-        }        
-  
+        //gabung ke edit
+        // public async updatePhoto(id: number, file): Promise<Employee> {
+        //   try {
+        //     const emp = await this.employeeRepo.findOne({ where: { empId: id } });
+        //     if (!emp) {
+        //       throw new Error('Employee not found');
+        //     }
+        //     emp.empPhoto = file.originalname;
+        //     // return await this.employeeRepo.save(emp);
+        //     const updatedEmp = await this.employeeRepo.save(emp);
+        //     console.log('Photo updated successfully');
+        //     return updatedEmp;
+        //   } catch (error) {
+        //     throw new Error(`Error updating photo: ${error.message}`);
+        //   }
+        // }        
+        
+        //foto harus edit, meskipun tak mau edit
         public async updateEmp(
           id: number,
           file: any,
@@ -247,10 +263,10 @@ export class EmployeeService {
           empSickleaveHourse: number,
           empCurrentFlag: number,
           empModifiedDate: Date = new Date(),
-          empId: number,
-          joroId: number,
-          userId: number,
           empName: string, 
+          empId?: number,
+          joroId?: number,
+          userId?: number,
         ) {
           try { 
             const employee = await this.employeeRepo.findOne({ where: { empId: empId } });
@@ -268,7 +284,7 @@ export class EmployeeService {
             await this.employeeRepo.update(
               { empId: id },
               {
-                empPhoto: file.originalname,
+                empPhoto: file ? file.originalname : null,
                 empNationalId: empNationalId,
                 empBirthDate: empBirthDate,
                 empMaritalStatus: empMaritalStatus, 
@@ -279,10 +295,10 @@ export class EmployeeService {
                 empSickleaveHourse: empSickleaveHourse,
                 empCurrentFlag: empCurrentFlag,
                 empModifiedDate: empModifiedDate,
+                empName: empName,
                 empEmp: employee,
                 empJoro: jobRole,
                 empUser: user,
-                empName: empName,
               } 
             );
             return {

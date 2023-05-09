@@ -57,7 +57,7 @@ export class JobRoleController {
     joroModifiedDate: Date = new Date(), 
     ) {
     return await this.joroService.updateJoro(
-      id,
+      id, 
       joroName,
       joroModifiedDate
     );
