@@ -54,17 +54,13 @@ export class FacilityPhotosService {
 
   public async update(
     id: number,
-    file: any,
     facilityPhotoDetail: {
       faphoPrimary: boolean;
-      faphoFaci: Facilities;
     },
   ) {
     try {
       const hotels = await this.serviceRepo.update(id, {
         ...facilityPhotoDetail,
-        faphoThumbnailFilename: file.originalname,
-        faphoPhotoFilename: file.originalname,
         faphoModifiedDate: new Date(),
       });
       return hotels;

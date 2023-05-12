@@ -1,10 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
 import { CategoryGroup } from 'output/entities/CategoryGroup';
 import { Facilities } from 'output/entities/Facilities';
 import { Hotels } from 'output/entities/Hotels';
@@ -17,19 +12,26 @@ export class FacilitiesService {
     private serviceRepo: Repository<Facilities>,
   ) {}
 
-  public async findAll(
-    options: IPaginationOptions,
-    id: number,
-  ): Promise<Pagination<Facilities>> {
-    const queryBuilder = this.serviceRepo
-      .createQueryBuilder('c')
-      .orderBy('c.faciId', 'ASC')
-      .innerJoinAndSelect('c.faciHotel', 'faciHotel')
-      .innerJoinAndSelect('c.faciCagro', 'faciCagro')
-      .where('faciHotel.hotelId = :hotelid', {
-        hotelid: id,
-      });
-    return paginate<Facilities>(queryBuilder, options);
+  // public async findAll(
+  //   options: IPaginationOptions,
+  //   id: number,
+  // ): Promise<Pagination<Facilities>> {
+  //   const queryBuilder = this.serviceRepo
+  //     .createQueryBuilder('c')
+  //     .orderBy('c.faciId', 'ASC')
+  //     .innerJoinAndSelect('c.faciHotel', 'faciHotel')
+  //     .innerJoinAndSelect('c.faciCagro', 'faciCagro')
+  //     .where('faciHotel.hotelId = :hotelid', {
+  //       hotelid: id,
+  //     });
+  //   return paginate<Facilities>(queryBuilder, options);
+  // }
+
+  public async findAll(id: number) {
+    return await this.serviceRepo.find({
+      order: { faciId: 'ASC' },
+      where: { faciHotel: { hotelId: id } },
+    });
   }
 
   public async findOne(id: number) {

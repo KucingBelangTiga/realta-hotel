@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+
 import { Facilities } from 'output/entities/Facilities';
 import { FacilityPriceHistory } from 'output/entities/FacilityPriceHistory';
 import { Repository } from 'typeorm';
@@ -16,18 +12,11 @@ export class FacilityPriceHistoryService {
     private serviceRepo: Repository<FacilityPriceHistory>,
   ) {}
 
-  public async findOne(
-    options: IPaginationOptions,
-    id: number,
-  ): Promise<Pagination<FacilityPriceHistory>> {
-    const queryBuilder = this.serviceRepo
-      .createQueryBuilder('c')
-      .orderBy('c.faphId', 'ASC')
-      .innerJoinAndSelect('c.faphFaci', 'faphFaci')
-      .where('faphFaci.faciId = :faciid', {
-        faciid: id,
-      });
-    return paginate<FacilityPriceHistory>(queryBuilder, options);
+  public async findOne(id: number) {
+    return await this.serviceRepo.find({
+      order: { faphId: 'ASC' },
+      where: { faphFaci: { faciId: id } },
+    });
   }
 
   public async create(faphlitiesDetail: {

@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
+
 import { Address } from 'output/entities/Address';
 import { Hotels } from 'output/entities/Hotels';
 import { Repository } from 'typeorm';
@@ -16,26 +12,10 @@ export class HotelsService {
     private serviceRepo: Repository<Hotels>,
   ) {}
 
-  public async findAllData(
-    options: IPaginationOptions,
-    name: string,
-  ): Promise<Pagination<Hotels>> {
-    const queryBuilder = this.serviceRepo
-      .createQueryBuilder('c')
-      .orderBy('c.hotelId', 'ASC')
-      .where('c.hotelName ilike :hotelname', {
-        hotelname: `%${name}%`,
-      });
-    return paginate<Hotels>(queryBuilder, options);
-  }
-
-  public async findAll(page: number) {
-    const currentPage = page * 5 - 5;
+  public async findAll() {
     return await this.serviceRepo.find({
       relations: { hotelAddr: true },
       order: { hotelId: 'ASC' },
-      take: page - 1 < 0 ? 0 : 5,
-      skip: currentPage - 5 < 0 ? 0 : currentPage,
     });
   }
 

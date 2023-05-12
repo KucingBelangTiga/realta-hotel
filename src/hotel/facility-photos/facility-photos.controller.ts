@@ -45,18 +45,14 @@ export class FacilityPhotosController {
     return await this.Services.create(file, createFacilityPhoto);
   }
   @Put(':id')
-  @UseInterceptors(FileInterceptor('file'))
   public async update(
     @Param('id') id: number,
-    @UploadedFile() file,
     @Body()
     createFacilityPhoto: {
       faphoPrimary: boolean;
-      faphoUrl: string;
-      faphoFaci: Facilities;
     },
   ) {
-    return await this.Services.update(id, file, createFacilityPhoto);
+    return await this.Services.update(id, createFacilityPhoto);
   }
   @Delete(':id')
   public async delete(@Param('id') id: number) {

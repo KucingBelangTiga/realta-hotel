@@ -1,9 +1,4 @@
-import {
-  Controller,
-  DefaultValuePipe,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { HotelsService } from './hotels.service';
 import { Get } from '@nestjs/common';
 import { Param } from '@nestjs/common';
@@ -12,31 +7,14 @@ import { Body } from '@nestjs/common';
 import { Put } from '@nestjs/common';
 import { Address } from 'output/entities/Address';
 import { Delete } from '@nestjs/common';
-import { Hotels } from 'output/entities/Hotels';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('hotels')
 export class HotelsController {
   constructor(private Services: HotelsService) {}
-  @Get('/')
-  public async getAllData(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-    @Query('name') name: string,
-  ): Promise<Pagination<Hotels>> {
-    limit = limit > 100 ? 100 : limit;
-    return this.Services.findAllData(
-      {
-        page,
-        limit,
-      },
-      name,
-    );
-  }
 
-  @Get('/result/:page')
-  public async getAll(@Param('page') page: number) {
-    return await this.Services.findAll(page);
+  @Get('')
+  public async getAll() {
+    return await this.Services.findAll();
   }
   @Get(':id')
   public async getOne(@Param('id') id: number) {
