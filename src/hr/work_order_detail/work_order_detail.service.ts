@@ -3,7 +3,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Employee } from 'output/entities/Employee';
 import { WorkOrders } from 'output/entities/WorkOrders';
 import { ServiceTask } from 'output/entities/ServiceTask';
@@ -24,36 +23,13 @@ export class WorkOrderDetailService {
         @InjectRepository(Facilities)
         private faciRepo: Repository<Facilities> 
         ) {}
-    
-        // public async findAllWode(query: PaginateQuery): Promise<Paginated<WorkOrderDetail>> {
-        //     return paginate (query, this.wodeRepo, {
-        //         sortableColumns: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp.empId', 'wodeFaci.faciId', 'wodeSeta.setaId', 'wodeWoro.woroId'],
-        //         defaultSortBy: [['wodeId', 'ASC']],
-        //         searchableColumns: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp.empId', 'wodeFaci.faciId', 'wodeSeta.setaId', 'wodeWoro.woroId'],
-        //         select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp.empId', 'wodeFaci.faciId', 'wodeSeta.setaId', 'wodeWoro.woroId'],
-        //         maxLimit: 10, defaultLimit: 5,
-        //         relations: {
-        //             wodeEmp: true,
-        //             wodeFaci: true,
-        //             wodeSeta: true,
-        //             wodeWoro: true
-        //         },
-        //         filterableColumns: {
-        //             wodeId: [FilterOperator. IN],
-        //             wodeStatus: [FilterOperator. ILIKE],
-        //             'wodeEmp.empId': [FilterOperator. IN],
-        //             'wodeFaci.faciId': [FilterOperator. IN],
-        //             'wodeSeta.setaId': [FilterOperator. IN],
-        //             'wodeWoro.woroId': [FilterOperator. IN],
-        //         },
-        //     });
-        // }
+
         public async findAllWode() {
           return await this.wodeRepo.find({
             relations: ['wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
-            // select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
           });
         }
+        
         public async findOneWode(id: number) {
           const wode = await this.wodeRepo.findOne({ 
                     where: { wodeId: id },

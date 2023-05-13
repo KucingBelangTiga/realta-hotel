@@ -8,19 +8,15 @@ import {
     Post,
     Put,
     Delete,
-    Query,
-    UseInterceptors,
-    UploadedFile,
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm'
-  import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
   import { Repository, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
-  import { WorkOrderDetailService } from './work_order_detail.service';
   import { WorkOrderDetail } from 'output/entities/WorkOrderDetail';
   import { Employee } from 'output/entities/Employee';
   import { WorkOrders } from 'output/entities/WorkOrders';
   import { ServiceTask } from 'output/entities/ServiceTask';
   import { Facilities } from 'output/entities/Facilities';
+  import { WorkOrderDetailService } from './work_order_detail.service';
 
 @Controller('work-order-detail')
 export class WorkOrderDetailController {
@@ -38,15 +34,11 @@ export class WorkOrderDetailController {
         private faciRepo: Repository<Facilities>
         ) {}
 
-    // @Get()
-    // public async findAllWode(@Paginate() query: PaginateQuery,
-    // ): Promise <Paginated<WorkOrderDetail>> {
-    //   return await this.wodeService.findAllWode(query);
-    // }
     @Get()
     public async findAllWode() {
       return await this.wodeService.findAllWode();
     }
+    
     @Get(':id')
     public async findOneWode(@Param('id') id: number) {
       return await this.wodeService.findOneWode(id);

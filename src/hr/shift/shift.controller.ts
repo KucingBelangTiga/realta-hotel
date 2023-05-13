@@ -8,10 +8,8 @@ import {
     Post,
     Put,
     Delete,
-    Query,
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm'
-  import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
   import { Repository, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
   import { Shift } from 'output/entities/Shift';
   import { ShiftService } from './shift.service';
@@ -20,23 +18,15 @@ import {
 export class ShiftController {
     constructor(private shiftService: ShiftService) {}
 
-    // @Get()
-    // public async findAllShift(@Paginate() query: PaginateQuery,
-    // ): Promise <Paginated<Shift>> {
-    //   return await this.shiftService.findAllShift(query);
-    // }
     @Get()
     public async findAllShift() {
       return await this.shiftService.findAllShift();
     }
+    
     @Get(':id')
     public async findOneShift(@Param('id') id: number) {
       return await this.shiftService.findOneShift(id);
     }
-    // @Get('/shift/search')
-    // public async findNameShift(@Query('shiftName') shiftName: string) {
-    // return await this.shiftService.findNameShift(shiftName);
-    // }
  
     @Post()
     public async createShift(

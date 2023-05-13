@@ -3,7 +3,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { WorkOrders } from 'output/entities/WorkOrders';
 import { Users } from 'output/entities/Users';
 
@@ -16,29 +15,12 @@ export class WorkOrdersService {
         private usersRepo: Repository<Users>,
         ) {}
     
-        // public async findAllWoro(query: PaginateQuery): Promise<Paginated<WorkOrders>> {
-        //     return paginate (query, this.woroRepo, {
-        //         sortableColumns: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser.userId'],
-        //         defaultSortBy: [['woroId', 'ASC']],
-        //         searchableColumns: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser.userId'],
-        //         select: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser.userId'],
-        //         maxLimit: 10, defaultLimit: 5,
-        //         relations: {
-        //             woroUser: true,
-        //         },
-        //         filterableColumns: {
-        //             woroId: [FilterOperator. IN],
-        //             woroStatus: [FilterOperator. ILIKE],
-        //             'woroUser.userId': [FilterOperator. IN],
-        //         },
-        //     });
-        // }
         public async findAllWoro() {
           return await this.woroRepo.find({
             relations: ['woroUser'],
-            // select: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser'],
           });
         }
+        
         public async findOneWoro(id: number) {
           const woro = await this.woroRepo.findOne({ 
                     where: { woroId: id },

@@ -75,7 +75,6 @@ import { WorkOrderDetailService } from 'src/hr/work_order_detail/work_order_deta
     {
         imports: [
             TypeOrmModule.forFeature([Address,Bank,BookingOrderDetail,BookingOrderDetailExtra,BookingOrders,CategoryGroup,Country,Department,Employee,EmployeeDepartmentHistory,EmployeePayHistory,Entitys,Facilities,FacilityPhoto,FacilityPriceHistory,HotelReviews,Hotels,JobRole,Members,OrderMenuDetail,OrderMenus,PaymentGateway,PaymentTransaction,Policy,PolicyCategoryGroup,PriceItems,Proviences,Regions,RestoMenuPhotos,RestoMenus,ServiceTask,Shift,SpecialOfferCoupons,SpecialOffers,UserAccounts,UserBreakfeast,WorkOrderDetail,WorkOrders, PurchaseOrderDetail,PurchaseOrderHeader,Roles,StockDetail,StockPhoto,Stocks,UserBonusPoints,UserMembers,UserPassword,UserRoles,Users,Vendor,VendorProduct]),
-            // MulterModule.register(UploadMiddleware.MulterOption()),
             MulterModule.register({
                 dest: './uploads',
               }), 

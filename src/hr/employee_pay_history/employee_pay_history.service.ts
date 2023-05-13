@@ -3,7 +3,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Employee } from 'output/entities/Employee';
 import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
 
@@ -16,28 +15,12 @@ export class EmployeePayHistoryService {
         private employeeRepo: Repository<Employee>
       ) {}
 
-    //   public async findAllEph(query: PaginateQuery): Promise<Paginated<EmployeePayHistory>> {
-    //     return paginate (query, this.ephRepo, {
-    //         sortableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
-    //         defaultSortBy: [['ephiEmp.empId', 'ASC']],
-    //         searchableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
-    //         select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
-    //         maxLimit: 10, defaultLimit: 5,
-    //         relations: {
-    //             ephiEmp: true
-    //         }, 
-    //         filterableColumns: {
-    //             'ephiEmp.empId': [FilterOperator. IN],
-    //             ephiRateChangeDate: [FilterOperator. BTW],
-    //         },
-    //     });
-    // }
     public async findAllEph() {
       return await this.ephRepo.find({
         relations: ['ephiEmp'],
-        // select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp'],
       });
     }
+
     //setelah input sendiri, ephiRateChangeDate terbaca string di db
     //findOne dan delete param-nya pake string. dan harus lengkap sesuai isi kolom ephiRateChangeDate di db, tdk bisa cuma tanggalnya(harus sama time juga)
     //contoh findOne: http://localhost:3002/employee-pay-history/"2023-04-04 20:33:00"
@@ -50,13 +33,7 @@ export class EmployeePayHistoryService {
         if (!eph) {
           throw new NotFoundException('Employee Pay History not found');
         }
-          return eph;//{
-          //   statusCode: 200,
-          //   message: 'Data retrieved successfully.',
-          //   data: {
-          //     eph,
-          //   },
-          // };
+          return eph;
         } catch (error) {
           throw new Error(`Error retrieving data: ${error.message}`);
         }
@@ -77,11 +54,9 @@ export class EmployeePayHistoryService {
             const newEph = this.ephRepo.create({
             ephiEmp: employee,
             ephiRateChangeDate: ephiRateChangeDate,
-            // ephiRateChangeDate: new Date(),
             ephiRateSalary: ephiRateSalary, 
             ephiPayFrequence: ephiPayFrequence, 
             ephiModifiedDate: ephiModifiedDate,
-            // ephiModifiedDate: new Date(),
           });
           await this.ephRepo.save(newEph);
           return {
@@ -143,7 +118,7 @@ export class EmployeePayHistoryService {
           public async deleteEph(ephiRateChangeDate: Date = new Date()) {
             try {
               const result = await this.ephRepo.delete({ ephiRateChangeDate });
-              if (result.affected === 0) { //jika data tak ditemukan
+              if (result.affected === 0) { 
                 throw new NotFoundException('Employee Pay History not found');
               }
               return {
