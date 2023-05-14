@@ -39,6 +39,16 @@ import { UserAccounts } from 'output/entities/UserAccounts';
 import { UserBreakfeast } from 'output/entities/UserBreakfeast';
 import { WorkOrderDetail } from 'output/entities/WorkOrderDetail';
 import { WorkOrders } from 'output/entities/WorkOrders';
+import { FacilitiesController } from 'src/hotel/facilities/facilities.controller';
+import { FacilitiesService } from 'src/hotel/facilities/facilities.service';
+import { FacilityPhotosController } from 'src/hotel/facility-photos/facility-photos.controller';
+import { FacilityPhotosService } from 'src/hotel/facility-photos/facility-photos.service';
+import { FacilityPriceHistoryController } from 'src/hotel/facility-price-history/facility-price-history.controller';
+import { FacilityPriceHistoryService } from 'src/hotel/facility-price-history/facility-price-history.service';
+import { HotelReviewController } from 'src/hotel/hotel-review/hotel-review.controller';
+import { HotelReviewService } from 'src/hotel/hotel-review/hotel-review.service';
+import { HotelsController } from 'src/hotel/hotels/hotels.controller';
+import { HotelsService } from 'src/hotel/hotels/hotels.service';
 import { AddressController } from 'src/master/address/address.controller';
 import { AddressService } from 'src/master/address/address.service';
 import { CategoryGroupController } from 'src/master/category-group/category-group.controller';
@@ -110,6 +120,13 @@ import { ConfigMulter } from 'src/multer/multer.middleware';
     PriceItemsService,
     ServiceTaskService,
     CategoryGroupService,
+    HotelsService,
+    FacilitiesService,
+    FacilityPriceHistoryService,
+    FacilityPhotosService,
+    HotelReviewService,
+    AddressService,
+    CategoryGroupService,
   ],
   controllers: [
     RegionsController,
@@ -119,6 +136,12 @@ import { ConfigMulter } from 'src/multer/multer.middleware';
     PolicyController,
     PriceItemsController,
     ServiceTaskController,
+    HotelsController,
+    FacilitiesController,
+    FacilityPriceHistoryController,
+    FacilityPhotosController,
+    HotelReviewController,
+    AddressController,
     CategoryGroupController,
   ],
 })

@@ -16,6 +16,7 @@ export class AddressService {
       relations: { addrProv: true },
       order: { addrId: 'ASC' },
     });
+    return await this.serviceRepo.find();
   }
 
   public async findOne(id: number) {
