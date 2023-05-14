@@ -11,15 +11,12 @@ export class VendorService {
 
   public async listVendor() {
     try {
-      const response = await this.vendorRepo.find();
-      if (response.length === 0) {
-        return {
-          statusCode: 401,
-          message: 'tidak ditemukan list vendor',
-        };
-      } else {
-        return response;
-      }
+      const response = await this.vendorRepo
+        .createQueryBuilder('vendor')
+        .select()
+        .orderBy('vendor.vendorId', 'ASC')
+        .getMany();
+      return response;
     } catch (error) {
       throw new Error(`ada kesalahan di list vendor, ${error.message}`);
     }

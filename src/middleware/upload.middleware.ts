@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { MulterOptionsFactory } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { extname } from 'path';
 
@@ -9,6 +9,12 @@ export class UploadMiddleware {
   static MulterOption(): MulterOptions {
     return {
       dest: './uploads',
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          cb(null, `${file.originalname}`);
+        },
+      }),
       fileFilter(req, file, callback) {
         file.filename = file.filename + extname(file.originalname);
         if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {

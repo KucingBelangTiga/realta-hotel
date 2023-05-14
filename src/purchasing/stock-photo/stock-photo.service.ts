@@ -10,9 +10,14 @@ export class StockPhotoService {
     private stockPhotoRepo: Repository<StockPhoto>,
   ) {}
 
-  public async listStockPhoto() {
+  public async listStockPhoto(stockId: number) {
     try {
-      const response = await this.stockPhotoRepo.find();
+      const response = await this.stockPhotoRepo
+        .createQueryBuilder('sp')
+        .select()
+        .where('sp.sphoStock.stockId=:stockId', { stockId })
+        .orderBy('sp.sphoPrimary', 'DESC')
+        .getRawMany();
       return response;
     } catch (error) {
       throw new Error(
@@ -42,9 +47,18 @@ export class StockPhotoService {
     }
   }
 
-  public async updateStockPhoto(sphoId: number, sphoPrimary: number) {
+  public async updateStockPhoto(
+    sphoId: number,
+    sphoPrimary: number,
+    stockId: number,
+  ) {
     try {
-      const response = await this.stockPhotoRepo.update(
+      await this.stockPhotoRepo.update(
+        { sphoStock: { stockId: stockId } },
+        { sphoPrimary: 0 },
+      );
+
+      await this.stockPhotoRepo.update(
         { sphoId: sphoId },
         {
           sphoPrimary: sphoPrimary,

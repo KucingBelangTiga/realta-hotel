@@ -41,12 +41,14 @@ export class VendorProductController {
     @Body('veproQtyRemaining') veproQtyRemaining: number,
     @Body('veproPrice') veproPrice: string,
     @Param('veproId') veproId: number,
+    @Body('stockId') stockId: number,
   ) {
     return this.vendorProductService.editVendorProduct(
       veproQtyStocked,
       veproQtyRemaining,
       veproPrice,
       veproId,
+      stockId,
     );
   }
 

@@ -6,20 +6,22 @@ import {
   Post,
   Put,
   Delete,
-  Query,
+  Res,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { StockPhotoService } from './stock-photo.service';
+import { of } from 'rxjs';
+import { join } from 'path';
 
 @Controller('purchasing')
 export class StockPhotoController {
   constructor(private stockPhotoService: StockPhotoService) {}
 
-  @Get('/stock/photo')
-  public async listStockPhoto() {
-    return this.stockPhotoService.listStockPhoto();
+  @Get('/stock/photo/:stockId')
+  public async listStockPhoto(@Param('stockId') stockId: number) {
+    return this.stockPhotoService.listStockPhoto(stockId);
   }
 
   @Post('/stock/photo/:stockId/addphoto')
@@ -32,16 +34,26 @@ export class StockPhotoController {
     return this.stockPhotoService.createStockPhoto(file, sphoPrimary, stockId);
   }
 
-  @Put('/stock/photo/:sphoId/editphoto')
+  @Put('/stock/photo/:stockId/:sphoId/editphoto')
   public async updateStockPhoto(
     @Param('sphoId') sphoId: number,
     @Body('sphoPrimary') sphoPrimary: number,
+    @Param('stockId') stockId: number,
   ) {
-    return this.stockPhotoService.updateStockPhoto(sphoId, sphoPrimary);
+    return this.stockPhotoService.updateStockPhoto(
+      sphoId,
+      sphoPrimary,
+      stockId,
+    );
   }
 
   @Delete('/stock/photo/:sphoId/deletephoto')
   public async deleteStockPhoto(@Param('sphoId') sphoId: number) {
     return this.stockPhotoService.deleteStockPhoto(sphoId);
+  }
+
+  @Get('/stock/image/:imagename')
+  findImage(@Param('imagename') imagename: any, @Res() res: any) {
+    return of(res.sendFile(join(process.cwd(), 'uploads/' + imagename)));
   }
 }

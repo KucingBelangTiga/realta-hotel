@@ -11,7 +11,11 @@ export class StocksService {
 
   public async listStock() {
     try {
-      const response = await this.stockRepo.find();
+      const response = await this.stockRepo
+        .createQueryBuilder('stock')
+        .select()
+        .orderBy('stock.stockId', 'ASC')
+        .getMany();
       return response;
     } catch (error) {
       throw new Error(`terjadi kesalahan di list stock, ${error.message}`);

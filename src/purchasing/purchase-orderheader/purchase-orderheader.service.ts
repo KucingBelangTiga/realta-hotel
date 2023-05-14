@@ -12,15 +12,15 @@ export class PurchaseOrderheaderService {
 
   public async listPurchaseOrderHeader() {
     try {
-      const response = await this.purchaseOrderHeaderRepo.find();
-      if (response.length === 0) {
-        return {
-          statusCode: 401,
-          message: 'tidak ditemukan PO Header',
-        };
-      } else {
-        return response;
-      }
+      const response = await this.purchaseOrderHeaderRepo
+        .createQueryBuilder('pohe')
+        .select(
+          'pohe.poheId, pohe.poheNumber, pohe.poheOrderDate, v.vendorName, pohe.poheTotalAmount, pohe.poheStatus',
+        )
+        .innerJoin('pohe.poheVendor', 'v')
+        .orderBy('pohe.poheId', 'ASC')
+        .getRawMany();
+      return response;
     } catch (error) {
       throw new Error(`terjadi kesalahan di list PO Header, ${error.message}`);
     }

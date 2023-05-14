@@ -13,14 +13,14 @@ import { PurchaseOrderDetailService } from './purchase-order-detail.service';
 export class PurchaseOrderDetailController {
   constructor(private purchaseOrderDetailService: PurchaseOrderDetailService) {}
 
-  @Get('/listOrder/detail/:poheNumber')
-  public async findStockDetaiById(@Param('poheNumber') poheNumber: string) {
-    return this.purchaseOrderDetailService.findPODetaiById(poheNumber);
+  @Get('/listOrder/detail/:podePoheId')
+  public async findStockDetaiById(@Param('podePoheId') podePoheId: number) {
+    return this.purchaseOrderDetailService.findPODetaiById(podePoheId);
   }
 
-  @Post('/listOrder/detail/:poheNumber/adddetail')
+  @Post('/listOrder/detail/:podePoheId/adddetail')
   public async createStockDetail(
-    @Param('poheNumber') poheNumber: string,
+    @Param('podePoheId') podePoheId: number,
     @Body('podeOrderQty') podeOrderQty: number,
     @Body('podePrice') podePrice: string,
     @Body('podeLineTotal') podeLineTotal: string,
@@ -31,7 +31,7 @@ export class PurchaseOrderDetailController {
     @Body('stockId') stockId: number,
   ) {
     return this.purchaseOrderDetailService.createPODetail(
-      poheNumber,
+      podePoheId,
       podeOrderQty,
       podePrice,
       podeLineTotal,
@@ -43,9 +43,9 @@ export class PurchaseOrderDetailController {
     );
   }
 
-  @Put('/listOrder/detail/:poheNumber/:podeId/editdetail')
+  @Put('/listOrder/detail/:podePoheId/:podeId/editdetail')
   public async editStockDetail(
-    @Param('poheNumber') poheNumber: string,
+    @Param('podePoheId') podePoheId: number,
     @Param('podeId') podeId: number,
     @Body('stockId') stockId: number,
     @Body('podeOrderQty') podeOrderQty: number,
@@ -53,7 +53,7 @@ export class PurchaseOrderDetailController {
     @Body('podeRejectedQty') podeRejectedQty: string,
   ) {
     return this.purchaseOrderDetailService.editPODetail(
-      poheNumber,
+      podePoheId,
       stockId,
       podeOrderQty,
       podeReceivedQty,
@@ -62,11 +62,11 @@ export class PurchaseOrderDetailController {
     );
   }
 
-  @Delete('/listOrder/detail/:poheNumber/:podeId/deletedetail')
+  @Delete('/listOrder/detail/:podePoheId/:podeId/deletedetail')
   public async deleteStockDetail(
-    @Param('poheNumber') poheNumber: string,
+    @Param('podePoheId') podePoheId: number,
     @Param('podeId') podeId: number,
   ) {
-    return this.purchaseOrderDetailService.deletePODetail(poheNumber, podeId);
+    return this.purchaseOrderDetailService.deletePODetail(podePoheId, podeId);
   }
 }

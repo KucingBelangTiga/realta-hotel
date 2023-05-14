@@ -57,6 +57,7 @@ export class VendorProductService {
     veproQtyRemaining: number,
     veproPrice: string,
     veproId: number,
+    stockId: number,
   ) {
     try {
       await this.vendorProductRepo.update(
@@ -65,6 +66,7 @@ export class VendorProductService {
           veproQtyStocked: veproQtyStocked,
           veproQtyRemaining: veproQtyRemaining,
           veproPrice: veproPrice,
+          veproStock: { stockId: stockId },
         },
       );
       return {
@@ -75,6 +77,7 @@ export class VendorProductService {
           veproQtyStocked: veproQtyStocked,
           veproQtyRemaining: veproQtyRemaining,
           veproPrice: veproPrice,
+          stockId: stockId,
         },
       };
     } catch (error) {

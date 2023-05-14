@@ -13,28 +13,18 @@ export class PurchaseOrderDetailService {
     private purchaseOrderHeaderRepo: Repository<PurchaseOrderHeader>,
   ) {}
 
-  public async findPODetaiById(poheNumber: string) {
+  public async findPODetaiById(podePoheId: number) {
     try {
-      const findPohe = await this.purchaseOrderHeaderRepo.findOne({
-        where: { poheNumber: poheNumber },
-      });
-      const getpoheId = findPohe.poheId;
       const response = await this.purchaseOrderDetailRepo
         .createQueryBuilder('pode')
         .select(
-          's.stockName, pode.podeOrderQty, pode.podePrice, pode.podeReceivedQty, pode.podeRejectedQty, pode.podeLineTotal',
+          's.stockName, pode.podeOrderQty, pode.podePrice, pode.podeReceivedQty, pode.podeRejectedQty, pode.podeLineTotal , s.stockId, pode.podeId',
         )
         .innerJoin('pode.podeStock', 's')
-        .where('pode.podePoheId = :getpoheId', { getpoheId })
+        .where('pode.podePoheId = :podePoheId', { podePoheId })
+        .orderBy('pode.podeId', 'ASC')
         .getRawMany();
-      if (response.length === 0) {
-        return {
-          statusCode: 404,
-          message: 'PO tidak ditemukan',
-        };
-      } else {
-        return response;
-      }
+      return response;
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findById PO detail, ${error.message}`,
@@ -43,7 +33,7 @@ export class PurchaseOrderDetailService {
   }
 
   public async createPODetail(
-    poheNumber: string,
+    podePoheId: number,
     podeOrderQty: number,
     podePrice: string,
     podeLineTotal: string,
@@ -54,11 +44,8 @@ export class PurchaseOrderDetailService {
     stockId: number,
   ) {
     try {
-      const findPohe = await this.purchaseOrderHeaderRepo.findOne({
-        where: { poheNumber: poheNumber },
-      });
       const response = await this.purchaseOrderDetailRepo.save({
-        podePoheId: findPohe.poheId,
+        podePoheId: podePoheId,
         podeOrderQty: podeOrderQty,
         podePrice: podePrice,
         podeLineTotal: podeLineTotal,
@@ -77,7 +64,7 @@ export class PurchaseOrderDetailService {
   }
 
   public async editPODetail(
-    poheNumber: string,
+    podePoheId: number,
     stockId: number,
     podeOrderQty: number,
     podeReceivedQty: string,
@@ -85,11 +72,8 @@ export class PurchaseOrderDetailService {
     podeId: number,
   ) {
     try {
-      const findPohe = await this.purchaseOrderHeaderRepo.findOne({
-        where: { poheNumber: poheNumber },
-      });
       await this.purchaseOrderDetailRepo.update(
-        { podePoheId: findPohe.poheId, podeId: podeId },
+        { podePoheId: podePoheId, podeId: podeId },
         {
           podeStock: { stockId: stockId },
           podeOrderQty: podeOrderQty,
@@ -101,7 +85,7 @@ export class PurchaseOrderDetailService {
         codeStatus: 200,
         message: 'berhasil update data',
         data: {
-          poheNumber: poheNumber,
+          podePoheId: podePoheId,
           stockId: stockId,
           odeOrderQty: podeOrderQty,
           podeReceivedQty: podeReceivedQty,
@@ -113,20 +97,17 @@ export class PurchaseOrderDetailService {
     }
   }
 
-  public async deletePODetail(poheNumber: string, podeId: number) {
+  public async deletePODetail(podePoheId: number, podeId: number) {
     try {
-      const findPohe = await this.purchaseOrderHeaderRepo.findOne({
-        where: { poheNumber: poheNumber },
-      });
       await this.purchaseOrderDetailRepo.delete({
-        podePoheId: findPohe.poheId,
+        podePoheId: podePoheId,
         podeId: podeId,
       });
       return {
         codeStatus: 200,
         message: 'berhasil delete data',
         data: {
-          poheNumber: poheNumber,
+          poheNumber: podePoheId,
           podeId: podeId,
         },
       };
