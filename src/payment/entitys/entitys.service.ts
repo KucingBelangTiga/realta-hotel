@@ -9,11 +9,7 @@ export class EntitysService {
     @InjectRepository(Entitys) private serviceRepo: Repository<Entitys>,
   ) {}
   public async getEntitys() {
-    return await this.serviceRepo.find({
-      order: {
-        entityId: 'ASC',
-      },
-    });
+    return await this.serviceRepo.find();
   }
 
   public async getEntityById(id: number) {

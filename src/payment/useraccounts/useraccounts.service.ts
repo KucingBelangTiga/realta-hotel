@@ -79,12 +79,9 @@ export class UseraccountsService {
       return error.message;
     }
   }
-  public async deleteUserAccount(usacEntityId: number, usacUserId: number) {
+  public async deleteUserAccount(id: number) {
     try {
-      const userAccount = await this.serviceRepo.delete({
-        usacEntityId,
-        usacUserId,
-      });
+      const userAccount = await this.serviceRepo.delete(id);
       return userAccount;
     } catch (error) {
       return error.message;

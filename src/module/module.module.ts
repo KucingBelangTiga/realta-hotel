@@ -15,6 +15,8 @@ import { PaymenttransactionService } from 'src/payment/paymenttransaction/paymen
 import { PaymenttransactionController } from 'src/payment/paymenttransaction/paymenttransaction.controller';
 import { UseraccountsService } from 'src/payment/useraccounts/useraccounts.service';
 import { UserAccountsController } from 'src/payment/useraccounts/useraccounts.controller';
+// import { PaymentGatewayService } from 'src/payment-gateway/payment-gateway.service';
+// import { PaymentGatewayController } from 'src/payment-gateway/payment-gateway.controller';
 // import { Module } from '@nestjs/common';
 // import { PassportModule } from '@nestjs/passport';
 // import { Users } from 'output/entities/Users';
@@ -26,6 +28,7 @@ import { UserAccountsController } from 'src/payment/useraccounts/useraccounts.co
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      // Users,
       Bank,
       Entitys,
       PaymentGateway,
