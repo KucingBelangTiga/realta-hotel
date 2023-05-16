@@ -64,8 +64,11 @@ export class UserAccountsController {
       usacSecureCode,
     );
   }
-  @Delete(':id')
-  public async Delete(@Param('id') id: number) {
-    return await this.Services.deleteUserAccount(id);
+  @Delete(':usacEntityId/:usacUserId')
+  public async Delete(
+    @Param('usacEntityId') usacEntityId: number,
+    @Param('usacUserId') usacUserId: number,
+  ) {
+    return await this.Services.deleteUserAccount(usacEntityId, usacUserId);
   }
 }
