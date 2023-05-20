@@ -28,7 +28,6 @@ export class PurchaseOrderheaderController {
 
   @Post('/listOrder')
   public async createPurchaseOrder(
-    @Body('poheNumber') poheNumber: string,
     @Body('poheStatus') poheStatus: number,
     @Body('poheOrderDate') poheOrderDate: any,
     @Body('poheSubtotal') poheSubtotal: string,
@@ -41,7 +40,6 @@ export class PurchaseOrderheaderController {
     @Body('vendorId') vendorId: number,
   ) {
     return this.purchaseOrderHeaderService.createPurchaseOrder(
-      poheNumber,
       poheStatus,
       poheOrderDate,
       poheSubtotal,

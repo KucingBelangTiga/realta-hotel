@@ -26,6 +26,7 @@ export class PurchaseOrderHeader {
     nullable: true,
     unique: true,
     length: 20,
+    default: () => "po_id()",
   })
   poheNumber: string | null;
 

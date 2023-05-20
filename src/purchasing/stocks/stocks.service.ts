@@ -138,10 +138,11 @@ export class StocksService {
       const response = await this.stockRepo
         .createQueryBuilder('s')
         .select(
-          'sp.sphoUrl, s.stockName, s.stockDescription, vp.veproQtyStocked, vp.veproQtyRemaining, vp.veproPrice, vp.veproVendor.vendorId',
+          's.stockId, sp.sphoPhotoFilename, s.stockName, s.stockDescription, vp.veproQtyStocked, s.stockReorderPoint, vp.veproPrice, v.vendorId, v.vendorName',
         )
-        .innerJoin('s.vendorProducts', 'vp')
-        .innerJoin('s.stockPhotos', 'sp')
+        .leftJoin('s.vendorProducts', 'vp')
+        .leftJoin('vp.veproVendor', 'v')
+        .leftJoin('s.stockPhotos', 'sp', 'sp.sphoPrimary = 1')
         .getRawMany();
       return response;
     } catch (error) {

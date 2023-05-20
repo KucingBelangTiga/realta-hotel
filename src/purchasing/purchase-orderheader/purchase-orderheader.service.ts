@@ -15,7 +15,7 @@ export class PurchaseOrderheaderService {
       const response = await this.purchaseOrderHeaderRepo
         .createQueryBuilder('pohe')
         .select(
-          'pohe.poheId, pohe.poheNumber, pohe.poheOrderDate, v.vendorName, pohe.poheTotalAmount, pohe.poheStatus',
+          'pohe.poheId, pohe.poheNumber, pohe.poheOrderDate, v.vendorName, pohe.poheTotalAmount, pohe.poheStatus, pohe.poheSubtotal, pohe.poheTax',
         )
         .innerJoin('pohe.poheVendor', 'v')
         .orderBy('pohe.poheId', 'ASC')
@@ -51,7 +51,6 @@ export class PurchaseOrderheaderService {
   }
 
   public async createPurchaseOrder(
-    poheNumber: string,
     poheStatus: number,
     poheOrderDate: any,
     poheSubtotal: string,
@@ -65,7 +64,6 @@ export class PurchaseOrderheaderService {
   ) {
     try {
       const response = await this.purchaseOrderHeaderRepo.save({
-        poheNumber: poheNumber,
         poheStatus: poheStatus,
         poheOrderDate: poheOrderDate,
         poheSubtotal: poheSubtotal,
