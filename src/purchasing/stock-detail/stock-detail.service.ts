@@ -10,18 +10,25 @@ export class StockDetailService {
     private stockDetailRepo: Repository<StockDetail>,
   ) {}
 
-  public async findStockDetaiById(stockId: number) {
+  public async findStockDetaiById(stockId: number, page: number) {
     try {
-      const response = await this.stockDetailRepo
+      const data = await this.stockDetailRepo
         .createQueryBuilder('sd')
         .select(
-          'sd.stodId as stodId, sd.stodBarcodeNumber as stodBarcodeNumber, sd.stodStatus as stodStatus, sd.stodNotes as stodNotes, po.poheNumber as poheNumber, f.faciName as faciName, f.faciId as faciId',
+          'sd.stodId as stodId, sd.stodBarcodeNumber as stodBarcodeNumber, sd.stodStatus as stodStatus, sd.stodNotes as stodNotes, po.poheNumber as poheNumber, f.faciName as faciName, f.faciId as faciId, s.stockId as stockId',
         )
         .innerJoin('sd.stodPohe', 'po')
         .innerJoin('sd.stodFaci', 'f')
+        .innerJoin('sd.stodStock', 's')
         .where('sd.stodStock.stockId=:stockId', { stockId })
+        .offset((page - 1) * 10)
+        .limit(10)
         .getRawMany();
-      return response;
+      const total = await this.stockDetailRepo
+        .createQueryBuilder('sd')
+        .where('sd.stodStock = :stockId', { stockId })
+        .getCount();
+      return { data, total };
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findById stock detail, ${error.message}`,

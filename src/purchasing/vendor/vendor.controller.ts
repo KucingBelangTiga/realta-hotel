@@ -14,9 +14,14 @@ import { VendorService } from './vendor.service';
 export class VendorController {
   constructor(private vendorService: VendorService) {}
 
+  @Get('/vendor/:page')
+  public async listVendor(@Param('page') page: number) {
+    return this.vendorService.listVendor(page);
+  }
+
   @Get('/vendor')
-  public async listVendor() {
-    return this.vendorService.listVendor();
+  public async getAllVendor() {
+    return this.vendorService.getAllVendor();
   }
 
   @Get('/vendor/search')

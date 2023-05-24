@@ -9,36 +9,29 @@ export class StocksService {
     @InjectRepository(Stocks) private stockRepo: Repository<Stocks>,
   ) {}
 
-  public async listStock() {
+  public async listStock(page: number) {
     try {
-      const response = await this.stockRepo
+      const limit = 10;
+      const [data, total] = await this.stockRepo
         .createQueryBuilder('stock')
         .select()
         .orderBy('stock.stockId', 'ASC')
-        .getMany();
-      return response;
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getManyAndCount();
+      return { data, total };
     } catch (error) {
       throw new Error(`terjadi kesalahan di list stock, ${error.message}`);
     }
   }
 
-  public async findStockByName(stockName: string) {
+  public async listAllStock() {
     try {
       const response = await this.stockRepo
         .createQueryBuilder('stock')
         .select()
-        .where('LOWER(stock.stockName) Like LOWER(:stockName)', {
-          stockName: `%${stockName.toLowerCase()}%`,
-        })
         .getMany();
-      if (response.length === 0) {
-        return {
-          statusCode: 401,
-          message: 'tidak ditemukan stock',
-        };
-      } else {
-        return response;
-      }
+      return response;
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findByName stock, ${error.message}`,
@@ -133,9 +126,9 @@ export class StocksService {
     }
   }
 
-  public async galleryStockPurchase() {
+  public async galleryStockPurchase(page: number) {
     try {
-      const response = await this.stockRepo
+      const data = await this.stockRepo
         .createQueryBuilder('s')
         .select(
           's.stockId, sp.sphoPhotoFilename, s.stockName, s.stockDescription, vp.veproQtyStocked, s.stockReorderPoint, vp.veproPrice, v.vendorId, v.vendorName',
@@ -143,8 +136,12 @@ export class StocksService {
         .leftJoin('s.vendorProducts', 'vp')
         .leftJoin('vp.veproVendor', 'v')
         .leftJoin('s.stockPhotos', 'sp', 'sp.sphoPrimary = 1')
+        .offset((page - 1) * 8)
+        .limit(8)
         .getRawMany();
-      return response;
+
+      const total = await this.stockRepo.createQueryBuilder('pode').getCount();
+      return { data, total };
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di list stock purchase, ${error.message}`,

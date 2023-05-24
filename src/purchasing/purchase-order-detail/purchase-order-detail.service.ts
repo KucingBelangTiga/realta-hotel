@@ -2,29 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PurchaseOrderDetail } from 'output/entities/PurchaseOrderDetail';
-import { PurchaseOrderHeader } from 'output/entities/PurchaseOrderHeader';
 
 @Injectable()
 export class PurchaseOrderDetailService {
   constructor(
     @InjectRepository(PurchaseOrderDetail)
     private purchaseOrderDetailRepo: Repository<PurchaseOrderDetail>,
-    @InjectRepository(PurchaseOrderHeader)
-    private purchaseOrderHeaderRepo: Repository<PurchaseOrderHeader>,
   ) {}
 
-  public async findPODetaiById(podePoheId: number) {
+  public async findPODetaiById(podePoheId: number, page: number) {
     try {
-      const response = await this.purchaseOrderDetailRepo
+      const data = await this.purchaseOrderDetailRepo
         .createQueryBuilder('pode')
         .select(
           's.stockName, pode.podeOrderQty, pode.podePrice, pode.podeReceivedQty, pode.podeRejectedQty, pode.podeLineTotal , s.stockId, pode.podeId',
         )
         .innerJoin('pode.podeStock', 's')
         .where('pode.podePoheId = :podePoheId', { podePoheId })
+        .offset((page - 1) * 10)
+        .limit(10)
         .orderBy('pode.podeId', 'ASC')
         .getRawMany();
-      return response;
+
+      const total = await this.purchaseOrderDetailRepo
+        .createQueryBuilder('pode')
+        .where('pode.podePoheId = :podePoheId', { podePoheId })
+        .getCount();
+      return { data, total };
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findById PO detail, ${error.message}`,

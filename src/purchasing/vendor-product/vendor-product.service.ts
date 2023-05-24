@@ -10,18 +10,24 @@ export class VendorProductService {
     private vendorProductRepo: Repository<VendorProduct>,
   ) {}
 
-  public async findByIdVendor(vendorId: number) {
+  public async findByIdVendor(vendorId: number, page: number) {
     try {
-      const response = await this.vendorProductRepo
+      const data = await this.vendorProductRepo
         .createQueryBuilder('vp')
         .select(
-          'v.vendorId as vendorId, vp.veproId as veproId, s.stockName as stockName, vp.veproQtyStocked as veproQtyStocked, vp.veproQtyRemaining as veproQtyRemaining, vp.veproPrice as veproPrice',
+          'v.vendorId as vendorId, vp.veproId as veproId, s.stockName as stockName, vp.veproQtyStocked as veproQtyStocked, vp.veproQtyRemaining as veproQtyRemaining, vp.veproPrice as veproPrice, s.stockId as stockId',
         )
         .innerJoin('vp.veproStock', 's')
         .innerJoin('vp.veproVendor', 'v')
         .where('v.vendorId = :vendorId', { vendorId })
+        .offset((page - 1) * 10)
+        .limit(10)
         .getRawMany();
-      return response;
+      const total = await this.vendorProductRepo
+        .createQueryBuilder('vp')
+        .where('vp.veproVendor = :vendorId', { vendorId })
+        .getCount();
+      return { data, total };
     } catch (error) {
       throw new Error(
         `terjadi kesalahan di findById vendor product, ${error.message}`,

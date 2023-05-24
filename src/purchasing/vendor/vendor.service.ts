@@ -9,13 +9,25 @@ export class VendorService {
     @InjectRepository(Vendor) private vendorRepo: Repository<Vendor>,
   ) {}
 
-  public async listVendor() {
+  public async listVendor(page: number) {
     try {
-      const response = await this.vendorRepo
+      const limit = 10;
+      const [data, total] = await this.vendorRepo
         .createQueryBuilder('vendor')
         .select()
         .orderBy('vendor.vendorId', 'ASC')
-        .getMany();
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getManyAndCount();
+      return { data, total };
+    } catch (error) {
+      throw new Error(`ada kesalahan di list vendor, ${error.message}`);
+    }
+  }
+
+  public async getAllVendor() {
+    try {
+      const response = await this.vendorRepo.find();
       return response;
     } catch (error) {
       throw new Error(`ada kesalahan di list vendor, ${error.message}`);

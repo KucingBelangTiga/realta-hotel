@@ -13,9 +13,12 @@ import { StockDetailService } from './stock-detail.service';
 export class StockDetailController {
   constructor(private stockDetailService: StockDetailService) {}
 
-  @Get('/stock/detail/:stockId')
-  public async findStockDetaiById(@Param('stockId') stockId: number) {
-    return this.stockDetailService.findStockDetaiById(stockId);
+  @Get('/stock/detail/:stockId/:page')
+  public async findStockDetaiById(
+    @Param('stockId') stockId: number,
+    @Param('page') page: number,
+  ) {
+    return this.stockDetailService.findStockDetaiById(stockId, page);
   }
 
   @Post('/stock/detail/:stockId/adddetail')

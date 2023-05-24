@@ -13,9 +13,12 @@ import { VendorProductService } from './vendor-product.service';
 export class VendorProductController {
   constructor(private vendorProductService: VendorProductService) {}
 
-  @Get('/vendor/product/:vendorId')
-  public async findByIdVendor(@Param('vendorId') vendorId: number) {
-    return this.vendorProductService.findByIdVendor(vendorId);
+  @Get('/vendor/product/:vendorId/:page')
+  public async findByIdVendor(
+    @Param('vendorId') vendorId: number,
+    @Param('page') page: number,
+  ) {
+    return this.vendorProductService.findByIdVendor(vendorId, page);
   }
 
   @Post('vendor/product/:vendorId/addproduct')

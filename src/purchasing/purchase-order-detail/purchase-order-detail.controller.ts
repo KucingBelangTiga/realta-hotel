@@ -13,9 +13,12 @@ import { PurchaseOrderDetailService } from './purchase-order-detail.service';
 export class PurchaseOrderDetailController {
   constructor(private purchaseOrderDetailService: PurchaseOrderDetailService) {}
 
-  @Get('/listOrder/detail/:podePoheId')
-  public async findStockDetaiById(@Param('podePoheId') podePoheId: number) {
-    return this.purchaseOrderDetailService.findPODetaiById(podePoheId);
+  @Get('/listOrder/detail/:podePoheId/:page')
+  public async findStockDetaiById(
+    @Param('podePoheId') podePoheId: number,
+    @Param('page') page: number,
+  ) {
+    return this.purchaseOrderDetailService.findPODetaiById(podePoheId, page);
   }
 
   @Post('/listOrder/detail/:podePoheId/adddetail')

@@ -14,19 +14,19 @@ import { StocksService } from './stocks.service';
 export class StocksController {
   constructor(private stockService: StocksService) {}
 
+  @Get('/stock/:page')
+  public async listStock(@Param('page') page: number) {
+    return this.stockService.listStock(page);
+  }
+
   @Get('/stock')
-  public async listStock() {
-    return this.stockService.listStock();
+  public async listAllStock() {
+    return this.stockService.listAllStock();
   }
 
-  @Get('/stock/search')
-  public async findStockByName(@Query('vendorName') vendorName: string) {
-    return this.stockService.findStockByName(vendorName);
-  }
-
-  @Get('/gallery')
-  public async galleryStockPurchase() {
-    return this.stockService.galleryStockPurchase();
+  @Get('/gallery/:page')
+  public async galleryStockPurchase(@Param('page') page: number) {
+    return this.stockService.galleryStockPurchase(page);
   }
 
   @Get('/gallery/search')

@@ -10,17 +10,24 @@ export class PurchaseOrderheaderService {
     private purchaseOrderHeaderRepo: Repository<PurchaseOrderHeader>,
   ) {}
 
-  public async listPurchaseOrderHeader() {
+  public async listPurchaseOrderHeader(page: number) {
     try {
-      const response = await this.purchaseOrderHeaderRepo
+      const limit = 10;
+      const data = await this.purchaseOrderHeaderRepo
         .createQueryBuilder('pohe')
-        .select(
+        .select([
           'pohe.poheId, pohe.poheNumber, pohe.poheOrderDate, v.vendorName, pohe.poheTotalAmount, pohe.poheStatus, pohe.poheSubtotal, pohe.poheTax',
-        )
+        ])
         .innerJoin('pohe.poheVendor', 'v')
         .orderBy('pohe.poheId', 'ASC')
+        .offset((page - 1) * limit)
+        .limit(limit)
         .getRawMany();
-      return response;
+      const total = await this.purchaseOrderHeaderRepo
+        .createQueryBuilder('pohe')
+        .getCount();
+
+      return { data, total };
     } catch (error) {
       throw new Error(`terjadi kesalahan di list PO Header, ${error.message}`);
     }

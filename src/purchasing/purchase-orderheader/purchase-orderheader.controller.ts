@@ -14,9 +14,9 @@ import { PurchaseOrderheaderService } from './purchase-orderheader.service';
 export class PurchaseOrderheaderController {
   constructor(private purchaseOrderHeaderService: PurchaseOrderheaderService) {}
 
-  @Get('/listOrder')
-  public async listPurchaseOrderHeader() {
-    return this.purchaseOrderHeaderService.listPurchaseOrderHeader();
+  @Get('/listOrder/:page')
+  public async listPurchaseOrderHeader(@Param('page') page: number) {
+    return this.purchaseOrderHeaderService.listPurchaseOrderHeader(page);
   }
 
   @Get('/listOrder/search')
