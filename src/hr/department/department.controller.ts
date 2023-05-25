@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Repository, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 import { Department } from 'output/entities/Department';
 import { DepartmentService } from './department.service';
@@ -19,15 +20,24 @@ import { DepartmentService } from './department.service';
 export class DepartmentController {
     constructor(private departmentService: DepartmentService) {}
   
+    //with pagination
+    // @Get()
+    // public async findAllDept(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<Department>> {
+    //   return await this.departmentService.findAllDept(query);
+    // }
     @Get()
     public async findAllDept() {
       return await this.departmentService.findAllDept();
     }
-    
     @Get(':id')
     public async findOneDept(@Param('id') id: number) {
       return await this.departmentService.findOneDept(id);
     }
+    // @Get('/department/search')
+    // public async findNameDept(@Query('deptName') deptName: string) {
+    // return await this.departmentService.findNameDept(deptName);
+    // }
  
     @Post()
     public async createDept(

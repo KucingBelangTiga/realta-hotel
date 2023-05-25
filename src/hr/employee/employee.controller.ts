@@ -6,23 +6,28 @@ import {
     Get,
     Param,
     Post,
+    Patch,
     Put,
     Delete,
+    Query,
     UseInterceptors,
     UploadedFile,
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm'
+  import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
   import { Repository, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
   import { FileInterceptor } from '@nestjs/platform-express';
+  import { Employee } from 'output/entities/Employee';
+  import { EmployeeService } from './employee.service';
+  import { JobRole } from 'output/entities/JobRole';
+  import { JobRoleService } from '../job_role/job_role.service';
+  import { EmployeeDepartmentHistory } from 'output/entities/EmployeeDepartmentHistory';
+  import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
+  import { Users } from 'output/entities/Users';
   import { Request } from 'express';
   import { Multer } from 'multer';
   import { diskStorage } from 'multer';
   import { extname } from 'path';
-  import { Employee } from 'output/entities/Employee';
-  import { JobRole } from 'output/entities/JobRole';
-  import { Users } from 'output/entities/Users';
-  import { EmployeeService } from './employee.service';
-  import { JobRoleService } from '../job_role/job_role.service';
 
 @Controller('employee')
 export class EmployeeController {
@@ -35,21 +40,38 @@ export class EmployeeController {
         private usersRepo: Repository<Users>,
         ) {}
 
+    // @Get()
+    // public async findAllEmp(@Paginate() query: PaginateQuery, 
+    // ): Promise <Paginated<Employee>> {
+    //   return await this.employeeService.findAllEmp(query);
+    // }
     @Get()
     public async findAllEmp() {
       return await this.employeeService.findAllEmp();
     }
-    
     @Get(':id') 
     public async findOneEmp(@Param('id') id: number) {
       return await this.employeeService.findOneEmp(id);
     }
+ 
+    // //emp, edhi, ephi
+    // @Get(':id')
+    // public async detailEmp(@Param('id') param): Promise<any> {
+    // const profile = await this.employeeService.employeeDetail(param);
+    // const dephi = await this.employeeService.getDephi(param);
+    // const ephi = await this.employeeService.getEphi(param);
+    // return {
+    //     employees: profile[0],
+    //     dephi,
+    //     ephi,
+    //   };
+    // }
     
     @Post() 
     @UseInterceptors(FileInterceptor('file', 
     {
         storage: diskStorage({ 
-            destination: './uploads',
+            destination: './uploads/hr',
             filename: (req, file, callback) => {
               const fileName = `${file.originalname}`; 
               callback(null, fileName);
@@ -67,37 +89,36 @@ export class EmployeeController {
           empSickleaveHourse: number,
           empCurrentFlag: number, 
           empModifiedDate: Date, 
-          empId?: number,
-          joroId?: number,
-          userId?: number,
+          empEmpId?: number, 
+          empJoroId?: number,
+          empUserId?: number,
           empName: string,
         }
     ) { 
     createEmployee.empModifiedDate = new Date();
-    //jika tak masuk request = null
     if (!file) {
         file = null; 
     }
-    if (!createEmployee.userId) {
-        createEmployee.userId = null;
+    if (!createEmployee.empUserId) {
+        createEmployee.empUserId = null;
     }
-    if (!createEmployee.empId) {
-        createEmployee.empId = null;
+    if (!createEmployee.empEmpId) {
+        createEmployee.empEmpId = null;
     }
-    if (!createEmployee.joroId) {
-        createEmployee.joroId = null;
+    if (!createEmployee. empJoroId) {
+        createEmployee. empJoroId = null;
     }
     return await this.employeeService.createEmp(
         file, 
         createEmployee
     );
-}
+} 
 
     @Put(':id') 
     @UseInterceptors(FileInterceptor('file', 
     {
         storage: diskStorage({ 
-            destination: './uploads',
+            destination: './uploads/hr',
             filename: (req, file, callback) => {
               const fileName = `${file.originalname}`; 
               callback(null, fileName);
@@ -114,24 +135,17 @@ export class EmployeeController {
         @Body('empVacationHours') empVacationHours: number,
         @Body('empSickleaveHourse') empSickleaveHourse: number,
         @Body('empCurrentFlag') empCurrentFlag: number, 
-        // @Body('empModifiedDate') empModifiedDate: Date,
         empModifiedDate: Date = new Date(),
         @Body('empName') empName: string,
-        @Body('empId') empId?: number,
-        @Body('joroId') joroId?: number,
-        @Body('userId') userId?: number,
+        @Body('empEmp') empEmp: Employee,
+        @Body('empJoroId') empJoroId?: number,
+        @Body('empUserId') empUserId?: number,
     ) { 
-        if (!file) {
-            file = null; 
+        if (!empUserId) {
+            empUserId = null;
         }
-        if (!userId) {
-           userId = null;
-        }
-        if (!empId) {
-            empId = null;
-        }
-        if (!joroId) {
-            joroId = null;
+        if (!empJoroId) {
+            empJoroId = null;
         }
     return await this.employeeService.updateEmp(
         id,
@@ -147,9 +161,9 @@ export class EmployeeController {
         empCurrentFlag,
         empModifiedDate,
         empName,
-        empId,
-        joroId,
-        userId,
+        empEmp,
+        empJoroId,
+        empUserId,
     );
     }  
 

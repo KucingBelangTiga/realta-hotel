@@ -8,12 +8,17 @@ import {
     Post,
     Put,
     Delete,
+    Query,
+    UseInterceptors,
+    UploadedFile,
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm'
+  import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
   import { Repository, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+  import { FileInterceptor } from '@nestjs/platform-express';
+  import { EmployeePayHistoryService } from './employee_pay_history.service';
   import { Employee } from 'output/entities/Employee';
   import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
-  import { EmployeePayHistoryService } from './employee_pay_history.service';
 
 @Controller('employee-pay-history')
 export class EmployeePayHistoryController {
@@ -23,9 +28,21 @@ export class EmployeePayHistoryController {
         private employeeRepo: Repository<Employee>
         ) {}
 
+    // @Get()
+    // public async findAllEph(@Paginate() query: PaginateQuery,
+    // ): Promise <Paginated<EmployeePayHistory>> {
+    //   return await this.ephService.findAllEph(query);
+    // }
+
     @Get()
-    public async findAllEph() {
-      return await this.ephService.findAllEph();
+    public async getAllEph() {
+      return await this.ephService.getAllEph();
+    }
+
+    //get all aphi by empId
+    @Get('all/:id')
+    public async findAllEph(@Param('id') id: number) {
+      return await this.ephService.findAllEph(id);
     }
 
     //setelah input manual ephiRateChangeDate terbaca string di db
@@ -39,14 +56,14 @@ export class EmployeePayHistoryController {
 
     @Post()
     public async createEph(
-        @Body('ephiEmpId') ephiEmpId: number,
+        @Body('ephiEmp') ephiEmp: Employee,
         ephiRateChangeDate: Date = new Date(), 
         @Body('ephiRateSalary') ephiRateSalary: string,
         @Body('ephiPayFrequence') ephiPayFrequence: number,
         ephiModifiedDate: Date = new Date(), 
     ) {
     return await this.ephService.createEph(
-        ephiEmpId,
+        ephiEmp,
         ephiRateChangeDate,
         ephiRateSalary, 
         ephiPayFrequence, 
@@ -57,17 +74,17 @@ export class EmployeePayHistoryController {
     @Put(':ephiRateChangeDate')
     public async updateEph(
         @Param('ephiRateChangeDate') ephiRateChangeDate: Date = new Date(), 
-        @Body('ephiEmpId') ephiEmpId: number,
         @Body('ephiRateSalary') ephiRateSalary: string,
         @Body('ephiPayFrequence') ephiPayFrequence: number,
         ephiModifiedDate: Date = new Date(), 
+        @Body('ephiEmp') ephiEmp: Employee,
         ) { 
         return await this.ephService.updateEph(
         ephiRateChangeDate,
-        ephiEmpId,
         ephiRateSalary,   
         ephiPayFrequence, 
         ephiModifiedDate,
+        ephiEmp,
         );
         }
 

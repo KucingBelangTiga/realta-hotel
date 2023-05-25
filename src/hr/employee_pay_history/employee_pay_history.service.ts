@@ -3,8 +3,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Employee } from 'output/entities/Employee';
 import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
+import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
 
 @Injectable()
 export class EmployeePayHistoryService {
@@ -15,9 +17,38 @@ export class EmployeePayHistoryService {
         private employeeRepo: Repository<Employee>
       ) {}
 
-    public async findAllEph() {
+    //   public async findAllEph(query: PaginateQuery): Promise<Paginated<EmployeePayHistory>> {
+    //     return paginate (query, this.ephRepo, {
+    //         sortableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
+    //         defaultSortBy: [['ephiEmp.empId', 'ASC']],
+    //         searchableColumns: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
+    //         select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp.empId'],
+    //         maxLimit: 10, defaultLimit: 5,
+    //         relations: {
+    //             ephiEmp: true
+    //         }, 
+    //         filterableColumns: {
+    //             'ephiEmp.empId': [FilterOperator. IN],
+    //             ephiRateChangeDate: [FilterOperator. BTW],
+    //         },
+    //     });
+    // }
+
+    public async getAllEph() {
       return await this.ephRepo.find({
         relations: ['ephiEmp'],
+        // select: ['ephiRateChangeDate', 'ephiRateSalary', 'ephiPayFrequence', 'ephiModifiedDate', 'ephiEmp'],
+      });
+    }
+
+    //get all by empId
+    public async findAllEph(id: number) {
+      return await this.ephRepo.find({ 
+        order: { ephiRateChangeDate: 'ASC' },
+        where: { ephiEmp: { empId: id } },
+        relations: ['ephiEmp'],
+        // select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
+       
       });
     }
 
@@ -40,19 +71,16 @@ export class EmployeePayHistoryService {
       }      
 
       public async createEph( 
-        ephiEmpId: number,
+        ephiEmp: Employee,
         ephiRateChangeDate: Date = new Date(),
         ephiRateSalary: string,
         ephiPayFrequence: number,
         ephiModifiedDate: Date = new Date()
         ) {
         try {
-          const employee = await this.employeeRepo.findOne({ where: { empId: ephiEmpId } });
-            if (!employee) {
-                throw new Error(`Employee with ephiEmpId ${ephiEmpId} not found`);
-            }
+
             const newEph = this.ephRepo.create({
-            ephiEmp: employee,
+            ephiEmp: ephiEmp,
             ephiRateChangeDate: ephiRateChangeDate,
             ephiRateSalary: ephiRateSalary, 
             ephiPayFrequence: ephiPayFrequence, 
@@ -63,7 +91,7 @@ export class EmployeePayHistoryService {
               statusCode: 201,
               message: 'Data added successfully',
               data: {
-                ephiEmp: employee.empId,
+                ephiEmp: ephiEmp.empId,
                 ephiRateChangeDate: ephiRateChangeDate,
                 ephiRateSalary: ephiRateSalary, 
                 ephiPayFrequence: ephiPayFrequence, 
@@ -77,21 +105,35 @@ export class EmployeePayHistoryService {
     
         public async updateEph(
             ephiRateChangeDate: Date = new Date(),
-            ephiEmpId: number,
             ephiRateSalary: string,
             ephiPayFrequence: number,
-            ephiModifiedDate: Date = new Date()
+            ephiModifiedDate: Date = new Date(),
+            ephiEmp?: Employee,
           ) { 
             try {
-              const employee = await this.employeeRepo.findOne({ where: { empId: ephiEmpId } });
-              if (!employee) {
-                  throw new Error(`Employee with empId ${ephiEmpId} not found`);
-              }
+
+              let updatedEphiEmp: Employee | undefined;
+
+                  if (ephiEmp) {
+                    updatedEphiEmp = ephiEmp;
+                  } else {
+                    const existingWode = await this.ephRepo.findOne({
+                      where: {
+                        ephiEmp: { id: ephiEmp.empId },
+                      },
+                      relations: ['ephiEmp'], 
+                    } as FindOneOptions<EmployeePayHistory>);
+
+                    if (existingWode) {
+                      updatedEphiEmp = existingWode.ephiEmp;
+                    }
+                  }
+
               await this.ephRepo.update(
                 { 
                     ephiRateChangeDate: ephiRateChangeDate, }, 
                 {
-                  ephiEmp: employee,
+                  ephiEmp: updatedEphiEmp,
                   ephiRateSalary: ephiRateSalary, 
                   ephiPayFrequence: ephiPayFrequence,
                   ephiModifiedDate: ephiModifiedDate
@@ -101,7 +143,7 @@ export class EmployeePayHistoryService {
                 statusCode: 200,
                 message: 'Data updated successfully',
                 data: {
-                  ephiEmp: employee.empId,
+                  ephiEmp: updatedEphiEmp,
                   ephiRateChangeDate: ephiRateChangeDate,
                   ephiRateSalary: ephiRateSalary, 
                   ephiPayFrequence: ephiPayFrequence,
@@ -118,7 +160,7 @@ export class EmployeePayHistoryService {
           public async deleteEph(ephiRateChangeDate: Date = new Date()) {
             try {
               const result = await this.ephRepo.delete({ ephiRateChangeDate });
-              if (result.affected === 0) { 
+              if (result.affected === 0) { //jika data tak ditemukan
                 throw new NotFoundException('Employee Pay History not found');
               }
               return {

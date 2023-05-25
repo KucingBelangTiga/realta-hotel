@@ -3,6 +3,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { WorkOrders } from 'output/entities/WorkOrders';
 import { Users } from 'output/entities/Users';
 
@@ -15,19 +16,37 @@ export class WorkOrdersService {
         private usersRepo: Repository<Users>,
         ) {}
     
+        // public async findAllWoro(query: PaginateQuery): Promise<Paginated<WorkOrders>> {
+        //     return paginate (query, this.woroRepo, {
+        //         sortableColumns: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser.userId'],
+        //         defaultSortBy: [['woroId', 'ASC']],
+        //         searchableColumns: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser.userId'],
+        //         select: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser.userId'],
+        //         maxLimit: 10, defaultLimit: 5,
+        //         relations: {
+        //             woroUser: true,
+        //         },
+        //         filterableColumns: {
+        //             woroId: [FilterOperator. IN],
+        //             woroStatus: [FilterOperator. ILIKE],
+        //             'woroUser.userId': [FilterOperator. IN],
+        //         },
+        //     });
+        // }
         public async findAllWoro() {
           return await this.woroRepo.find({
             relations: ['woroUser'],
+            // select: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser'],
+            order: { woroId: 'ASC' },
           });
         }
-        
         public async findOneWoro(id: number) {
           const woro = await this.woroRepo.findOne({ 
                     where: { woroId: id },
                     relations: ['woroUser'],
                   });
                   if (!woro) {
-                      throw new NotFoundException('Work Orders not found');
+                      throw new NotFoundException('Work Order not found');
                   }
                   return woro;
               }  
@@ -35,12 +54,12 @@ export class WorkOrdersService {
           public async createWoro(
             woroStartDate: Date,
             woroStatus: string,
-            userId: number
+            woroUserId: number
             ) {
             try {
-            const user = await this.usersRepo.findOne({ where: { userId: userId } });
+            const user = await this.usersRepo.findOne({ where: { userId: woroUserId } });
             if (!user) {
-              throw new Error(`User with userId ${userId} not found`);
+              throw new Error(`User with userId ${woroUserId} not found`);
             }
               const newWoro = this.woroRepo.create({
                 woroStartDate: woroStartDate,
@@ -55,7 +74,7 @@ export class WorkOrdersService {
                 woroId: newWoro.woroId,
                 woroStatus: woroStatus,
                 woroUser: user
-            },
+            }, 
           };
           } catch (error) {
             throw new Error(`Error adding data: ${error.message}`);
@@ -63,15 +82,15 @@ export class WorkOrdersService {
           }
       
             public async updateWoro(
-              id: number,
+              id: number, 
               woroStartDate: Date,
               woroStatus: string,
-              userId: number
+              woroUserId: number
             ) {
               try {
-                const user = await this.usersRepo.findOne({ where: { userId: userId } });
+                const user = await this.usersRepo.findOne({ where: { userId: woroUserId } });
                 if (!user) {
-                  throw new Error(`User with userId ${userId} not found`);
+                  throw new Error(`User with userId ${woroUserId} not found`);
                 }
                 await this.woroRepo.update(
                   { woroId: id },
@@ -87,7 +106,7 @@ export class WorkOrdersService {
                   data: {
                     woroId: id,
                     woroStatus: woroStatus,
-                    woroUser: {userId: userId}
+                    woroUser: {userId: woroUserId}
                   },
                 };
               } catch (error) {

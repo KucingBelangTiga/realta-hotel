@@ -3,6 +3,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Employee } from 'output/entities/Employee';
 import { Department } from 'output/entities/Department';
 import { Shift } from 'output/entities/Shift';
@@ -21,12 +22,45 @@ export class EmployeeDepartmentHistoryService {
         private shiftRepo: Repository<Shift>,
       ) {}
 
-    public async findAllEdh() {
+    //   public async findAllEdh(query: PaginateQuery): Promise<Paginated<EmployeeDepartmentHistory>> {
+    //     return paginate (query, this.edhRepo, {
+    //         sortableColumns: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
+    //         defaultSortBy: [['edhiId', 'ASC']],
+    //         searchableColumns: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
+    //         select: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp.empId', 'edhiDept.deptId', 'edhiShift.shiftId'],
+    //         maxLimit: 10, defaultLimit: 5,
+    //         relations: {
+    //             edhiEmp: true,
+    //             edhiDept: true,
+    //             edhiShift: true
+    //         }, 
+    //         filterableColumns: {
+    //             edhiId: [FilterOperator. IN],
+    //             empId: [FilterOperator. IN],
+    //             edhiEmpId: [FilterOperator. IN],
+    //             'edhiDept.deptId': [FilterOperator. IN],
+    //             'edhiShift.shiftId': [FilterOperator. IN]
+    //         },
+    //     });
+    // }
+
+    public async getAllEdh() {
       return await this.edhRepo.find({
         relations: ['edhiEmp', 'edhiDept', 'edhiShift'],
+        // select: ['edhiId', 'edhiEmpId', 'edhiStartDate', 'edhiEndDate', 'edhiModifiedDate', 'edhiEmp', 'edhiDept', 'edhiShift'],
+      });
+    } 
+ 
+    //get all by empId
+    public async findAllEdh(id: number) {
+      return await this.edhRepo.find({  
+        order: { edhiId: 'ASC' }, 
+        where: { edhiEmp: { empId: id } },
+        relations: ['edhiEmp', 'edhiDept', 'edhiShift'],
+        // select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp', 'wodeFaci', 'wodeSeta', 'edhiEmp'],
       });
     }
-    
+
       public async findOneEdh(id: number) { 
         const edhi = await this.edhRepo.findOne({
           where: { edhiId: id },
@@ -39,28 +73,24 @@ export class EmployeeDepartmentHistoryService {
     }  
 
       public async createEdh( 
-        edhiEmpId: number,
+        edhiEmp: Employee,
         edhiStartDate: Date,
         edhiEndDate: Date, 
         edhiModifiedDate: Date = new Date(),
-        deptId: number, 
-        shiftId: number
+        edhiDeptId: number, 
+        edhiShiftId: number
         ) {
         try {
-            const employee = await this.employeeRepo.findOne({ where: { empId: edhiEmpId } });
-            if (!employee) {
-                throw new Error(`Employee with empId ${edhiEmpId} not found`);
-            }
-            const dept = await this.departmentRepo.findOne({ where: { deptId: deptId } });
+            const dept = await this.departmentRepo.findOne({ where: { deptId: edhiDeptId } });
             if (!dept) {
-                throw new Error(`Department with deptId ${deptId} not found`);
+                throw new Error(`Department with deptId ${edhiDeptId} not found`);
             }
-            const shift = await this.shiftRepo.findOne({ where: { shiftId: shiftId } });
+            const shift = await this.shiftRepo.findOne({ where: { shiftId: edhiShiftId } });
             if (!shift) {
-                throw new Error(`Shift with shiftId ${shiftId} not found`);
+                throw new Error(`Shift with shiftId ${edhiShiftId} not found`);
             }
           const newEdh = this.edhRepo.create({
-            edhiEmp: employee,
+            edhiEmp: edhiEmp,
             edhiStartDate: edhiStartDate,
             edhiEndDate: edhiEndDate, 
             edhiModifiedDate: edhiModifiedDate, 
@@ -76,7 +106,7 @@ export class EmployeeDepartmentHistoryService {
               edhiStartDate: edhiStartDate,
               edhiEndDate: edhiEndDate,
               edhiModifiedDate: edhiModifiedDate,
-              edhiEmp: employee,
+              edhiEmp: edhiEmp,
               edhiDept: dept,
               edhiShift: shift,
           },
@@ -88,30 +118,38 @@ export class EmployeeDepartmentHistoryService {
 
         public async updateEdh(
             id: number,
-            edhiEmpId: number,
             edhiStartDate: Date,
             edhiEndDate: Date, 
             edhiModifiedDate: Date = new Date(),
-            deptId: number, 
-            shiftId: number
+            edhiDeptId: number, 
+            edhiShiftId: number,
+            edhiEmp?: Employee,
           ) { 
             try {
-              const employee = await this.employeeRepo.findOne({ where: { empId: edhiEmpId } });
-            if (!employee) {
-                throw new Error(`Employee with empId ${edhiEmpId} not found`);
-            }
-            const dept = await this.departmentRepo.findOne({ where: { deptId: deptId } });
+            const dept = await this.departmentRepo.findOne({ where: { deptId: edhiDeptId } });
             if (!dept) {
-                throw new Error(`Department with deptId ${deptId} not found`);
+                throw new Error(`Department with deptId ${edhiDeptId} not found`);
             }
-            const shift = await this.shiftRepo.findOne({ where: { shiftId: shiftId } });
+            const shift = await this.shiftRepo.findOne({ where: { shiftId: edhiShiftId } });
             if (!shift) {
-                throw new Error(`Shift with shiftId ${shiftId} not found`);
+                throw new Error(`Shift with shiftId ${edhiShiftId} not found`);
             }
+
+            let updatedEdhiEmp: Employee | undefined;
+
+                  if (edhiEmp) {
+                    updatedEdhiEmp = edhiEmp;
+                  } else {
+                    const existingWode = await this.edhRepo.findOne({ where: { edhiId: id } });
+                    if (existingWode) {
+                      updatedEdhiEmp = existingWode.edhiEmp;
+                    }
+                  }
+
               await this.edhRepo.update(
                 { edhiId: id },
                 {
-                  edhiEmp: employee,
+                  edhiEmp: updatedEdhiEmp,
                   edhiStartDate: edhiStartDate,
                   edhiEndDate: edhiEndDate, 
                   edhiModifiedDate: edhiModifiedDate, 
@@ -127,7 +165,7 @@ export class EmployeeDepartmentHistoryService {
                   edhiStartDate: edhiStartDate,
                   edhiEndDate: edhiEndDate,
                   edhiModifiedDate: edhiModifiedDate,
-                  edhiEmp: employee,
+                  edhiEmp: updatedEdhiEmp,
                   edhiDept: dept,
                   edhiShift: shift,
                 },
@@ -147,7 +185,7 @@ export class EmployeeDepartmentHistoryService {
                     edhiId: id,
                 },
               };
-            } catch (error) {
+            } catch (error) { 
               throw new Error(`Error deleting data: ${error.message}`);
             }
           }          
