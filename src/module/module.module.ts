@@ -5,8 +5,6 @@ import { Bank } from 'output/entities/Bank';
 import { PaymentGateway } from 'output/entities/PaymentGateway';
 import { PaymentTransaction } from 'output/entities/PaymentTransaction';
 import { UserAccounts } from 'output/entities/UserAccounts';
-import { EntitysService } from 'src/payment/entitys/entitys.service';
-import { EntitysController } from 'src/payment/entitys/entitys.controller';
 import { BankService } from 'src/payment/bank/bank.service';
 import { BankController } from 'src/payment/bank/bank.controller';
 import { PaymentgatewayService } from 'src/payment/paymentgateway/paymentgateway.service';
@@ -15,6 +13,8 @@ import { PaymenttransactionService } from 'src/payment/paymenttransaction/paymen
 import { PaymenttransactionController } from 'src/payment/paymenttransaction/paymenttransaction.controller';
 import { UseraccountsService } from 'src/payment/useraccounts/useraccounts.service';
 import { UserAccountsController } from 'src/payment/useraccounts/useraccounts.controller';
+import { TopupService } from 'src/payment/topup/topup.service';
+import { TopupController } from 'src/payment/topup/topup.controller';
 // import { PaymentGatewayService } from 'src/payment-gateway/payment-gateway.service';
 // import { PaymentGatewayController } from 'src/payment-gateway/payment-gateway.controller';
 // import { Module } from '@nestjs/common';
@@ -46,17 +46,17 @@ import { UserAccountsController } from 'src/payment/useraccounts/useraccounts.co
     // JwtGuard,
     // UserService,
     BankService,
-    EntitysService,
     PaymentgatewayService,
     PaymenttransactionService,
     UseraccountsService,
+    TopupService,
   ],
   controllers: [
     BankController,
-    EntitysController,
     PaymentgatewayController,
     PaymenttransactionController,
     UserAccountsController,
+    TopupController,
   ],
   exports: [],
 })

@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaymentGateway } from 'output/entities/PaymentGateway';
+import { Entitys } from 'output/entities/Entitys';
 
 @Injectable()
 export class PaymentgatewayService {
   constructor(
     @InjectRepository(PaymentGateway)
     private serviceRepo: Repository<PaymentGateway>,
+    @InjectRepository(Entitys)
+    private entityRepo: Repository<Entitys>,
   ) {}
   public async getPaymentGateways() {
     return await this.serviceRepo.find({
@@ -26,14 +29,13 @@ export class PaymentgatewayService {
     });
   }
 
-  public async addPaymentGateway(
-    pagaEntityId: number,
-    pagaCode: string,
-    pagaName: string,
-  ) {
+  public async addPaymentGateway(pagaCode: string, pagaName: string) {
     try {
+      const entity = await this.entityRepo.save({});
       const paymentGateway = await this.serviceRepo.save({
-        pagaEntityId: pagaEntityId,
+        pagaEntity: {
+          entityId: entity.entityId,
+        },
         pagaCode: pagaCode,
         pagaName: pagaName,
         pagaModifiedDate: new Date(),

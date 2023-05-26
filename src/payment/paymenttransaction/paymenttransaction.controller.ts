@@ -48,6 +48,62 @@ export class PaymenttransactionController {
       patrUserId,
     );
   }
+  @Post('/credit')
+  public async Credit(
+    @Body('patrId') patrId: number,
+    @Body('patrTrxId') patrTrxId: string,
+    @Body('patrDebet') patrDebet: string,
+    @Body('patrCredit') patrCredit: string,
+    @Body('patrType') patrType: string,
+    @Body('patrNote') patrNote: string,
+    @Body('patrOrderNumber') patrOrderNumber: string,
+    @Body('patrSourceId') patrSourceId: string,
+    @Body('patrTargetId') patrTargetId: string,
+    @Body('patrTrxNumberRef') patrTrxNumberRef: string,
+    @Body('patrUser') patrUserId: number,
+  ) {
+    return await this.Services.addCreditTransaction(
+      patrId,
+      patrTrxId,
+      patrDebet,
+      patrCredit,
+      patrType,
+      patrNote,
+      patrOrderNumber,
+      patrSourceId,
+      patrTargetId,
+      patrTrxNumberRef,
+      patrUserId,
+    );
+  }
+  @Post('/debet')
+  public async Debit(
+    @Body('patrId') patrId: number,
+    @Body('patrTrxId') patrTrxId: string,
+    @Body('patrDebet') patrDebet: string,
+    @Body('patrCredit') patrCredit: string,
+    @Body('patrType') patrType: string,
+    @Body('patrNote') patrNote: string,
+    @Body('patrOrderNumber') patrOrderNumber: string,
+    @Body('patrSourceId') patrSourceId: string,
+    @Body('patrTargetId') patrTargetId: string,
+    @Body('patrTrxNumberRef') patrTrxNumberRef: string,
+    @Body('patrUser') patrUserId: number,
+  ) {
+    return await this.Services.addDebitTransaction(
+      patrId,
+      patrTrxId,
+      patrDebet,
+      patrCredit,
+      patrType,
+      patrNote,
+      patrOrderNumber,
+      patrSourceId,
+      patrTargetId,
+      patrTrxNumberRef,
+      patrUserId,
+    );
+  }
   @Put(':id')
   public async Update(
     @Param('id') id: number,

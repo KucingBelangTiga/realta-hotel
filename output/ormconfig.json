@@ -5,9 +5,10 @@
     "host": "localhost",
     "port": 5432,
     "username": "postgres",
-    "password": "coba1234",
-    "database": "",
+    "password": "admin",
+    "database": "realtahotel",
+    "entities": ["dist/output/entities/*.js"],
     "synchronize": false,
-    "entities": ["entities/*.js"]
+    "autoLoadEntities": true
   }
 ]

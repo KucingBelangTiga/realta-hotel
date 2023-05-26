@@ -22,11 +22,10 @@ export class BankController {
   }
   @Post()
   public async Create(
-    @Body('entityId') entityId: number,
     @Body('bankCode') bankCode: string,
     @Body('bankName') bankName: string,
   ) {
-    return await this.Services.addBank(entityId, bankCode, bankName);
+    return await this.Services.addBank(bankCode, bankName);
   }
   @Put(':id')
   public async Update(

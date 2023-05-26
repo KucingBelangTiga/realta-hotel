@@ -22,15 +22,10 @@ export class PaymentgatewayController {
   }
   @Post()
   public async Create(
-    @Body('pagaEntityId') pagaEntityId: number,
     @Body('pagaCode') pagaCode: string,
     @Body('pagaName') pagaName: string,
   ) {
-    return await this.Services.addPaymentGateway(
-      pagaEntityId,
-      pagaCode,
-      pagaName,
-    );
+    return await this.Services.addPaymentGateway(pagaCode, pagaName);
   }
   @Put(':id')
   public async Update(

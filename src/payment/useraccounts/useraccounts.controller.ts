@@ -17,7 +17,15 @@ export class UserAccountsController {
     return await this.Services.getUserAccount();
   }
   @Get(':id')
-  public async getOne(@Param('id') id: number) {
+  public async getCurrentSource(@Param('id') id: string) {
+    return await this.Services.getCurrentSourceByUser(id);
+  }
+  @Get(':id')
+  public async getCurrentTarget(@Param('id') id: string) {
+    return await this.Services.getCurrentTargetByUser(id);
+  }
+  @Get(':id')
+  public async getOne(@Param('id') id: string) {
     return await this.Services.getUserAccountById(id);
   }
   @Post()
@@ -64,8 +72,11 @@ export class UserAccountsController {
       usacSecureCode,
     );
   }
-  @Delete(':id')
-  public async Delete(@Param('id') id: number) {
-    return await this.Services.deleteUserAccount(id);
+  @Delete(':usacEntityId/:usacUserId')
+  public async Delete(
+    @Param('usacEntityId') usacEntityId: number,
+    @Param('usacUserId') usacUserId: number,
+  ) {
+    return await this.Services.deleteUserAccount(usacEntityId, usacUserId);
   }
 }

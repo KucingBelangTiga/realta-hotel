@@ -50,6 +50,72 @@ export class PaymenttransactionService {
       return error.message;
     }
   }
+  public async addCreditTransaction(
+    patrId: number,
+    patrTrxId: string,
+    patrDebet: string,
+    patrCredit: string,
+    patrType: string,
+    patrNote: string,
+    patrOrderNumber: string,
+    patrSourceId: string,
+    patrTargetId: string,
+    patrTrxNumberRef: string,
+    patrUserId: number,
+  ) {
+    try {
+      const paymentTransaction = await this.serviceRepo.save({
+        patrId: patrId,
+        patrTrxId: patrTrxId,
+        patrDebet: patrDebet,
+        patrCredit: patrCredit,
+        patrType: patrType,
+        patrNote: patrNote,
+        patrModifiedDate: new Date(),
+        patrOrderNumber: patrOrderNumber,
+        patrSourceId: patrSourceId,
+        patrTargetId: patrTargetId,
+        patrTrxNumberRef: patrTrxNumberRef,
+        patrUserId: patrUserId,
+      });
+      return paymentTransaction;
+    } catch (error) {
+      return error.message;
+    }
+  }
+  public async addDebitTransaction(
+    patrId: number,
+    patrTrxId: string,
+    patrDebet: string,
+    patrCredit: string,
+    patrType: string,
+    patrNote: string,
+    patrOrderNumber: string,
+    patrSourceId: string,
+    patrTargetId: string,
+    patrTrxNumberRef: string,
+    patrUserId: number,
+  ) {
+    try {
+      const paymentTransaction = await this.serviceRepo.save({
+        patrId: patrId,
+        patrTrxId: patrTrxId,
+        patrDebet: patrDebet,
+        patrCredit: patrCredit,
+        patrType: patrType,
+        patrNote: patrNote,
+        patrModifiedDate: new Date(),
+        patrOrderNumber: patrOrderNumber,
+        patrSourceId: patrSourceId,
+        patrTargetId: patrTargetId,
+        patrTrxNumberRef: patrTrxNumberRef,
+        patrUserId: patrUserId,
+      });
+      return paymentTransaction;
+    } catch (error) {
+      return error.message;
+    }
+  }
   public async updatePaymentTransaction(
     id: number,
     patrId: number,

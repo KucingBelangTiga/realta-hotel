@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bank } from 'output/entities/Bank';
+import { Entitys } from 'output/entities/Entitys';
 
 @Injectable()
 export class BankService {
-  constructor(@InjectRepository(Bank) private serviceRepo: Repository<Bank>) {}
+  constructor(
+    @InjectRepository(Bank) private serviceRepo: Repository<Bank>,
+    @InjectRepository(Entitys)
+    private entityRepo: Repository<Entitys>,
+  ) {}
+
   public async getBanks() {
     return await this.serviceRepo.find({
       relations: {
@@ -23,14 +29,13 @@ export class BankService {
     });
   }
 
-  public async addBank(
-    bankEntityId: number,
-    bankCode: string,
-    bankName: string,
-  ) {
+  public async addBank(bankCode: string, bankName: string) {
     try {
+      const entity = await this.entityRepo.save({});
       const bank = await this.serviceRepo.save({
-        bankEntityId: bankEntityId,
+        bankEntity: {
+          entityId: entity.entityId,
+        },
         bankCode: bankCode,
         bankName: bankName,
         bankModifiedDate: new Date(),
