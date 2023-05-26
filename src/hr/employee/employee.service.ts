@@ -11,6 +11,7 @@ import { Employee } from 'output/entities/Employee';
 import { EmployeeDepartmentHistory } from 'output/entities/EmployeeDepartmentHistory';
 import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
 import { JobRole } from 'output/entities/JobRole';
+import { Shift } from 'output/entities/Shift';
 import { Users } from 'output/entities/Users';
 import { EmployeeDepartmentHistoryService } from '../employee_department_history/employee_department_history.service';
 import { EmployeePayHistoryService } from '../employee_pay_history/employee_pay_history.service';
@@ -18,19 +19,22 @@ import { EmployeePayHistoryService } from '../employee_pay_history/employee_pay_
 @Injectable()
 export class EmployeeService {
     constructor(
-        private edhService: EmployeeDepartmentHistoryService,
-        @InjectRepository(Department)
-        private departmentRepo: Repository<Department>, 
-        @InjectRepository(Employee)
-        private employeeRepo: Repository<Employee>,
-        @InjectRepository(EmployeeDepartmentHistory)
-        private edhRepo: Repository<EmployeeDepartmentHistory>,
-        @InjectRepository(EmployeePayHistory)
-        private ephRepo: Repository<EmployeePayHistory>,
-        @InjectRepository(JobRole)
-        private jobRoleRepo: Repository<JobRole>,
-        @InjectRepository(Users)
-        private usersRepo: Repository<Users>,
+      private edhService: EmployeeDepartmentHistoryService,
+      private ephService: EmployeePayHistoryService,
+      @InjectRepository(Department)
+      private departmentRepo: Repository<Department>, 
+      @InjectRepository(Shift)
+      private shiftRepo: Repository<Shift>, 
+      @InjectRepository(Employee)
+      private employeeRepo: Repository<Employee>,
+      @InjectRepository(EmployeeDepartmentHistory)
+      private edhRepo: Repository<EmployeeDepartmentHistory>,
+      @InjectRepository(EmployeePayHistory)
+      private ephRepo: Repository<EmployeePayHistory>,
+      @InjectRepository(JobRole)
+      private jobRoleRepo: Repository<JobRole>,
+      @InjectRepository(Users)
+      private usersRepo: Repository<Users>,
       ) {}
 
     //   public async findAllEmp(query: PaginateQuery): Promise<Paginated<Employee>> {
@@ -133,6 +137,75 @@ export class EmployeeService {
     return employee;
   }  
 
+      //emp only
+        // public async createEmp(
+        //   file: any,
+        //   createEmployee: {
+        //   empNationalId: string,
+        //   empBirthDate: string,
+        //   empMaritalStatus: string, 
+        //   empGender: string, 
+        //   empHireDate: Date,
+        //   empSalariedFlag: string,
+        //   empVacationHours: number,
+        //   empSickleaveHourse: number,
+        //   empCurrentFlag: number,
+        //   empModifiedDate: Date,
+        //   empEmpId?: number,
+        //   empJoroId?: number,
+        //   empUserId?: number,
+        //   empName: string, }
+        //   ) { createEmployee.empModifiedDate = new Date();
+        //     try {
+        //       const employee = createEmployee.empEmpId ? await this.employeeRepo.findOne({ where: { empId: createEmployee.empEmpId } }) : null;
+        //       if (createEmployee.empEmpId && !employee) {
+        //         throw new Error(`Employee with empId ${createEmployee.empEmpId} not found`);
+        //       }
+  
+        //       const jobRole = createEmployee. empJoroId ? await this.jobRoleRepo.findOne({ where: { joroId: createEmployee. empJoroId } }) : null;
+        //       if (createEmployee. empJoroId && !jobRole) {
+        //         throw new Error(`Job role with  joroId ${createEmployee. empJoroId} not found`);
+        //       }
+  
+        //       const user = createEmployee.empUserId ? await this.usersRepo.findOne({ where: { userId: createEmployee.empUserId } }) : null;
+        //       if (createEmployee.empUserId && !user) {
+        //         throw new Error(`User with userId ${createEmployee.empUserId} not found`);
+        //       }
+        //       const newEmp = this.employeeRepo.create({ 
+        //       empPhoto: file ? file.originalname : null, 
+        //       empNationalId: createEmployee.empNationalId,
+        //       empBirthDate: createEmployee.empBirthDate,
+        //       empMaritalStatus: createEmployee.empMaritalStatus, 
+        //       empGender: createEmployee.empGender, 
+        //       empHireDate: createEmployee.empHireDate,
+        //       empSalariedFlag: createEmployee.empSalariedFlag,
+        //       empVacationHours: createEmployee.empVacationHours,
+        //       empSickleaveHourse: createEmployee.empSickleaveHourse,
+        //       empCurrentFlag: createEmployee.empCurrentFlag,
+        //       empModifiedDate: createEmployee.empModifiedDate,
+        //       empEmp: employee,
+        //       empJoro: jobRole,
+        //       empUser: user,
+        //       empName: createEmployee.empName,
+        //     });
+        //   await this.employeeRepo.save(newEmp);
+        //   return {
+        //       statusCode: 201,
+        //       message: 'Data added successfully',
+        //       data: {
+        //           empId: newEmp.empId,
+        //           empNationalId: createEmployee.empNationalId,
+        //           empEmp: employee,
+        //           empUser: user,
+        //           empJoro: jobRole,
+        //       },
+        //     };
+        //   } catch (error) {
+        //     throw new Error(`Error adding data: ${error.message}`);
+        //   }
+        //   }
+
+        //emp-edh-eph
         public async createEmp(
           file: any,
           createEmployee: {
@@ -146,15 +219,31 @@ export class EmployeeService {
           empSickleaveHourse: number,
           empCurrentFlag: number,
           empModifiedDate: Date,
-          empEmpId?: number,
+          empEmp?: Employee,
           empJoroId?: number,
           empUserId?: number,
-          empName: string, }
+          empName: string, },
+
+          ephiEmp: Employee,
+          ephiRateChangeDate: Date = new Date(),
+          ephiRateSalary: string,
+          ephiPayFrequence: number,
+          ephiModifiedDate: Date = new Date(),
+
+          edhiEmp: Employee,
+          edhiStartDate: Date,
+          edhiEndDate: Date,
+          edhiModifiedDate: Date = new Date(),
+          edhiDept: Department,
+          edhiShift: Shift,
           ) { createEmployee.empModifiedDate = new Date();
             try {
-              const employee = createEmployee.empEmpId ? await this.employeeRepo.findOne({ where: { empId: createEmployee.empEmpId } }) : null;
-              if (createEmployee.empEmpId && !employee) {
-                throw new Error(`Employee with empId ${createEmployee.empEmpId} not found`);
+              let employee = null;
+              if (createEmployee.empEmp && createEmployee.empEmp.empId) {
+                employee = await this.employeeRepo.findOne({ where: { empId: createEmployee.empEmp.empId } });
+                if (!employee) {
+                  throw new Error(`Employee with empId ${createEmployee.empEmp.empId} not found`);
+                }
               }
   
               const jobRole = createEmployee. empJoroId ? await this.jobRoleRepo.findOne({ where: { joroId: createEmployee. empJoroId } }) : null;
@@ -166,39 +255,60 @@ export class EmployeeService {
               if (createEmployee.empUserId && !user) {
                 throw new Error(`User with userId ${createEmployee.empUserId} not found`);
               }
+              
               const newEmp = this.employeeRepo.create({ 
-              empPhoto: file ? file.originalname : null, 
-              empNationalId: createEmployee.empNationalId,
-              empBirthDate: createEmployee.empBirthDate,
-              empMaritalStatus: createEmployee.empMaritalStatus, 
-              empGender: createEmployee.empGender, 
-              empHireDate: createEmployee.empHireDate,
-              empSalariedFlag: createEmployee.empSalariedFlag,
-              empVacationHours: createEmployee.empVacationHours,
-              empSickleaveHourse: createEmployee.empSickleaveHourse,
-              empCurrentFlag: createEmployee.empCurrentFlag,
-              empModifiedDate: createEmployee.empModifiedDate,
-              empEmp: employee,
-              empJoro: jobRole,
-              empUser: user,
-              empName: createEmployee.empName,
-            });
-          await this.employeeRepo.save(newEmp);
-          return {
-              statusCode: 201,
-              message: 'Data added successfully',
-              data: {
-                  empId: newEmp.empId,
-                  empNationalId: createEmployee.empNationalId,
-                  empEmp: employee,
-                  empUser: user,
-                  empJoro: jobRole,
-              },
-            };
-          } catch (error) {
-            throw new Error(`Error adding data: ${error.message}`);
-          }
-          }
+                empPhoto: file ? file.originalname : null, 
+                empNationalId: createEmployee.empNationalId,
+                empBirthDate: createEmployee.empBirthDate,
+                empMaritalStatus: createEmployee.empMaritalStatus, 
+                empGender: createEmployee.empGender, 
+                empHireDate: createEmployee.empHireDate,
+                empSalariedFlag: createEmployee.empSalariedFlag,
+                empVacationHours: createEmployee.empVacationHours,
+                empSickleaveHourse: createEmployee.empSickleaveHourse,
+                empCurrentFlag: createEmployee.empCurrentFlag,
+                empModifiedDate: createEmployee.empModifiedDate,
+                empEmp: employee,
+                empJoro: jobRole,
+                empUser: user,
+                empName: createEmployee.empName,
+              });
+              await this.employeeRepo.save(newEmp);
+
+              const newEph = this.ephRepo.create({
+                ephiEmp: newEmp,
+                ephiRateChangeDate: ephiRateChangeDate,
+                ephiRateSalary: ephiRateSalary,
+                ephiPayFrequence: ephiPayFrequence,
+                ephiModifiedDate: ephiModifiedDate,
+              });
+              await this.ephRepo.save(newEph);
+  
+              const newEdh = this.edhRepo.create({
+                edhiEmp: newEmp,
+                edhiStartDate: edhiStartDate,
+                edhiEndDate: edhiEndDate,
+                edhiModifiedDate: edhiModifiedDate,
+                edhiDept: edhiDept,
+                edhiShift: edhiShift,
+              });
+              await this.edhRepo.save(newEdh);            
+  
+            return {
+                statusCode: 201,
+                message: 'Data added successfully',
+                data: {
+                    empId: newEmp.empId,
+                    empNationalId: createEmployee.empNationalId,
+                    empEmp: employee,
+                    empUser: user,
+                    empJoro: jobRole,
+                },
+              };
+            } catch (error) {
+              throw new Error(`Error adding data: ${error.message}`);
+            }
+            }
 
         public async updateEmp(
           id: number,

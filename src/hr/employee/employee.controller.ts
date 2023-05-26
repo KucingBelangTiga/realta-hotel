@@ -24,6 +24,8 @@ import {
   import { EmployeeDepartmentHistory } from 'output/entities/EmployeeDepartmentHistory';
   import { EmployeePayHistory } from 'output/entities/EmployeePayHistory';
   import { Users } from 'output/entities/Users';
+  import { Department } from 'output/entities/Department';
+  import { Shift } from 'output/entities/Shift';
   import { Request } from 'express';
   import { Multer } from 'multer';
   import { diskStorage } from 'multer';
@@ -38,6 +40,10 @@ export class EmployeeController {
         private jobRoleRepo: Repository<JobRole>,
         @InjectRepository(Users)
         private usersRepo: Repository<Users>,
+        @InjectRepository(Department)
+        private departmentRepo: Repository<Department>, 
+        @InjectRepository(Shift)
+        private shiftRepo: Repository<Shift>, 
         ) {}
 
     // @Get()
@@ -67,7 +73,56 @@ export class EmployeeController {
     //   };
     // }
     
-    @Post() 
+    //emp only
+//     @Post() 
+//     @UseInterceptors(FileInterceptor('file', 
+//     {
+//         storage: diskStorage({ 
+//             destination: './uploads/hr',
+//             filename: (req, file, callback) => {
+//               const fileName = `${file.originalname}`; 
+//               callback(null, fileName);
+//     },})}))
+//     public async createEmp(
+//         @UploadedFile() file,
+//         @Body() createEmployee: {
+//           empNationalId: string,
+//           empBirthDate: string,
+//           empMaritalStatus: string,
+//           empGender: string,
+//           empHireDate: Date,
+//           empSalariedFlag: string,
+//           empVacationHours: number,
+//           empSickleaveHourse: number,
+//           empCurrentFlag: number, 
+//           empModifiedDate: Date, 
+//           empEmpId?: number, 
+//           empJoroId?: number,
+//           empUserId?: number,
+//           empName: string,
+//         }
+//     ) { 
+//     createEmployee.empModifiedDate = new Date();
+//     if (!file) {
+//         file = null; 
+//     }
+//     if (!createEmployee.empUserId) {
+//         createEmployee.empUserId = null;
+//     }
+//     if (!createEmployee.empEmpId) {
+//         createEmployee.empEmpId = null;
+//     }
+//     if (!createEmployee. empJoroId) {
+//         createEmployee. empJoroId = null;
+//     }
+//     return await this.employeeService.createEmp(
+//         file, 
+//         createEmployee
+//     );
+// } 
+
+//emp-eph-edh
+@Post() 
     @UseInterceptors(FileInterceptor('file', 
     {
         storage: diskStorage({ 
@@ -78,7 +133,7 @@ export class EmployeeController {
     },})}))
     public async createEmp(
         @UploadedFile() file,
-        @Body() createEmployee: {
+        @Body() createEmployee: { 
           empNationalId: string,
           empBirthDate: string,
           empMaritalStatus: string,
@@ -89,28 +144,51 @@ export class EmployeeController {
           empSickleaveHourse: number,
           empCurrentFlag: number, 
           empModifiedDate: Date, 
-          empEmpId?: number, 
+          empEmp?: Employee, 
           empJoroId?: number,
           empUserId?: number,
           empName: string,
-        }
-    ) { 
-    createEmployee.empModifiedDate = new Date();
+        },
+
+        @Body('ephiEmp') ephiEmp: Employee,
+        ephiRateChangeDate: Date = new Date(),
+        @Body('ephiRateSalary') ephiRateSalary: string,
+        @Body('ephiPayFrequence') ephiPayFrequence: number,
+        ephiModifiedDate: Date = new Date(),
+
+        @Body('edhiEmp') edhiEmp: Employee,
+        @Body('edhiStartDate') edhiStartDate: Date,
+        @Body('edhiEndDate') edhiEndDate: Date,
+        edhiModifiedDate: Date = new Date(),
+        @Body('edhiDept') edhiDept: Department,
+        @Body('edhiShift') edhiShift: Shift,
+    ) {  createEmployee.empModifiedDate = new Date();
     if (!file) {
         file = null; 
     }
     if (!createEmployee.empUserId) {
         createEmployee.empUserId = null;
     }
-    if (!createEmployee.empEmpId) {
-        createEmployee.empEmpId = null;
+    if (!createEmployee.empEmp) {
+        createEmployee.empEmp = null;
     }
     if (!createEmployee. empJoroId) {
         createEmployee. empJoroId = null;
     }
     return await this.employeeService.createEmp(
         file, 
-        createEmployee
+        createEmployee,
+        ephiEmp,
+        ephiRateChangeDate,
+        ephiRateSalary, 
+        ephiPayFrequence, 
+        ephiModifiedDate,
+        edhiEmp,
+        edhiStartDate,
+        edhiEndDate, 
+        edhiModifiedDate, 
+        edhiDept,
+        edhiShift,
     );
 } 
 
