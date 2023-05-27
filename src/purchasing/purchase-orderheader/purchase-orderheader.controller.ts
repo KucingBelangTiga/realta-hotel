@@ -19,6 +19,11 @@ export class PurchaseOrderheaderController {
     return this.purchaseOrderHeaderService.listPurchaseOrderHeader(page);
   }
 
+  @Get('/listOrder')
+  public async findAllPurchaseHeader() {
+    return this.purchaseOrderHeaderService.findAllPurchaseHeader();
+  }
+
   @Get('/listOrder/search')
   public async findPurchaseOrderByName(
     @Query('poheNumber') poheNumber: string,

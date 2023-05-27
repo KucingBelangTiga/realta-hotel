@@ -59,6 +59,7 @@ import { StockPhotoController } from "../purchasing/stock-photo/stock-photo.cont
 import { StocksController } from "../purchasing/stocks/stocks.controller";
 import { VendorController } from "../purchasing/vendor/vendor.controller";
 import { VendorProductController } from "../purchasing/vendor-product/vendor-product.controller";
+import { FacilityController } from 'src/facility/facility/facility.controller';
 import { PurchaseOrderDetailService } from "../purchasing/purchase-order-detail/purchase-order-detail.service";
 import { PurchaseOrderheaderService } from "../purchasing/purchase-orderheader/purchase-orderheader.service";
 import { StockDetailService } from "../purchasing/stock-detail/stock-detail.service";
@@ -68,6 +69,7 @@ import { VendorService } from "../purchasing/vendor/vendor.service";
 import { VendorProductService } from "../purchasing/vendor-product/vendor-product.service";
 import { MulterModule } from '@nestjs/platform-express';
 import { UploadMiddleware } from 'src/middleware/upload.middleware';
+import { FacilityService } from 'src/facility/facility/facility.service';
 
 
 @Module(
@@ -76,9 +78,9 @@ import { UploadMiddleware } from 'src/middleware/upload.middleware';
             TypeOrmModule.forFeature([Address,Bank,BookingOrderDetail,BookingOrderDetailExtra,BookingOrders,CategoryGroup,Country,Department,Employee,EmployeeDepartmentHistory,EmployeePayHistory,Entitys,Facilities,FacilityPhoto,FacilityPriceHistory,HotelReviews,Hotels,JobRole,Members,OrderMenuDetail,OrderMenus,PaymentGateway,PaymentTransaction,Policy,PolicyCategoryGroup,PriceItems,Proviences,PurchaseOrderDetail,PurchaseOrderHeader,Regions,RestoMenuPhotos,RestoMenus,Roles,ServiceTask,Shift,SpecialOfferCoupons,SpecialOffers,StockDetail,StockPhoto,Stocks,UserAccounts,UserBonusPoints,UserBreakfeast,UserMembers,UserPassword,UserRoles,Users,Vendor,VendorProduct,WorkOrderDetail,WorkOrders]),
             MulterModule.register(UploadMiddleware.MulterOption()),
         ],
-        controllers:[PurchaseOrderDetailController,PurchaseOrderheaderController,StockDetailController,StockPhotoController,StocksController,VendorController,VendorProductController],
-        providers: [PurchaseOrderDetailService, PurchaseOrderheaderService, StockDetailService, StockPhotoService, StocksService, VendorService, VendorProductService],
-        exports: [PurchaseOrderDetailService, PurchaseOrderheaderService, StockDetailService, StockPhotoService, StocksService, VendorService, VendorProductService]
+        controllers:[PurchaseOrderDetailController,PurchaseOrderheaderController,StockDetailController,StockPhotoController,StocksController,VendorController,VendorProductController, FacilityController],
+        providers: [PurchaseOrderDetailService, PurchaseOrderheaderService, StockDetailService, StockPhotoService, StocksService, VendorService, VendorProductService, FacilityService],
+        exports: [PurchaseOrderDetailService, PurchaseOrderheaderService, StockDetailService, StockPhotoService, StocksService, VendorService, VendorProductService, FacilityService]
     }
 )
 export class PurchasingModule{}

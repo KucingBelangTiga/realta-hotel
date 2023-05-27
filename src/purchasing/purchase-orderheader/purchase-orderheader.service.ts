@@ -33,6 +33,17 @@ export class PurchaseOrderheaderService {
     }
   }
 
+  public async findAllPurchaseHeader() {
+    try {
+      const response = await this.purchaseOrderHeaderRepo.find();
+      return response;
+    } catch (error) {
+      throw new Error(
+        `terjadi kesalahan di list all PO Header, ${error.message}`,
+      );
+    }
+  }
+
   public async findPurchaseOrderByName(poheNumber: string) {
     try {
       const response = await this.purchaseOrderHeaderRepo
