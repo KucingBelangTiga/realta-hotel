@@ -39,7 +39,7 @@ export class EmployeePayHistoryController {
       return await this.ephService.getAllEph();
     }
 
-    //get all aphi by empId
+    //get ephi by empId
     @Get('all/:id')
     public async findAllEph(@Param('id') id: number) {
       return await this.ephService.findAllEph(id);

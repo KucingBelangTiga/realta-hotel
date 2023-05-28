@@ -57,8 +57,7 @@ export class EmployeeDepartmentHistoryService {
         order: { edhiId: 'ASC' }, 
         where: { edhiEmp: { empId: id } },
         relations: ['edhiEmp', 'edhiDept', 'edhiShift'],
-        // select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp', 'wodeFaci', 'wodeSeta', 'edhiEmp'],
-      });
+       });
     }
 
       public async findOneEdh(id: number) { 
@@ -137,9 +136,9 @@ export class EmployeeDepartmentHistoryService {
 
             let updatedEdhiEmp: Employee | undefined;
 
-                  if (edhiEmp) {
+                  if (edhiEmp) {  //jika bernilai, tetap gunakan nilai lama
                     updatedEdhiEmp = edhiEmp;
-                  } else {
+                  } else { //jika edhiEmp tak bernilai, cari empId dari employee, jika empId tak berubah = edhiEmp tak berubah
                     const existingWode = await this.edhRepo.findOne({ where: { edhiId: id } });
                     if (existingWode) {
                       updatedEdhiEmp = existingWode.edhiEmp;

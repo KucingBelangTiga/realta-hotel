@@ -48,7 +48,7 @@ export class EmployeeService {
     //             empEmp: true,
     //             empJoro: true,
     //             empUser: true
-    //         }, //bisa pakai array spt findOne di bawah
+    //         },
     //         filterableColumns: {
     //             empId: [FilterOperator. IN],
     //             empName: [FilterOperator. ILIKE],
@@ -137,75 +137,7 @@ export class EmployeeService {
     return employee;
   }  
 
-      //emp only
-        // public async createEmp(
-        //   file: any,
-        //   createEmployee: {
-        //   empNationalId: string,
-        //   empBirthDate: string,
-        //   empMaritalStatus: string, 
-        //   empGender: string, 
-        //   empHireDate: Date,
-        //   empSalariedFlag: string,
-        //   empVacationHours: number,
-        //   empSickleaveHourse: number,
-        //   empCurrentFlag: number,
-        //   empModifiedDate: Date,
-        //   empEmpId?: number,
-        //   empJoroId?: number,
-        //   empUserId?: number,
-        //   empName: string, }
-        //   ) { createEmployee.empModifiedDate = new Date();
-        //     try {
-        //       const employee = createEmployee.empEmpId ? await this.employeeRepo.findOne({ where: { empId: createEmployee.empEmpId } }) : null;
-        //       if (createEmployee.empEmpId && !employee) {
-        //         throw new Error(`Employee with empId ${createEmployee.empEmpId} not found`);
-        //       }
-  
-        //       const jobRole = createEmployee. empJoroId ? await this.jobRoleRepo.findOne({ where: { joroId: createEmployee. empJoroId } }) : null;
-        //       if (createEmployee. empJoroId && !jobRole) {
-        //         throw new Error(`Job role with  joroId ${createEmployee. empJoroId} not found`);
-        //       }
-  
-        //       const user = createEmployee.empUserId ? await this.usersRepo.findOne({ where: { userId: createEmployee.empUserId } }) : null;
-        //       if (createEmployee.empUserId && !user) {
-        //         throw new Error(`User with userId ${createEmployee.empUserId} not found`);
-        //       }
-        //       const newEmp = this.employeeRepo.create({ 
-        //       empPhoto: file ? file.originalname : null, 
-        //       empNationalId: createEmployee.empNationalId,
-        //       empBirthDate: createEmployee.empBirthDate,
-        //       empMaritalStatus: createEmployee.empMaritalStatus, 
-        //       empGender: createEmployee.empGender, 
-        //       empHireDate: createEmployee.empHireDate,
-        //       empSalariedFlag: createEmployee.empSalariedFlag,
-        //       empVacationHours: createEmployee.empVacationHours,
-        //       empSickleaveHourse: createEmployee.empSickleaveHourse,
-        //       empCurrentFlag: createEmployee.empCurrentFlag,
-        //       empModifiedDate: createEmployee.empModifiedDate,
-        //       empEmp: employee,
-        //       empJoro: jobRole,
-        //       empUser: user,
-        //       empName: createEmployee.empName,
-        //     });
-        //   await this.employeeRepo.save(newEmp);
-        //   return {
-        //       statusCode: 201,
-        //       message: 'Data added successfully',
-        //       data: {
-        //           empId: newEmp.empId,
-        //           empNationalId: createEmployee.empNationalId,
-        //           empEmp: employee,
-        //           empUser: user,
-        //           empJoro: jobRole,
-        //       },
-        //     };
-        //   } catch (error) {
-        //     throw new Error(`Error adding data: ${error.message}`);
-        //   }
-        //   }
-
-        //emp-edh-eph
+      //emp-edh-eph
         public async createEmp(
           file: any,
           createEmployee: {
@@ -238,6 +170,7 @@ export class EmployeeService {
           edhiShift: Shift,
           ) { createEmployee.empModifiedDate = new Date();
             try {
+              //cocokkan empempId dgn empId
               let employee = null;
               if (createEmployee.empEmp && createEmployee.empEmp.empId) {
                 employee = await this.employeeRepo.findOne({ where: { empId: createEmployee.empEmp.empId } });
@@ -330,11 +263,11 @@ export class EmployeeService {
         ) {
           try { 
             
-            let updatedEmpEmp: Employee | undefined;
+            let updatedEmpEmp: Employee | undefined; //empEmp = Employee || null
 
-                  if (empEmp) {
+                  if (empEmp) {  //jika bernilai, tetap gunakan nilai lama
                     updatedEmpEmp = empEmp;
-                  } else {
+                  } else { //jika empEmp tak bernilai, cari empId dari employee, jika empId tak berubah = empEmp tak berubah
                     const existingWode = await this.employeeRepo.findOne({ where: { empId: id } });
                     if (existingWode) {
                       updatedEmpEmp = existingWode.empEmp;

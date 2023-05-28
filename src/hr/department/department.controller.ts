@@ -34,10 +34,6 @@ export class DepartmentController {
     public async findOneDept(@Param('id') id: number) {
       return await this.departmentService.findOneDept(id);
     }
-    // @Get('/department/search')
-    // public async findNameDept(@Query('deptName') deptName: string) {
-    // return await this.departmentService.findNameDept(deptName);
-    // }
  
     @Post()
     public async createDept(

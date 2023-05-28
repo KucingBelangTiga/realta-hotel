@@ -48,7 +48,7 @@ export class WorkOrderDetailController {
     //   return await this.wodeService.findAllWode();
     // }
 
-    //get all by woroId
+    //get by woroId
     @Get('all/:id')
     public async findAllWode(@Param('id') id: number) {
       return await this.wodeService.findAllWode(id);

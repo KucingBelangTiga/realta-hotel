@@ -62,9 +62,7 @@ export class WorkOrderDetailService {
             order: { wodeId: 'ASC' },
             where: { wodeWoro: { woroId: id } },
             relations: ['wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
-            // select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
-           
-          });
+            });
         }
 
         public async findOneWode(id: number) {

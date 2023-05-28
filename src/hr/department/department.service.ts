@@ -44,31 +44,6 @@ export class DepartmentService {
       }
       return department;
     }
-  
-    //search by name: http://localhost:3002/department/search?deptName="Marketing Sales" . nama 1 kata tanpa ""
-    // public async findNameDept(deptName: string) {
-    //     try {
-    //       const response = await this.departmentRepo
-    //         .createQueryBuilder('department')
-    //         .select()
-    //         .where('LOWER(department.deptName) Like LOWER(:deptName)', {
-    //           deptName: `%${deptName.toLowerCase()}%`,
-    //         })
-    //         .getMany();
-    //       if (response.length === 0) {
-    //         return {
-    //           statusCode: 401,
-    //           message: 'Department not found.',
-    //         };
-    //       } else {
-    //         return response;
-    //       }
-    //     } catch (error) {
-    //       throw new Error(
-    //         `Error:, ${error.message}`,
-    //       );
-    //     }
-    //   }
 
       public async createDept(
         deptName: string,
@@ -79,7 +54,6 @@ export class DepartmentService {
             deptName: deptName,
             deptModifiedDate: deptModifiedDate
           });
-          // return dept;
           return {
             statusCode: 201,
             message: 'Data added successfully',

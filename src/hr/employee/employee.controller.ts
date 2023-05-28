@@ -72,57 +72,9 @@ export class EmployeeController {
     //     ephi,
     //   };
     // }
-    
-    //emp only
-//     @Post() 
-//     @UseInterceptors(FileInterceptor('file', 
-//     {
-//         storage: diskStorage({ 
-//             destination: './uploads/hr',
-//             filename: (req, file, callback) => {
-//               const fileName = `${file.originalname}`; 
-//               callback(null, fileName);
-//     },})}))
-//     public async createEmp(
-//         @UploadedFile() file,
-//         @Body() createEmployee: {
-//           empNationalId: string,
-//           empBirthDate: string,
-//           empMaritalStatus: string,
-//           empGender: string,
-//           empHireDate: Date,
-//           empSalariedFlag: string,
-//           empVacationHours: number,
-//           empSickleaveHourse: number,
-//           empCurrentFlag: number, 
-//           empModifiedDate: Date, 
-//           empEmpId?: number, 
-//           empJoroId?: number,
-//           empUserId?: number,
-//           empName: string,
-//         }
-//     ) { 
-//     createEmployee.empModifiedDate = new Date();
-//     if (!file) {
-//         file = null; 
-//     }
-//     if (!createEmployee.empUserId) {
-//         createEmployee.empUserId = null;
-//     }
-//     if (!createEmployee.empEmpId) {
-//         createEmployee.empEmpId = null;
-//     }
-//     if (!createEmployee. empJoroId) {
-//         createEmployee. empJoroId = null;
-//     }
-//     return await this.employeeService.createEmp(
-//         file, 
-//         createEmployee
-//     );
-// } 
 
-//emp-eph-edh
-@Post() 
+    //emp-eph-edh
+    @Post() 
     @UseInterceptors(FileInterceptor('file', 
     {
         storage: diskStorage({ 

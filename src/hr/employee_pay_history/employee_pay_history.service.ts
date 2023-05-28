@@ -41,15 +41,13 @@ export class EmployeePayHistoryService {
       });
     }
 
-    //get all by empId
+    //get by empId
     public async findAllEph(id: number) {
       return await this.ephRepo.find({ 
         order: { ephiRateChangeDate: 'ASC' },
         where: { ephiEmp: { empId: id } },
         relations: ['ephiEmp'],
-        // select: ['wodeId','wodeTaskName', 'wodeStatus', 'wodeStartDate', 'wodeEndDate', 'wodeNotes', 'wodeEmp', 'wodeFaci', 'wodeSeta', 'wodeWoro'],
-       
-      });
+       });
     }
 
     //setelah input sendiri, ephiRateChangeDate terbaca string di db
