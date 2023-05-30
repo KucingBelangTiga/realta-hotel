@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaymentTransaction } from 'output/entities/PaymentTransaction';
+import { PaymentTransactionDto } from '../payment.dto/payment.dto';
 
 @Injectable()
 export class PaymenttransactionService {
@@ -18,32 +19,22 @@ export class PaymenttransactionService {
     });
   }
   public async addPaymentTransaction(
-    patrId: number,
-    patrTrxId: string,
-    patrDebet: string,
-    patrCredit: string,
-    patrType: string,
-    patrNote: string,
-    patrOrderNumber: string,
-    patrSourceId: string,
-    patrTargetId: string,
-    patrTrxNumberRef: string,
-    patrUserId: number,
-  ) {
+    paymentTransactionDto: PaymentTransactionDto,
+  ): Promise<PaymentTransactionDto> {
     try {
       const paymentTransaction = await this.serviceRepo.save({
-        patrId: patrId,
-        patrTrxId: patrTrxId,
-        patrDebet: patrDebet,
-        patrCredit: patrCredit,
-        patrType: patrType,
-        patrNote: patrNote,
+        patrId: paymentTransactionDto.patrId,
+        patrTrxId: paymentTransactionDto.patrTrxId,
+        patrDebet: paymentTransactionDto.patrDebet,
+        patrCredit: paymentTransactionDto.patrCredit,
+        patrType: paymentTransactionDto.patrType,
+        patrNote: paymentTransactionDto.patrNote,
         patrModifiedDate: new Date(),
-        patrOrderNumber: patrOrderNumber,
-        patrSourceId: patrSourceId,
-        patrTargetId: patrTargetId,
-        patrTrxNumberRef: patrTrxNumberRef,
-        patrUserId: patrUserId,
+        patrOrderNumber: paymentTransactionDto.patrOrderNumber,
+        patrSourceId: paymentTransactionDto.patrSourceId,
+        patrTargetId: paymentTransactionDto.patrTargetId,
+        patrTrxNumberRef: paymentTransactionDto.patrTrxNumberRef,
+        patrUserId: paymentTransactionDto.patrUserId,
       });
       return paymentTransaction;
     } catch (error) {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserAccounts } from 'output/entities/UserAccounts';
+import { UserAccountDto } from '../payment.dto/payment.dto';
 
 @Injectable()
 export class UseraccountsService {
@@ -39,26 +40,17 @@ export class UseraccountsService {
     });
   }
 
-  public async addUserAccount(
-    usacEntityId: number,
-    usacUserId: number,
-    usacAccountNumber: string,
-    usacSaldo: string,
-    usacType: string,
-    usacExpmonth: number,
-    usacExpyear: number,
-    usacSecureCode: string,
-  ) {
+  public async addUserAccount(userAccountDto: UserAccountDto) {
     try {
       const userAccount = await this.serviceRepo.save({
-        usacEntityId: usacEntityId,
-        usacUserId: usacUserId,
-        usacAccountNumber: usacAccountNumber,
-        usacSaldo: usacSaldo,
-        usacType: usacType,
-        usacExpmonth: usacExpmonth,
-        usacExpyear: usacExpyear,
-        usacSecureCode: usacSecureCode,
+        usacEntityId: userAccountDto.usacEntityId,
+        usacUserId: userAccountDto.usacUserId,
+        usacAccountNumber: userAccountDto.usacAccountNumber,
+        usacSaldo: userAccountDto.usacSaldo,
+        usacType: userAccountDto.usacType,
+        usacExpmonth: userAccountDto.usacExpmonth,
+        usacExpyear: userAccountDto.usacExpyear,
+        usacSecureCode: userAccountDto.usacSecureCode,
         usacModifiedDate: new Date(),
       });
       return userAccount;
@@ -70,23 +62,18 @@ export class UseraccountsService {
   public async updateUserAccount(
     usacEntityId: number,
     usacUserId: number,
-    usacAccountNumber: string,
-    usacSaldo: string,
-    usacType: string,
-    usacExpmonth: number,
-    usacExpyear: number,
-    usacSecureCode: string,
+    userAccountDto: UserAccountDto,
   ) {
     try {
       const userAccount = await this.serviceRepo.update(
         { usacEntityId, usacUserId },
         {
-          usacAccountNumber: usacAccountNumber,
-          usacSaldo: usacSaldo,
-          usacType: usacType,
-          usacExpmonth: usacExpmonth,
-          usacExpyear: usacExpyear,
-          usacSecureCode: usacSecureCode,
+          usacAccountNumber: userAccountDto.usacAccountNumber,
+          usacSaldo: userAccountDto.usacSaldo,
+          usacType: userAccountDto.usacType,
+          usacExpmonth: userAccountDto.usacExpmonth,
+          usacExpyear: userAccountDto.usacExpyear,
+          usacSecureCode: userAccountDto.usacSecureCode,
           usacModifiedDate: new Date(),
         },
       );

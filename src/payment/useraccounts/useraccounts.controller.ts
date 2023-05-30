@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { UseraccountsService } from './useraccounts.service';
+import { UserAccountDto } from '../payment.dto/payment.dto';
 
 @Controller('useraccount')
 export class UserAccountsController {
@@ -30,46 +31,21 @@ export class UserAccountsController {
   }
   @Post()
   public async Create(
-    @Body('usacEntityId') usacEntityId: number,
-    @Body('usacUserId') usacUserId: number,
-    @Body('usacAccountNumber') usacAccountNumber: string,
-    @Body('usacSaldo') usacSaldo: string,
-    @Body('usacType') usacType: string,
-    @Body('usacExpmonth') usacExpmonth: number,
-    @Body('usacExpyear') usacExpyear: number,
-    @Body('usacSecureCode') usacSecureCode: string,
+    @Body()
+    userAccountDto: UserAccountDto,
   ) {
-    return await this.Services.addUserAccount(
-      usacEntityId,
-      usacUserId,
-      usacAccountNumber,
-      usacSaldo,
-      usacType,
-      usacExpmonth,
-      usacExpyear,
-      usacSecureCode,
-    );
+    return await this.Services.addUserAccount(userAccountDto);
   }
   @Put(':usacEntityId/:usacUserId')
   public async Update(
     @Param('usacEntityId') usacEntityId: number,
     @Param('usacUserId') usacUserId: number,
-    @Body('usacAccountNumber') usacAccountNumber: string,
-    @Body('usacSaldo') usacSaldo: string,
-    @Body('usacType') usacType: string,
-    @Body('usacExpmonth') usacExpmonth: number,
-    @Body('usacExpyear') usacExpyear: number,
-    @Body('usacSecureCode') usacSecureCode: string,
+    @Body() userAccountDto: UserAccountDto,
   ) {
     return await this.Services.updateUserAccount(
       usacEntityId,
       usacUserId,
-      usacAccountNumber,
-      usacSaldo,
-      usacType,
-      usacExpmonth,
-      usacExpyear,
-      usacSecureCode,
+      userAccountDto,
     );
   }
   @Delete(':usacEntityId/:usacUserId')

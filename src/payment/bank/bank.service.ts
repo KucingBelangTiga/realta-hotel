@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bank } from 'output/entities/Bank';
 import { Entitys } from 'output/entities/Entitys';
+import { BankDto } from '../payment.dto/payment.dto';
 
 @Injectable()
 export class BankService {
@@ -29,15 +30,15 @@ export class BankService {
     });
   }
 
-  public async addBank(bankCode: string, bankName: string) {
+  public async addBank(bankDto: BankDto) {
     try {
       const entity = await this.entityRepo.save({});
       const bank = await this.serviceRepo.save({
         bankEntity: {
           entityId: entity.entityId,
         },
-        bankCode: bankCode,
-        bankName: bankName,
+        bankCode: bankDto.bankCode,
+        bankName: bankDto.bankName,
         bankModifiedDate: new Date(),
       });
       return bank;
@@ -46,17 +47,12 @@ export class BankService {
     }
   }
 
-  public async updateBank(
-    id: number,
-    bankEntityId: number,
-    bankCode: string,
-    bankName: string,
-  ) {
+  public async updateBank(id: number, bankDto: BankDto) {
     try {
       const bank = await this.serviceRepo.update(id, {
-        bankEntityId: bankEntityId,
-        bankCode: bankCode,
-        bankName: bankName,
+        bankEntityId: bankDto.entityId,
+        bankCode: bankDto.bankCode,
+        bankName: bankDto.bankName,
         bankModifiedDate: new Date(),
       });
       return bank;

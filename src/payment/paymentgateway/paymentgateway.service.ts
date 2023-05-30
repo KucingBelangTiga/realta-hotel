@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaymentGateway } from 'output/entities/PaymentGateway';
 import { Entitys } from 'output/entities/Entitys';
+import { PaymentGatewayDto } from '../payment.dto/payment.dto';
 
 @Injectable()
 export class PaymentgatewayService {
@@ -29,15 +30,15 @@ export class PaymentgatewayService {
     });
   }
 
-  public async addPaymentGateway(pagaCode: string, pagaName: string) {
+  public async addPaymentGateway(paymentGatewayDto: PaymentGatewayDto) {
     try {
       const entity = await this.entityRepo.save({});
       const paymentGateway = await this.serviceRepo.save({
         pagaEntity: {
           entityId: entity.entityId,
         },
-        pagaCode: pagaCode,
-        pagaName: pagaName,
+        pagaCode: paymentGatewayDto.pagaCode,
+        pagaName: paymentGatewayDto.pagaName,
         pagaModifiedDate: new Date(),
       });
       return paymentGateway;
@@ -48,15 +49,13 @@ export class PaymentgatewayService {
 
   public async updatePaymentGateway(
     id: number,
-    pagaEntityId: number,
-    pagaCode: string,
-    pagaName: string,
+    paymentGatewayDto: PaymentGatewayDto,
   ) {
     try {
       const paymentGateway = await this.serviceRepo.update(id, {
-        pagaEntityId: pagaEntityId,
-        pagaCode: pagaCode,
-        pagaName: pagaName,
+        pagaEntityId: paymentGatewayDto.entityId,
+        pagaCode: paymentGatewayDto.pagaCode,
+        pagaName: paymentGatewayDto.pagaName,
         pagaModifiedDate: new Date(),
       });
       return paymentGateway;

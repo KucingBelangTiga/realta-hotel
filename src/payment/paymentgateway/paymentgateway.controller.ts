@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { PaymentgatewayService } from './paymentgateway.service';
+import { PaymentGatewayDto } from '../payment.dto/payment.dto';
 
 @Controller('paymentgateway')
 export class PaymentgatewayController {
@@ -21,25 +22,15 @@ export class PaymentgatewayController {
     return await this.Services.getPaymentGatewayById(id);
   }
   @Post()
-  public async Create(
-    @Body('pagaCode') pagaCode: string,
-    @Body('pagaName') pagaName: string,
-  ) {
-    return await this.Services.addPaymentGateway(pagaCode, pagaName);
+  public async Create(@Body() paymentGatewayDto: PaymentGatewayDto) {
+    return await this.Services.addPaymentGateway(paymentGatewayDto);
   }
   @Put(':id')
   public async Update(
     @Param('id') id: number,
-    @Body('pagaEntityId') pagaEntityId: number,
-    @Body('pagaCode') pagaCode: string,
-    @Body('pagaName') pagaName: string,
+    @Body() paymentGatewayDto: PaymentGatewayDto,
   ) {
-    return await this.Services.updatePaymentGateway(
-      id,
-      pagaEntityId,
-      pagaCode,
-      pagaName,
-    );
+    return await this.Services.updatePaymentGateway(id, paymentGatewayDto);
   }
   @Delete(':id')
   public async Delete(@Param('id') id: number) {

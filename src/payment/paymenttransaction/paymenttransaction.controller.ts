@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { PaymenttransactionService } from './paymenttransaction.service';
+import { PaymentTransactionDto } from '../payment.dto/payment.dto';
 
 @Controller('paymenttrx')
 export class PaymenttransactionController {
@@ -22,31 +23,9 @@ export class PaymenttransactionController {
   }
   @Post()
   public async Create(
-    @Body('patrId') patrId: number,
-    @Body('patrTrxId') patrTrxId: string,
-    @Body('patrDebet') patrDebet: string,
-    @Body('patrCredit') patrCredit: string,
-    @Body('patrType') patrType: string,
-    @Body('patrNote') patrNote: string,
-    @Body('patrOrderNumber') patrOrderNumber: string,
-    @Body('patrSourceId') patrSourceId: string,
-    @Body('patrTargetId') patrTargetId: string,
-    @Body('patrTrxNumberRef') patrTrxNumberRef: string,
-    @Body('patrUser') patrUserId: number,
-  ) {
-    return await this.Services.addPaymentTransaction(
-      patrId,
-      patrTrxId,
-      patrDebet,
-      patrCredit,
-      patrType,
-      patrNote,
-      patrOrderNumber,
-      patrSourceId,
-      patrTargetId,
-      patrTrxNumberRef,
-      patrUserId,
-    );
+    paymentTransactionDto: PaymentTransactionDto,
+  ): Promise<PaymentTransactionDto> {
+    return await this.Services.addPaymentTransaction(paymentTransactionDto);
   }
   @Post('/credit')
   public async Credit(
