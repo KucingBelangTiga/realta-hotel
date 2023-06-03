@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 import { Regions } from 'output/entities/Regions';
 import { Repository } from 'typeorm';
 
@@ -12,6 +17,15 @@ export class RegionsService {
 
   public async findAll() {
     return await this.serviceRepo.find({ order: { regionCode: 'ASC' } });
+  }
+
+  public async findPage(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Regions>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.regionCode', 'ASC');
+    return paginate<Regions>(queryBuilder, options);
   }
 
   public async findOne(id: number) {

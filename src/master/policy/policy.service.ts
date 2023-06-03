@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Policy } from 'output/entities/Policy';
 import { Repository } from 'typeorm';
+import { CreatePolicyDto } from './policy.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class PolicyService {
@@ -14,16 +20,22 @@ export class PolicyService {
     return await this.serviceRepo.find();
   }
 
+  public async findPage(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Policy>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.poliId', 'ASC');
+    return paginate<Policy>(queryBuilder, options);
+  }
+
   public async findOne(id: number) {
     return await this.serviceRepo.findOne({
       where: { poliId: id },
     });
   }
 
-  public async create(masterDetail: {
-    poliName: string;
-    poliDescription: string;
-  }) {
+  public async create(masterDetail: CreatePolicyDto) {
     try {
       const master = await this.serviceRepo.save({
         ...masterDetail,
@@ -34,13 +46,7 @@ export class PolicyService {
     }
   }
 
-  public async update(
-    id: number,
-    masterDetail: {
-      poliName: string;
-      poliDescription: string;
-    },
-  ) {
+  public async update(id: number, masterDetail: CreatePolicyDto) {
     try {
       const master = await this.serviceRepo.update(id, {
         ...masterDetail,

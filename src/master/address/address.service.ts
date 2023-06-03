@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from 'output/entities/Address';
-import { Proviences } from 'output/entities/Proviences';
 import { Repository } from 'typeorm';
+import { CreateAddressDto } from './address.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AddressService {
@@ -18,6 +23,15 @@ export class AddressService {
     });
   }
 
+  public async findPage(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Address>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.addrId', 'ASC');
+    return paginate<Address>(queryBuilder, options);
+  }
+
   public async findOne(id: number) {
     return await this.serviceRepo.findOne({
       where: { addrId: id },
@@ -25,12 +39,7 @@ export class AddressService {
     });
   }
 
-  public async create(masterDetail: {
-    addrLine1: string;
-    addrLine2: string;
-    addrPostalCode: string;
-    addrProv: Proviences;
-  }) {
+  public async create(masterDetail: CreateAddressDto) {
     try {
       const master = await this.serviceRepo.save({
         ...masterDetail,
@@ -41,15 +50,7 @@ export class AddressService {
     }
   }
 
-  public async update(
-    id: number,
-    masterDetail: {
-      addrLine1: string;
-      addrLine2: string;
-      addrPostalCode: string;
-      addrProv: Proviences;
-    },
-  ) {
+  public async update(id: number, masterDetail: CreateAddressDto) {
     try {
       const master = await this.serviceRepo.update(id, {
         ...masterDetail,

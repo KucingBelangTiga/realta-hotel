@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Country } from 'output/entities/Country';
 import { Proviences } from 'output/entities/Proviences';
 import { Repository } from 'typeorm';
+import { CreateProvinceDto } from './provinces.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProvincesService {
@@ -15,16 +20,22 @@ export class ProvincesService {
     return await this.serviceRepo.find({ relations: { provCountry: true } });
   }
 
+  public async findPage(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Proviences>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.provId', 'ASC');
+    return paginate<Proviences>(queryBuilder, options);
+  }
+
   public async findOne(id: number) {
     return await this.serviceRepo.findOne({
       where: { provId: id },
     });
   }
 
-  public async create(masterDetail: {
-    provName: string;
-    provCountry: Country;
-  }) {
+  public async create(masterDetail: CreateProvinceDto) {
     try {
       const master = await this.serviceRepo.save({
         ...masterDetail,
@@ -35,13 +46,7 @@ export class ProvincesService {
     }
   }
 
-  public async update(
-    id: number,
-    masterDetail: {
-      provName: string;
-      provCountry: Country;
-    },
-  ) {
+  public async update(id: number, masterDetail: CreateProvinceDto) {
     try {
       const master = await this.serviceRepo.update(id, {
         ...masterDetail,

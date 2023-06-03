@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -15,6 +18,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { of } from 'rxjs';
 import { Policy } from 'output/entities/Policy';
+import { CreateCategoryGroupDto } from './category-group.dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { PolicyCategoryGroup } from 'output/entities/PolicyCategoryGroup';
 
 @Controller('category-group')
 export class CategoryGroupController {
@@ -23,6 +29,19 @@ export class CategoryGroupController {
   public async getAll() {
     return await this.Services.findAll();
   }
+
+  @Get('/page')
+  public async getPage(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ): Promise<Pagination<PolicyCategoryGroup>> {
+    limit = limit > 100 ? 100 : limit;
+    return this.Services.findPage({
+      page,
+      limit,
+    });
+  }
+
   @Get('policy')
   public async getAllPolicy() {
     return await this.Services.findPolicy();
@@ -37,11 +56,7 @@ export class CategoryGroupController {
   public async create(
     @UploadedFile() file,
     @Body()
-    createCategoryGroupPhoto: {
-      cagroName: string;
-      cagroDescription: string;
-      cagroType: string;
-    },
+    createCategoryGroupPhoto: CreateCategoryGroupDto,
     @Body()
     createpolicyCategory: {
       pocaPoli: Policy;
@@ -58,21 +73,11 @@ export class CategoryGroupController {
   @UseInterceptors(FileInterceptor('file'))
   public async update(
     @Param('id') id: number,
-
     @UploadedFile() file,
     @Body()
-    createCategoryGroupPhoto: {
-      cagroName: string;
-      cagroDescription: string;
-      cagroType: string;
-    },
+    createCategoryGroupPhoto: CreateCategoryGroupDto,
   ) {
-    return await this.Services.update(
-      id,
-
-      file,
-      createCategoryGroupPhoto,
-    );
+    return await this.Services.update(id, file, createCategoryGroupPhoto);
   }
 
   @Put('policy/:id')

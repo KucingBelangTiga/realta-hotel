@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ServiceTask } from 'output/entities/ServiceTask';
 import { Repository } from 'typeorm';
+import { CreateServiceTaskDto } from './service-task.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ServiceTaskService {
@@ -14,13 +20,22 @@ export class ServiceTaskService {
     return await this.serviceRepo.find();
   }
 
+  public async findPage(
+    options: IPaginationOptions,
+  ): Promise<Pagination<ServiceTask>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.setaId', 'ASC');
+    return paginate<ServiceTask>(queryBuilder, options);
+  }
+
   public async findOne(id: number) {
     return await this.serviceRepo.findOne({
       where: { setaId: id },
     });
   }
 
-  public async create(masterDetail: { setaName: string; setSeq: number }) {
+  public async create(masterDetail: CreateServiceTaskDto) {
     try {
       const master = await this.serviceRepo.save({
         ...masterDetail,
@@ -31,13 +46,7 @@ export class ServiceTaskService {
     }
   }
 
-  public async update(
-    id: number,
-    masterDetail: {
-      setaName: string;
-      setSeq: number;
-    },
-  ) {
+  public async update(id: number, masterDetail: CreateServiceTaskDto) {
     try {
       const master = await this.serviceRepo.update(id, {
         ...masterDetail,

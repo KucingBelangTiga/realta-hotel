@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PriceItems } from 'output/entities/PriceItems';
 import { Repository } from 'typeorm';
+import { CreatePriceItemsDto } from './price-items.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class PriceItemsService {
@@ -14,18 +20,30 @@ export class PriceItemsService {
     return await this.serviceRepo.find();
   }
 
+  public async findPage(
+    options: IPaginationOptions,
+    type: string,
+    name: string,
+  ): Promise<Pagination<PriceItems>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.pritId', 'ASC')
+      .where('c.pritType ilike :prittype', {
+        prittype: `%${type}%`,
+      })
+      .andWhere('c.pritName ilike :pritname', {
+        pritname: `%${name}%`,
+      });
+    return paginate<PriceItems>(queryBuilder, options);
+  }
+
   public async findOne(id: number) {
     return await this.serviceRepo.findOne({
       where: { pritId: id },
     });
   }
 
-  public async create(masterDetail: {
-    pritName: string;
-    pritPrice: string;
-    pritDescription: string;
-    pritType: string;
-  }) {
+  public async create(masterDetail: CreatePriceItemsDto) {
     try {
       const master = await this.serviceRepo.save({
         ...masterDetail,
@@ -37,15 +55,7 @@ export class PriceItemsService {
     }
   }
 
-  public async update(
-    id: number,
-    masterDetail: {
-      pritName: string;
-      pritPrice: string;
-      pritDescription: string;
-      pritType: string;
-    },
-  ) {
+  public async update(id: number, masterDetail: CreatePriceItemsDto) {
     try {
       const master = await this.serviceRepo.update(id, {
         ...masterDetail,

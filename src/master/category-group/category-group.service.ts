@@ -4,6 +4,12 @@ import { CategoryGroup } from 'output/entities/CategoryGroup';
 import { Policy } from 'output/entities/Policy';
 import { PolicyCategoryGroup } from 'output/entities/PolicyCategoryGroup';
 import { Repository } from 'typeorm';
+import { CreateCategoryGroupDto } from './category-group.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CategoryGroupService {
@@ -21,6 +27,17 @@ export class CategoryGroupService {
     });
   }
 
+  public async findPage(
+    options: IPaginationOptions,
+  ): Promise<Pagination<PolicyCategoryGroup>> {
+    const queryBuilder = this.policy
+      .createQueryBuilder('c')
+      .innerJoinAndSelect('c.pocaCagro', 'pocaCagro')
+      .innerJoinAndSelect('c.pocaPoli', 'pocaPoli')
+      .orderBy('pocaCagro.cagroId', 'ASC');
+    return paginate<PolicyCategoryGroup>(queryBuilder, options);
+  }
+
   public async findPolicy() {
     return await this.policy.find({
       relations: { pocaCagro: true, pocaPoli: true },
@@ -30,17 +47,13 @@ export class CategoryGroupService {
   public async findOne(id: number) {
     return await this.serviceRepo.findOne({
       where: { cagroId: id },
-      relations: { policyCategoryGroups: true },
+      relations: { policyCategoryGroups: { pocaPoli: true } },
     });
   }
 
   public async create(
     file: any,
-    categoryGroupDetail: {
-      cagroName: string;
-      cagroDescription: string;
-      cagroType: string;
-    },
+    categoryGroupDetail: CreateCategoryGroupDto,
     policyDetail: {
       pocaPoli: Policy;
     },
@@ -63,13 +76,8 @@ export class CategoryGroupService {
 
   public async update(
     id: number,
-
     file: any,
-    categoryGroupDetail: {
-      cagroName: string;
-      cagroDescription: string;
-      cagroType: string;
-    },
+    categoryGroupDetail: CreateCategoryGroupDto,
   ) {
     try {
       //   const findOne = this.serviceRepo.findOne({
