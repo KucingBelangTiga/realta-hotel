@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Facilities } from 'output/entities/Facilities';
 import { FacilityPriceHistory } from 'output/entities/FacilityPriceHistory';
 import { Repository } from 'typeorm';
+import { CreateFacilityPriceHistoryDto } from './facility-price-history.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class FacilityPriceHistoryService {
@@ -12,6 +17,20 @@ export class FacilityPriceHistoryService {
     private serviceRepo: Repository<FacilityPriceHistory>,
   ) {}
 
+  public async findAll(
+    options: IPaginationOptions,
+    id: number,
+  ): Promise<Pagination<FacilityPriceHistory>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.faphId', 'ASC')
+      .innerJoinAndSelect('c.faphFaci', 'faphFaci')
+      .where('faphFaci.faciId = :faciId', {
+        faciId: id,
+      });
+    return paginate<FacilityPriceHistory>(queryBuilder, options);
+  }
+
   public async findOne(id: number) {
     return await this.serviceRepo.find({
       order: { faphId: 'ASC' },
@@ -19,22 +38,9 @@ export class FacilityPriceHistoryService {
     });
   }
 
-  public async create(faphlitiesDetail: {
-    faphStartdate: Date;
-    faphEnddate: Date;
-    faphLowPrice: string;
-    faphHighPrice: string;
-    faphRatePrice: string;
-    faphDiscount: string;
-    faphTaxRate: string;
-    faphUserId: number;
-    faphFaci: Facilities;
-  }) {
+  public async create(faphlitiesDetail: CreateFacilityPriceHistoryDto) {
     try {
-      const hotels = await this.serviceRepo.save({
-        ...faphlitiesDetail,
-        faphModifiedDate: new Date(),
-      });
+      const hotels = await this.serviceRepo.save(faphlitiesDetail);
       return hotels;
     } catch (error) {
       return error.message;

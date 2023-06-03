@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Address } from 'output/entities/Address';
 import { Hotels } from 'output/entities/Hotels';
 import { Repository } from 'typeorm';
+import { CreateHotelsDto } from './hotels.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class HotelsService {
@@ -11,6 +16,20 @@ export class HotelsService {
     @InjectRepository(Hotels)
     private serviceRepo: Repository<Hotels>,
   ) {}
+
+  public async findAllData(
+    options: IPaginationOptions,
+    name: string,
+  ): Promise<Pagination<Hotels>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.hotelId', 'ASC')
+      .innerJoinAndSelect('c.hotelAddr', 'hotelAddr')
+      .where('c.hotelName ilike :hotelname', {
+        hotelname: `%${name}%`,
+      });
+    return paginate<Hotels>(queryBuilder, options);
+  }
 
   public async findAll() {
     return await this.serviceRepo.find({
@@ -26,39 +45,18 @@ export class HotelsService {
     });
   }
 
-  public async create(hotelDetail: {
-    hotelName: string;
-    hotelDescription: string;
-    hotelRatingStar: number;
-    hotelPhonenumber: string;
-    hotelAddr: Address;
-  }) {
+  public async create(createHotelsDto: CreateHotelsDto) {
     try {
-      const hotels = await this.serviceRepo.save({
-        ...hotelDetail,
-        hotelModifiedDate: new Date(),
-      });
+      const hotels = await this.serviceRepo.save(createHotelsDto);
       return hotels;
     } catch (error) {
       return error.message;
     }
   }
 
-  public async update(
-    id: number,
-    hotelDetail: {
-      hotelName: string;
-      hotelDescription: string;
-      hotelRatingStar: number;
-      hotelPhonenumber: string;
-      hotelAddr: Address;
-    },
-  ) {
+  public async update(id: number, createHotelsDto: CreateHotelsDto) {
     try {
-      const hotels = await this.serviceRepo.update(id, {
-        ...hotelDetail,
-        hotelModifiedDate: new Date(),
-      });
+      const hotels = await this.serviceRepo.update(id, createHotelsDto);
       return hotels;
     } catch (error) {
       return error.message;
