@@ -43,12 +43,8 @@ export class WorkOrderDetailController {
     // ): Promise <Paginated<WorkOrderDetail>> {
     //   return await this.wodeService.findAllWode(query);
     // }
-    // @Get()
-    // public async findAllWode() {
-    //   return await this.wodeService.findAllWode();
-    // }
 
-    //get by woroId
+    //get all by woroId
     @Get('all/:id')
     public async findAllWode(@Param('id') id: number) {
       return await this.wodeService.findAllWode(id);
@@ -106,7 +102,7 @@ export class WorkOrderDetailController {
         @Body('wodeSetaId') wodeSetaId: number,
         @Body('wodeWoro') wodeWoro: WorkOrders,
         ) { 
-        return await this.wodeService.updateWode(
+        return await this.wodeService.updateWode( 
         id,
         wodeTaskName,   
         wodeStatus, 

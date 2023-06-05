@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Session } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { WorkOrders } from 'output/entities/WorkOrders';
 import { Users } from 'output/entities/Users';
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Op } from 'sequelize';
+import {
+  Get,
+  Query,
+} from '@nestjs/common';
 
 @Injectable()
 export class WorkOrdersService {
@@ -36,10 +42,42 @@ export class WorkOrdersService {
         public async findAllWoro() {
           return await this.woroRepo.find({
             relations: ['woroUser'],
-            // select: ['woroId', 'woroStartDate', 'woroStatus', 'woroUser'],
             order: { woroId: 'ASC' },
           });
         }
+
+        public async findFilteredWoro(from?: Date, to?: Date): Promise<any> {
+          try {
+            const whereClause: any = {};
+
+            if (from && to) {
+              whereClause.woroStartDate = Between(from, to);
+            } else if (from) {
+              whereClause.woroStartDate = MoreThanOrEqual(from);
+            } else if (to) {
+              whereClause.woroStartDate = LessThanOrEqual(to);
+            }
+
+            const result = await this.woroRepo.find({
+              where: whereClause,
+              relations: ['woroUser'],
+              order: { woroId: 'ASC' },
+            });
+
+            if (result.length === 0) {
+              return {
+                message: 'No Work Order found.',
+              };
+            }
+            return {
+              message: 'Work Order found.',
+              data: result,
+            };
+          } catch (error) {
+            return error;
+          }
+        }
+
         public async findOneWoro(id: number) {
           const woro = await this.woroRepo.findOne({ 
                     where: { woroId: id },
@@ -53,7 +91,7 @@ export class WorkOrdersService {
     
           public async createWoro(
             woroStartDate: Date,
-            woroStatus: string,
+            woroStatus = 'OPEN',
             woroUserId: number
             ) {
             try {
@@ -61,6 +99,7 @@ export class WorkOrdersService {
             if (!user) {
               throw new Error(`User with userId ${woroUserId} not found`);
             }
+
               const newWoro = this.woroRepo.create({
                 woroStartDate: woroStartDate,
                 woroStatus: woroStatus,
@@ -86,27 +125,46 @@ export class WorkOrdersService {
               woroStartDate: Date,
               woroStatus: string,
               woroUserId: number
-            ) {
+              ) {
               try {
-                const user = await this.usersRepo.findOne({ where: { userId: woroUserId } });
-                if (!user) {
-                  throw new Error(`User with userId ${woroUserId} not found`);
-                }
-                await this.woroRepo.update(
-                  { woroId: id },
-                  {
-                    woroStartDate: woroStartDate,
-                    woroStatus: woroStatus,
-                    woroUser: user
+
+                //set worouser tetap pakai nilai lama jika tak diupdate
+                let user = null;
+                if (woroUserId) {
+                  user = await this.usersRepo.findOne({ where: { userId: woroUserId } });
+                  if (!user) {
+                    throw new Error(`User with userId ${woroUserId} not found`);
                   }
-                );
+                }
+
+                const updateData: Partial<WorkOrders> = {
+                  woroStartDate: woroStartDate,
+                  woroStatus: woroStatus
+                };
+
+                if (user) {
+                  updateData.woroUser = user;
+                }
+
+                await this.woroRepo.update({ woroId: id }, updateData);
+
+                // await this.woroRepo.update(
+                //   { woroId: id },
+                //   {
+                //     woroStartDate: woroStartDate,
+                //     woroStatus: woroStatus,
+                //     // woroUser: updatedWoroUser,
+                //     woroUser: user
+                //   }
+                // );
                 return {
                   statusCode: 200,
                   message: 'Data updated successfully',
                   data: {
                     woroId: id,
                     woroStatus: woroStatus,
-                    woroUser: {userId: woroUserId}
+                    // woroUser: updatedWoroUser,
+                    woroUser: user
                   },
                 };
               } catch (error) {

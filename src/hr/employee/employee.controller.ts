@@ -30,6 +30,7 @@ import {
   import { Multer } from 'multer';
   import { diskStorage } from 'multer';
   import { extname } from 'path';
+  import * as path from 'path';
 
 @Controller('employee')
 export class EmployeeController {
@@ -46,11 +47,6 @@ export class EmployeeController {
         private shiftRepo: Repository<Shift>, 
         ) {}
 
-    // @Get()
-    // public async findAllEmp(@Paginate() query: PaginateQuery, 
-    // ): Promise <Paginated<Employee>> {
-    //   return await this.employeeService.findAllEmp(query);
-    // }
     @Get()
     public async findAllEmp() {
       return await this.employeeService.findAllEmp();
@@ -60,32 +56,32 @@ export class EmployeeController {
       return await this.employeeService.findOneEmp(id);
     }
  
-    // //emp, edhi, ephi
-    // @Get(':id')
-    // public async detailEmp(@Param('id') param): Promise<any> {
-    // const profile = await this.employeeService.employeeDetail(param);
-    // const dephi = await this.employeeService.getDephi(param);
-    // const ephi = await this.employeeService.getEphi(param);
-    // return {
-    //     employees: profile[0],
-    //     dephi,
-    //     ephi,
-    //   };
-    // }
-
-    //emp-eph-edh
     @Post() 
     @UseInterceptors(FileInterceptor('file', 
     {
         storage: diskStorage({ 
             destination: './uploads/hr',
             filename: (req, file, callback) => {
-              const fileName = `${file.originalname}`; 
-              callback(null, fileName);
-    },})}))
+            const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const empNationalId = req.body.empNationalId;
+            const fileName = `${uniquePrefix}_${empNationalId}_${file.originalname}`; 
+            const filePath = path.join('/uploads/hr', fileName);
+            callback(null, fileName, filePath);
+    },
+    }),
+            fileFilter: (req, file, callback) => {
+                if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+                return callback(new Error('Only jpg, jpeg, and png files are allowed!'), false);
+                }
+                callback(null, true);
+            },
+            limits: { fileSize: 1 * 1024 * 1024 },
+    }
+    ))
     public async createEmp(
         @UploadedFile() file,
-        @Body() createEmployee: { 
+        @Body() createEmployee: {  
           empNationalId: string,
           empBirthDate: string,
           empMaritalStatus: string,
@@ -146,13 +142,26 @@ export class EmployeeController {
 
     @Put(':id') 
     @UseInterceptors(FileInterceptor('file', 
-    {
-        storage: diskStorage({ 
-            destination: './uploads/hr',
-            filename: (req, file, callback) => {
-              const fileName = `${file.originalname}`; 
-              callback(null, fileName);
-    },})}))
+        {
+            storage: diskStorage({ 
+                destination: './uploads/hr',
+                filename: (req, file, callback) => {
+                  const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                  const empNationalId = req.body.empNationalId;
+                  const fileName = `${uniquePrefix}_${empNationalId}_${file.originalname}`; 
+                  const filePath = path.join('/uploads/hr', fileName);
+                  callback(null, fileName, filePath);
+        },
+        }),
+                fileFilter: (req, file, callback) => {
+                    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+                    return callback(new Error('Only jpg, jpeg, and png files are allowed!'), false);
+                    }
+                    callback(null, true);
+                },
+                limits: { fileSize: 1 * 1024 * 1024 },
+        }
+        ))
     public async updateEmp(
         @Param('id') id: number,
         @UploadedFile() file,

@@ -28,7 +28,7 @@ export class WorkOrdersController {
         @InjectRepository(Users)
         private usersRepo: Repository<Users>,
         ) {}
-
+ 
     // @Get()
     // public async findAllWoro(@Paginate() query: PaginateQuery,
     // ): Promise <Paginated<WorkOrders>> {
@@ -38,6 +38,20 @@ export class WorkOrdersController {
     public async findAllWoro() {
       return await this.woroService.findAllWoro();
     }
+ 
+  @Get()
+  public async findFilteredWoro(
+  @Query('from') from: Date,
+  @Query('to') to: Date, 
+  ) {
+  try {
+    const result = await this.woroService.findFilteredWoro(from, to);
+    return result;
+  } catch (error) {
+    return error;
+  }
+  }
+    
     @Get(':id') 
     public async findOneWoro(@Param('id') id: number) {
       return await this.woroService.findOneWoro(id);
@@ -46,7 +60,7 @@ export class WorkOrdersController {
     @Post()
     public async createWoro(
         @Body('woroStartDate') woroStartDate: Date,
-        @Body('woroStatus') woroStatus: string,
+        @Body('woroStatus') woroStatus: string, 
         @Body('woroUserId') woroUserId: number,
     ) {
     return await this.woroService.createWoro(

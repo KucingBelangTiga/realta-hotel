@@ -78,7 +78,7 @@ export class WorkOrderDetailService {
     
           public async createWode(
             wodeTaskName: string,
-            wodeStatus: string,
+            wodeStatus = 'INPROGRESS',
             wodeStartDate: Date = new Date(),
             wodeEndDate: Date,
             wodeNotes: string,
@@ -88,15 +88,6 @@ export class WorkOrderDetailService {
             wodeSetaId?: number,
             ) {
             try {
-
-              //set wodeenddate
-              if (wodeStatus === 'INPROGRESS') {
-                wodeEndDate = null;
-              }
-              if (wodeStatus === 'CANCELLED' || wodeStatus === 'COMPLETED') {
-                wodeEndDate = new Date();
-              }
-
               const employee = wodeEmpId? await this.employeeRepo.findOne({ where: { empId: wodeEmpId } }) : null;
               if (!employee) {
                   throw new Error(`Employee with empId ${wodeEmpId} not found`);
@@ -109,10 +100,10 @@ export class WorkOrderDetailService {
               if (!seta) {
                   throw new Error(`Service Task with setaId ${wodeSetaId} not found`);
               }
-
+             
               const newWode = this.wodeRepo.create({
                 wodeTaskName: wodeTaskName,
-                wodeStatus: wodeStatus,
+                wodeStatus: wodeStatus, 
                 wodeStartDate: wodeStartDate,
                 wodeEndDate: wodeEndDate,
                 wodeNotes: wodeNotes,
@@ -177,7 +168,8 @@ export class WorkOrderDetailService {
                 if (!seta) {
                     throw new Error(`Service Task with setaId ${wodeSetaId} not found`);
                 }
-                
+
+                //set wodeworo tetap pakai nilai lama jika tak diupdate
                 let updatedWodeWoro: WorkOrders | undefined;
 
                   if (wodeWoro) {
