@@ -19,7 +19,7 @@ export class TopupService {
     }
     const sourceSaldo: number = parseInt(topupDto.usacSaldo);
     const nominal: number = parseInt(topupDto.usacNominal);
-    if (nominal < sourceSaldo) {
+    if (nominal > sourceSaldo) {
       return `Nominal ${nominal} Must be lower than sourceSaldo ${sourceSaldo}`;
     }
     const newSourceSaldo: number = sourceSaldo - nominal;

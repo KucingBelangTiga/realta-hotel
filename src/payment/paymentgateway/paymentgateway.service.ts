@@ -4,6 +4,11 @@ import { Repository } from 'typeorm';
 import { PaymentGateway } from 'output/entities/PaymentGateway';
 import { Entitys } from 'output/entities/Entitys';
 import { PaymentGatewayDto } from '../payment.dto/payment.dto';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class PaymentgatewayService {
@@ -13,6 +18,22 @@ export class PaymentgatewayService {
     @InjectRepository(Entitys)
     private entityRepo: Repository<Entitys>,
   ) {}
+  public async getAllPaymentGateway(
+    options: IPaginationOptions,
+    name: string,
+  ): Promise<Pagination<PaymentGateway>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .orderBy('c.pagaEntityId', 'ASC')
+      .where('c.pagaCode ilike :name', {
+        name: `%${name}%`,
+      })
+      .orWhere('c.pagaName ilike :name', {
+        name: `%${name}%`,
+      });
+    return paginate<PaymentGateway>(queryBuilder, options);
+  }
+
   public async getPaymentGateways() {
     return await this.serviceRepo.find({
       relations: {

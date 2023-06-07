@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { UserAccounts } from 'output/entities/UserAccounts';
 import { UserAccountDto } from '../payment.dto/payment.dto';
@@ -10,11 +15,28 @@ export class UseraccountsService {
     @InjectRepository(UserAccounts)
     private serviceRepo: Repository<UserAccounts>,
   ) {}
-
   public async getUserAccount() {
     return await this.serviceRepo.find({
       relations: ['usacEntity', 'usacEntity.bank', 'usacEntity.paymentGateway'],
     });
+  }
+  public async getAllUser(
+    options: IPaginationOptions,
+    name: string,
+  ): Promise<Pagination<UserAccounts>> {
+    const queryBuilder = this.serviceRepo
+      .createQueryBuilder('c')
+      .leftJoinAndSelect('c.usacEntity', 'entity')
+      .leftJoinAndSelect('entity.bank', 'bank')
+      .leftJoinAndSelect('entity.paymentGateway', 'paymentGateway')
+      .orderBy('c.usacUserId', 'ASC')
+      .where('c.usacAccountNumber ilike :name', {
+        name: `%${name}%`,
+      })
+      .orWhere('c.usacType ilike :name', {
+        name: `%${name}%`,
+      });
+    return paginate<UserAccounts>(queryBuilder, options);
   }
 
   public async getCurrentSourceByUser(id: string) {
