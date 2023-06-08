@@ -22,7 +22,7 @@ export class BookingOrderService {
     }
 
     public async CreateBooking(
-        boorId: number,
+        // boorId: number,
         boorOrderNumber: string,
         boorOrderDate: Date,
         boorArrivalDate: Date,
@@ -42,7 +42,7 @@ export class BookingOrderService {
         boorHotel: Hotels) {
         try {
             await this.boorService.save({
-                boorId: boorId,
+                // boorId: boorId,
                 boorOrderNumber: boorOrderNumber,
                 boorOrderDate: boorOrderDate,
                 boorArrivalDate: boorArrivalDate,

@@ -29,7 +29,8 @@ export class BookingOrderController {
     }
 
     @Post()
-    public async Create(@Body('boorId') boorId: number,
+    public async Create(
+        // @Body('boorId') boorId: number,
         @Body('boorOrderNumber') boorOrderNumber: string,
         @Body('boorOrderDate') boorOrderDate: Date,
         @Body('boorArrivalDate') boorArrivalDate: Date,
@@ -47,7 +48,9 @@ export class BookingOrderController {
         @Body('boorStatus') boorStatus: string,
         @Body('bookingOrderDetail') bookingOrderDetail: BookingOrderDetail,
         @Body('boorHotel') boorHotel: Hotels) {
-        return await this.BookingOrderServices.CreateBooking(boorId, boorOrderNumber, boorOrderDate, boorArrivalDate, boorTotalRoom, boorTotalGuest, boorDiscount, boorTotalTax, boorTotalAmount, boorDownPayment, boorPayType, boorIsPaid, boorType, boorCardnumber, boorMemberType, boorStatus, bookingOrderDetail, boorHotel);
+        return await this.BookingOrderServices.CreateBooking(
+            // boorId, 
+            boorOrderNumber, boorOrderDate, boorArrivalDate, boorTotalRoom, boorTotalGuest, boorDiscount, boorTotalTax, boorTotalAmount, boorDownPayment, boorPayType, boorIsPaid, boorType, boorCardnumber, boorMemberType, boorStatus, bookingOrderDetail, boorHotel);
     }
 
     @Put(':id')

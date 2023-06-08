@@ -15,7 +15,7 @@ export class BookingOrderDetailExtraService {
     ) { }
 
     public async findAll() {
-        return await this.boexService.find();
+        return await this.boexService.find({ relations: { boexPrit: true } });
     }
 
     public async findOne(boexId: number) {
@@ -23,7 +23,7 @@ export class BookingOrderDetailExtraService {
     }
 
     public async CreateBoEx(
-        boexId: number,
+        // boexId: number,
         boexPrice: string,
         boexQty: number,
         boexSubtotal: string,
@@ -33,7 +33,7 @@ export class BookingOrderDetailExtraService {
     ) {
         try {
             await this.boexService.save({
-                boexId: boexId,
+                // boexId: boexId,
                 boexPrice: boexPrice,
                 boexQty: boexQty,
                 boexSubtotal: boexSubtotal,

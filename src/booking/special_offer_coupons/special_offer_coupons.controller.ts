@@ -30,11 +30,13 @@ export class SpecialOfferCouponsController {
 
     @Post()
     public async create(
-        @Body('socoId') socoId: number,
+        // @Body('socoId') socoId: number,
         @Body('socoSpof') socoSpof: SpecialOffers,
         @Body('socoBorde') socoBorde: BookingOrderDetail,
     ) {
-        return await this.SpecialOfferCouponService.createCoupons(socoId, socoSpof, socoBorde)
+        return await this.SpecialOfferCouponService.createCoupons(
+            // socoId, 
+            socoSpof, socoBorde)
     }
 
     @Put(':socoId')

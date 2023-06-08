@@ -32,7 +32,7 @@ export class BookingOrderDetailExtraController {
 
     @Post()
     public async create(
-        @Body('boexId') boexId: number,
+        // @Body('boexId') boexId: number,
         @Body('boexPrice') boexPrice: string,
         @Body('boexQty') boexQty: number,
         @Body('boexSubtotal') boexSubtotal: string,
@@ -40,7 +40,9 @@ export class BookingOrderDetailExtraController {
         @Body('boexPrit') boexPrit: PriceItems,
         @Body('boexBorde') boexBorde: BookingOrderDetail,
     ) {
-        return await this.BookingOrderDetailExtraService.CreateBoEx(boexId, boexPrice, boexQty, boexSubtotal, boexMeasureUnit, boexPrit, boexBorde);
+        return await this.BookingOrderDetailExtraService.CreateBoEx(
+            // boexId, 
+            boexPrice, boexQty, boexSubtotal, boexMeasureUnit, boexPrit, boexBorde);
     }
 
     @Put(':boexId')
@@ -53,7 +55,9 @@ export class BookingOrderDetailExtraController {
         @Body('boexPrit') boexPrit: PriceItems,
         @Body('boexBorde') boexBorde: BookingOrderDetail,
     ) {
-        return await this.BookingOrderDetailExtraService.UpdateBoEx(boexId, boexPrice, boexQty, boexSubtotal, boexMeasureUnit, boexPrit, boexBorde);
+        return await this.BookingOrderDetailExtraService.UpdateBoEx(
+            boexId,
+            boexPrice, boexQty, boexSubtotal, boexMeasureUnit, boexPrit, boexBorde);
     }
 
     @Delete(':boexId')

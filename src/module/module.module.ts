@@ -24,6 +24,9 @@ import { PriceItems } from 'output/entities/PriceItems';
 import { HotelService } from 'src/booking/hotel_dev/hotel/hotel.service';
 import { HotelController } from 'src/booking/hotel_dev/hotel/hotel.controller';
 import { HotelReviews } from 'output/entities/HotelReviews';
+import { Entitys } from 'output/entities/Entitys';
+import { UserAccounts } from 'output/entities/UserAccounts';
+import { CategoryGroup } from 'output/entities/CategoryGroup';
 
 @Module({
     imports: [TypeOrmModule.forFeature([
@@ -37,7 +40,10 @@ import { HotelReviews } from 'output/entities/HotelReviews';
         Hotels,
         Facilities,
         PriceItems,
-        HotelReviews
+        HotelReviews,
+        Entitys,
+        UserAccounts,
+        CategoryGroup
     ]),
     ],
     providers: [BookingOrderService, BookingOrderDetailService, BookingOrderDetailExtraService, UserBreakfeastService, SpecialOfferCouponsService, SpecialOfferService, HotelService],

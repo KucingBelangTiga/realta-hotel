@@ -21,13 +21,13 @@ export class SpecialOfferCouponsService {
     }
 
     public async createCoupons(
-        socoId: number,
+        // socoId: number,
         socoSpof: SpecialOffers,
         socoBorde: BookingOrderDetail,
     ) {
         try {
             await this.socoService.save({
-                socoId: socoId,
+                // socoId: socoId,
                 socoSpof: socoSpof,
                 socoBorde: socoBorde,
             });

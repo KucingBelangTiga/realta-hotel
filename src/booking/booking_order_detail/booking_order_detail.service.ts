@@ -23,7 +23,7 @@ export class BookingOrderDetailService {
 
     public async CreateBookingDetail(
         borderBoorId: number,
-        bordeId: number,
+        // bordeId: number,
         bordeCheckin: Date,
         bordeCheckout: Date,
         bordeAdults: number,
@@ -38,7 +38,7 @@ export class BookingOrderDetailService {
         try {
             await this.bordetService.save({
                 borderBoorId: borderBoorId,
-                bordeId: bordeId,
+                // bordeId: bordeId,
                 bordeCheckin: bordeCheckin,
                 bordeCheckout: bordeCheckout,
                 bordeAdults: bordeAdults,

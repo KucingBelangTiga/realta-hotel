@@ -32,7 +32,7 @@ export class BookingOrderDetailController {
     @Post()
     public async create(
         @Body('borderBoorId') borderBoorId: number,
-        @Body('bordeId') bordeId: number,
+        // @Body('bordeId') bordeId: number,
         @Body('bordeCheckin') bordeCheckin: Date,
         @Body('bordeCheckout') bordeCheckout: Date,
         @Body('bordeAdults') bordeAdults: number,
@@ -45,7 +45,9 @@ export class BookingOrderDetailController {
         @Body('bordeFaci') bordeFaci: Facilities,
     ) {
         return await this.BookingOrderDetailService.CreateBookingDetail(
-            borderBoorId, bordeId, bordeCheckin, bordeCheckout, bordeAdults, bordeKids, bordePrice, bordeExtra, bordeDiscount, bordeTax, bordeSubtotal, bordeFaci
+            borderBoorId,
+            // bordeId, 
+            bordeCheckin, bordeCheckout, bordeAdults, bordeKids, bordePrice, bordeExtra, bordeDiscount, bordeTax, bordeSubtotal, bordeFaci
         );
     }
 
