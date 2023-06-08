@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "db": "typeorm-model-generator -h localhost -d realtahotel -p 5432 -u postgres -x coba1234 -e postgres -s booking,hotel,hr,master,payment,public,puchasing,resto,user",
+    "db": "typeorm-model-generator -h localhost -d realtahotel4 -p 5432 -u postgres -x coba1234 -e postgres -s booking,hotel,hr,master,payment,public,puchasing,resto,user",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -27,14 +27,18 @@
     "@nestjs/typeorm": "^9.0.1",
     "@types/multer": "^1.4.7",
     "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "pg": "^8.10.0",
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "sequelize": "^6.31.1",
     "typeorm": "^0.3.12",
-    "typeorm-model-generator": "^0.4.6"
+    "typeorm-model-generator": "^0.4.6",
+    "webpack": "^5.83.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -57,7 +61,11 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-middleware": "^6.1.1",
+    "webpack-dev-server": "^4.15.0",
+    "webpack-hot-middleware": "^2.25.3"
   },
   "jest": {
     "moduleFileExtensions": [
