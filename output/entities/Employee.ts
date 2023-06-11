@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { JobRole } from "./JobRole";
+import { Users } from "./Users";
 import { EmployeeDepartmentHistory } from "./EmployeeDepartmentHistory";
 import { EmployeePayHistory } from "./EmployeePayHistory";
 import { WorkOrderDetail } from "./WorkOrderDetail";
@@ -78,9 +79,6 @@ export class Employee {
   })
   empModifiedDate: Date | null;
 
-  @Column("integer", { name: "emp_user_id", nullable: true })
-  empUserId: number | null;
-
   @ManyToOne(() => Employee, (employee) => employee.employees, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -97,6 +95,13 @@ export class Employee {
   })
   @JoinColumn([{ name: "emp_joro_id", referencedColumnName: "joroId" }])
   empJoro: JobRole;
+
+  @ManyToOne(() => Users, (users) => users.employees, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "emp_user_id", referencedColumnName: "userId" }])
+  empUser: Users;
 
   @OneToOne(
     () => EmployeeDepartmentHistory,

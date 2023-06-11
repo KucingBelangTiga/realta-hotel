@@ -17,13 +17,20 @@ export class UseraccountsService {
   ) {}
   public async getUserAccount() {
     return await this.serviceRepo.find({
-      relations: ['usacEntity', 'usacEntity.bank', 'usacEntity.paymentGateway'],
+      relations: [
+        'usacEntity',
+        'usacEntity.bank',
+        'usacEntity.paymentGateway',
+        'usacUser',
+        'usacUser.userAccounts',
+      ],
     });
   }
   public async getAllUser(
     options: IPaginationOptions,
     name: string,
   ): Promise<Pagination<UserAccounts>> {
+    options.limit = 10;
     const queryBuilder = this.serviceRepo
       .createQueryBuilder('c')
       .leftJoinAndSelect('c.usacEntity', 'entity')
@@ -42,7 +49,13 @@ export class UseraccountsService {
   public async getCurrentSourceByUser(id: string) {
     return await this.serviceRepo.findOne({
       where: { usacAccountNumber: id },
-      relations: ['usacEntity', 'usacEntity.bank', 'usacEntity.paymentGateway'],
+      relations: [
+        'usacEntity',
+        'usacEntity.bank',
+        'usacEntity.paymentGateway',
+        'usacUser',
+        'usacUser.userAccounts',
+      ],
     });
   }
 
@@ -65,14 +78,7 @@ export class UseraccountsService {
   public async addUserAccount(userAccountDto: UserAccountDto) {
     try {
       const userAccount = await this.serviceRepo.save({
-        usacEntityId: userAccountDto.usacEntityId,
-        usacUserId: userAccountDto.usacUserId,
-        usacAccountNumber: userAccountDto.usacAccountNumber,
-        usacSaldo: userAccountDto.usacSaldo,
-        usacType: userAccountDto.usacType,
-        usacExpmonth: userAccountDto.usacExpmonth,
-        usacExpyear: userAccountDto.usacExpyear,
-        usacSecureCode: userAccountDto.usacSecureCode,
+        ...userAccountDto,
         usacModifiedDate: new Date(),
       });
       return userAccount;
@@ -90,12 +96,7 @@ export class UseraccountsService {
       const userAccount = await this.serviceRepo.update(
         { usacEntityId, usacUserId },
         {
-          usacAccountNumber: userAccountDto.usacAccountNumber,
-          usacSaldo: userAccountDto.usacSaldo,
-          usacType: userAccountDto.usacType,
-          usacExpmonth: userAccountDto.usacExpmonth,
-          usacExpyear: userAccountDto.usacExpyear,
-          usacSecureCode: userAccountDto.usacSecureCode,
+          ...userAccountDto,
           usacModifiedDate: new Date(),
         },
       );

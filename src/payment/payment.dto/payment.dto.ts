@@ -1,79 +1,79 @@
 import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
+import { Users } from 'output/entities/Users';
 
 export class BankDto {
-  readonly entityId: number;
+  bankEntityId?: number;
   @IsNotEmpty()
   @IsString()
-  readonly bankCode: string;
+  bankCode: string;
   @IsNotEmpty()
   @IsString()
-  readonly bankName: string;
+  bankName: string;
 }
 
 export class PaymentGatewayDto {
-  readonly entityId: number;
+  pagaEntityId?: number;
   @IsNotEmpty()
   @IsString()
-  readonly pagaCode: string;
+  pagaCode: string;
   @IsNotEmpty()
   @IsString()
-  readonly pagaName: string;
+  pagaName: string;
 }
 
 export class UserAccountDto {
-  @IsNumber()
-  readonly usacEntityId: number;
-  @IsNumber()
-  readonly usacUserId: number;
+  usacEntityId?: number;
+  usacUserId?: number;
   @IsNotEmpty()
   @IsString()
-  readonly usacAccountNumber: string;
+  usacAccountNumber: string;
   @IsNotEmpty()
   @IsString()
-  readonly usacSaldo: string;
+  usacSaldo: string;
   @IsNotEmpty()
   @IsString()
-  readonly usacType: string;
+  usacType: string;
   @IsNumber()
-  readonly usacExpmonth: number;
+  usacExpmonth: number;
   @IsNumber()
-  readonly usacExpyear: number;
+  usacExpyear: number;
   @IsString()
-  readonly usacSecureCode: string;
+  usacSecureCode: string;
 }
 
 export class PaymentTransactionDto {
   @IsNumber()
-  readonly patrId: number;
+  patrId: number;
   @IsString()
-  readonly patrTrxId: string;
+  patrTrxId: string;
   @IsString()
-  readonly patrDebet: string;
+  patrDebet: string;
   @IsString()
-  readonly patrCredit: string;
+  patrCredit: string;
   @IsString()
-  readonly patrType: string;
+  patrType: string;
   @IsString()
-  readonly patrNote: string;
+  patrModifiedDate: Date = new Date();
+  patrNote: string;
   @IsString()
-  readonly patrOrderNumber: string;
+  patrOrderNumber: string;
   @IsString()
-  readonly patrSourceId: string;
+  patrSourceId: string;
   @IsString()
-  readonly patrTargetId: string;
+  patrTargetId: string;
   @IsString()
-  readonly patrTrxNumberRef: string;
+  patrTrxNumberRef: string;
   @IsNumber()
-  readonly patrUserId: number;
+  patrUser: Users;
 }
 
 export class TopupDto {
   @IsNumber()
-  readonly usacEntityId: number;
+  usacEntityId: number;
   @IsNumber()
-  readonly usacUserId: number;
+  usacUserId: number;
   @IsString()
-  readonly usacSaldo: string;
+  usacSaldo: string;
   @IsString()
-  readonly usacNominal: string;
+  usacNominal: string;
 }

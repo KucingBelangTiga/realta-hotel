@@ -58,8 +58,7 @@ export class BankService {
         bankEntity: {
           entityId: entity.entityId,
         },
-        bankCode: bankDto.bankCode,
-        bankName: bankDto.bankName,
+        ...bankDto,
         bankModifiedDate: new Date(),
       });
       return bank;
@@ -71,11 +70,12 @@ export class BankService {
   public async updateBank(id: number, bankDto: BankDto) {
     try {
       const bank = await this.serviceRepo.update(id, {
-        bankEntityId: bankDto.entityId,
+        bankEntityId: bankDto.bankEntityId,
         bankCode: bankDto.bankCode,
         bankName: bankDto.bankName,
         bankModifiedDate: new Date(),
       });
+      // note => code diatas tidak bisa pakai ...bankDto karena error EntityId
       return bank;
     } catch (error) {
       return error.message;

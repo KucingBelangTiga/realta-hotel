@@ -2,10 +2,13 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { OrderMenuDetail } from "./OrderMenuDetail";
+import { Users } from "./Users";
 
 @Index("pk_orme_id", ["ormeId"], { unique: true })
 @Entity("order_menus", { schema: "resto" })
@@ -54,12 +57,16 @@ export class OrderMenus {
   })
   ormeModifiedDate: Date | null;
 
-  @Column("integer", { name: "orme_user_id", nullable: true })
-  ormeUserId: number | null;
-
   @OneToMany(
     () => OrderMenuDetail,
     (orderMenuDetail) => orderMenuDetail.omdeOrme
   )
   orderMenuDetails: OrderMenuDetail[];
+
+  @ManyToOne(() => Users, (users) => users.orderMenus, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "orme_user_id", referencedColumnName: "userId" }])
+  ormeUser: Users;
 }

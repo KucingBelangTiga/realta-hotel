@@ -58,8 +58,7 @@ export class PaymentgatewayService {
         pagaEntity: {
           entityId: entity.entityId,
         },
-        pagaCode: paymentGatewayDto.pagaCode,
-        pagaName: paymentGatewayDto.pagaName,
+        ...paymentGatewayDto,
         pagaModifiedDate: new Date(),
       });
       return paymentGateway;
@@ -74,9 +73,7 @@ export class PaymentgatewayService {
   ) {
     try {
       const paymentGateway = await this.serviceRepo.update(id, {
-        pagaEntityId: paymentGatewayDto.entityId,
-        pagaCode: paymentGatewayDto.pagaCode,
-        pagaName: paymentGatewayDto.pagaName,
+        ...paymentGatewayDto,
         pagaModifiedDate: new Date(),
       });
       return paymentGateway;

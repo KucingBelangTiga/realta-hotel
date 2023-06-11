@@ -1,5 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Entitys } from './Entitys';
+import { Users } from './Users';
 
 @Index('user_accounts_usac_account_number_key', ['usacAccountNumber'], {
   unique: true,
@@ -52,4 +53,11 @@ export class UserAccounts {
   })
   @JoinColumn([{ name: 'usac_entity_id', referencedColumnName: 'entityId' }])
   usacEntity: Entitys;
+
+  @ManyToOne(() => Users, (users) => users.userAccounts, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'usac_user_id', referencedColumnName: 'userId' }])
+  usacUser: Users;
 }

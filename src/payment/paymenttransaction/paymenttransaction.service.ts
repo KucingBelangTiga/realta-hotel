@@ -23,6 +23,7 @@ export class PaymenttransactionService {
   ): Promise<Pagination<PaymentTransaction>> {
     const queryBuilder = this.serviceRepo
       .createQueryBuilder('c')
+      .leftJoinAndSelect('c.patrUser', 'users')
       .orderBy('c.patrId', 'ASC')
       .where((qb) => {
         qb.where('c.patrType ilike :patrtype', {
@@ -39,31 +40,27 @@ export class PaymenttransactionService {
   }
 
   public async getPaymentTransactions() {
-    return await this.serviceRepo.find();
+    return await this.serviceRepo.find({
+      relations: {
+        patrUser: true,
+      },
+    });
   }
   public async getPaymentTransactionById(id: number) {
     return await this.serviceRepo.findOne({
       where: { patrId: id },
+      relations: {
+        patrUser: true,
+      },
     });
   }
   public async addPaymentTransaction(
     paymentTransactionDto: PaymentTransactionDto,
   ) {
     try {
-      const paymentTransaction = await this.serviceRepo.save({
-        patrId: paymentTransactionDto.patrId,
-        patrTrxId: paymentTransactionDto.patrTrxId,
-        patrDebet: paymentTransactionDto.patrDebet,
-        patrCredit: paymentTransactionDto.patrCredit,
-        patrType: paymentTransactionDto.patrType,
-        patrNote: paymentTransactionDto.patrNote,
-        patrModifiedDate: new Date(),
-        patrOrderNumber: paymentTransactionDto.patrOrderNumber,
-        patrSourceId: paymentTransactionDto.patrSourceId,
-        patrTargetId: paymentTransactionDto.patrTargetId,
-        patrTrxNumberRef: paymentTransactionDto.patrTrxNumberRef,
-        patrUserId: paymentTransactionDto.patrUserId,
-      });
+      const paymentTransaction = await this.serviceRepo.save(
+        paymentTransactionDto,
+      );
       return paymentTransaction;
     } catch (error) {
       return error.message;
@@ -73,20 +70,9 @@ export class PaymenttransactionService {
     paymentTransactionDto: PaymentTransactionDto,
   ) {
     try {
-      const paymentTransaction = await this.serviceRepo.save({
-        patrId: paymentTransactionDto.patrId,
-        patrTrxId: paymentTransactionDto.patrTrxId,
-        patrDebet: paymentTransactionDto.patrDebet,
-        patrCredit: paymentTransactionDto.patrCredit,
-        patrType: paymentTransactionDto.patrType,
-        patrNote: paymentTransactionDto.patrNote,
-        patrModifiedDate: new Date(),
-        patrOrderNumber: paymentTransactionDto.patrOrderNumber,
-        patrSourceId: paymentTransactionDto.patrSourceId,
-        patrTargetId: paymentTransactionDto.patrTargetId,
-        patrTrxNumberRef: paymentTransactionDto.patrTrxNumberRef,
-        patrUserId: paymentTransactionDto.patrUserId,
-      });
+      const paymentTransaction = await this.serviceRepo.save(
+        paymentTransactionDto,
+      );
       return paymentTransaction;
     } catch (error) {
       return error.message;
@@ -96,20 +82,9 @@ export class PaymenttransactionService {
     paymentTransactionDto: PaymentTransactionDto,
   ) {
     try {
-      const paymentTransaction = await this.serviceRepo.save({
-        patrId: paymentTransactionDto.patrId,
-        patrTrxId: paymentTransactionDto.patrTrxId,
-        patrDebet: paymentTransactionDto.patrDebet,
-        patrCredit: paymentTransactionDto.patrCredit,
-        patrType: paymentTransactionDto.patrType,
-        patrNote: paymentTransactionDto.patrNote,
-        patrModifiedDate: new Date(),
-        patrOrderNumber: paymentTransactionDto.patrOrderNumber,
-        patrSourceId: paymentTransactionDto.patrSourceId,
-        patrTargetId: paymentTransactionDto.patrTargetId,
-        patrTrxNumberRef: paymentTransactionDto.patrTrxNumberRef,
-        patrUserId: paymentTransactionDto.patrUserId,
-      });
+      const paymentTransaction = await this.serviceRepo.save(
+        paymentTransactionDto,
+      );
       return paymentTransaction;
     } catch (error) {
       return error.message;
@@ -120,20 +95,10 @@ export class PaymenttransactionService {
     paymentTransactionDto: PaymentTransactionDto,
   ) {
     try {
-      const paymentTransaction = await this.serviceRepo.update(id, {
-        patrId: paymentTransactionDto.patrId,
-        patrTrxId: paymentTransactionDto.patrTrxId,
-        patrDebet: paymentTransactionDto.patrDebet,
-        patrCredit: paymentTransactionDto.patrCredit,
-        patrType: paymentTransactionDto.patrType,
-        patrNote: paymentTransactionDto.patrNote,
-        patrModifiedDate: new Date(),
-        patrOrderNumber: paymentTransactionDto.patrOrderNumber,
-        patrSourceId: paymentTransactionDto.patrSourceId,
-        patrTargetId: paymentTransactionDto.patrTargetId,
-        patrTrxNumberRef: paymentTransactionDto.patrTrxNumberRef,
-        patrUserId: paymentTransactionDto.patrUserId,
-      });
+      const paymentTransaction = await this.serviceRepo.update(
+        id,
+        paymentTransactionDto,
+      );
       return paymentTransaction;
     } catch (error) {
       return error.message;
