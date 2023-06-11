@@ -15,6 +15,6 @@ export class CreateFacilitesDto {
   faciDiscount: string;
   faciTaxRate: string;
   faciModifiedDate: Date = new Date();
-  faciCargo: CategoryGroup;
+  faciCagro: CategoryGroup;
   faciHotel: Hotels;
 }
