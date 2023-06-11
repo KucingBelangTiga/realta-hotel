@@ -54,7 +54,7 @@ export class FacilitiesService {
     faciRatePrice: string;
     faciDiscount: string;
     faciTaxRate: string;
-    faciCargo: CategoryGroup;
+    faciCagro: CategoryGroup;
     faciHotel: Hotels;
   }) {
     try {
@@ -83,7 +83,7 @@ export class FacilitiesService {
       faciRatePrice: string;
       faciDiscount: string;
       faciTaxRate: string;
-      faciCargo: CategoryGroup;
+      faciCagro: CategoryGroup;
       faciHotel: Hotels;
     },
   ) {

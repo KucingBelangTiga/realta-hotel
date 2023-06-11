@@ -38,7 +38,7 @@ export class FacilitiesController {
       faciRatePrice: string;
       faciDiscount: string;
       faciTaxRate: string;
-      faciCargo: CategoryGroup;
+      faciCagro: CategoryGroup;
       faciHotel: Hotels;
     },
   ) {
@@ -61,7 +61,7 @@ export class FacilitiesController {
       faciRatePrice: string;
       faciDiscount: string;
       faciTaxRate: string;
-      faciCargo: CategoryGroup;
+      faciCagro: CategoryGroup;
       faciHotel: Hotels;
     },
   ) {
