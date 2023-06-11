@@ -7,12 +7,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { BookingOrderDetail } from './BookingOrderDetail';
 import { CategoryGroup } from './CategoryGroup';
 import { Hotels } from './Hotels';
 import { FacilityPhoto } from './FacilityPhoto';
 import { FacilityPriceHistory } from './FacilityPriceHistory';
 import { RestoMenus } from './RestoMenus';
+import { StockDetail } from './StockDetail';
 import { WorkOrderDetail } from './WorkOrderDetail';
 
 @Index('pk_faci_id', ['faciId'], { unique: true })
@@ -118,6 +120,9 @@ export class Facilities {
 
   @OneToMany(() => RestoMenus, (restoMenus) => restoMenus.remeFaci)
   restoMenus: RestoMenus[];
+
+  @OneToMany(() => StockDetail, (stockDetail) => stockDetail.stodFaci)
+  stockDetails: StockDetail[];
 
   @OneToMany(
     () => WorkOrderDetail,

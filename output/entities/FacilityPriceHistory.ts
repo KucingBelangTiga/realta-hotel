@@ -6,7 +6,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { Facilities } from './Facilities';
+import { Users } from './Users';
 
 @Index('pk_facility_price_history', ['faphId'], { unique: true })
 @Entity('facility_price_history', { schema: 'hotel' })
@@ -57,4 +59,11 @@ export class FacilityPriceHistory {
   )
   @JoinColumn([{ name: 'faph_faci_id', referencedColumnName: 'faciId' }])
   faphFaci: Facilities;
+
+  @ManyToOne(() => Users, (users) => users.facilityPriceHistories, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'faph_user_id', referencedColumnName: 'userId' }])
+  faphUser: Users;
 }
